@@ -1,0 +1,45 @@
+buildscript {
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.7.9"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.15.RELEASE"
+    }
+}
+
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.7.22"
+    id "org.jetbrains.kotlin.plugin.noarg" version "1.7.22"
+    id "org.jetbrains.kotlin.plugin.allopen" version "1.7.22"
+    id "org.jetbrains.kotlin.plugin.jpa" version "1.7.22"
+    id "org.jetbrains.kotlin.plugin.spring" version "1.7.22"
+
+    id "io.spring.dependency-management" version "1.0.15.RELEASE"
+    id "org.springframework.boot" version "2.7.9"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+sourceCompatibility = '15'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    implementation 'org.apache.lucene:lucene-core:9.5.0'
+    implementation 'org.apache.lucene:lucene-queryparser:9.5.0'
+
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.14.1"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.22"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.22"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    implementation 'io.github.microutils:kotlin-logging-jvm:2.0.11'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}

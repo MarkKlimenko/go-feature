@@ -1,0 +1,163 @@
+package com.go.feature
+
+import mu.KLogging
+import org.apache.lucene.analysis.standard.StandardAnalyzer
+import org.apache.lucene.document.*
+import org.apache.lucene.index.*
+import org.apache.lucene.search.*
+import org.apache.lucene.store.ByteBuffersDirectory
+import org.apache.lucene.store.Directory
+import java.lang.Long.parseLong
+import java.util.*
+
+class IndexTest {
+    val memoryIndex: Directory = ByteBuffersDirectory()
+    val analyzer = StandardAnalyzer()
+    val indexWriterConfig = IndexWriterConfig(analyzer)
+    val writter = IndexWriter(memoryIndex, indexWriterConfig)
+
+
+    fun go() {
+        logger.info("start")
+        generate()
+        logger.info("finish indexing")
+        find()
+        logger.info("finish searching")
+    }
+
+    fun find() {
+        /*
+        17:23:43.626 [main] INFO com.go.feature.IndexTest - start
+        17:25:23.921 [main] INFO com.go.feature.IndexTest - finish indexing
+        17:25:39.133 [main] INFO com.go.feature.IndexTest - finish searching
+         */
+
+        val indexReader: IndexReader = DirectoryReader.open(memoryIndex)
+        val searcher = IndexSearcher(indexReader)
+
+        (1..1000).forEach {
+            val documents: MutableList<Document> = findOne("${(1..COUNT).random()}", searcher)
+            //logger.debug("documents=${documents}")
+        }
+    }
+
+    fun findOne(index: String, searcher: IndexSearcher): MutableList<Document> {
+        val topDocs: TopDocs = searcher.search(
+            composeQuery(index),
+            10
+        )
+
+        val documents: MutableList<Document> = ArrayList<Document>()
+        for (scoreDoc in topDocs.scoreDocs) {
+            documents.add(searcher.doc(scoreDoc.doc))
+        }
+
+        return documents
+    }
+
+    fun composeQuery(index: String): Query {
+        val mainQuery: BooleanQuery.Builder = BooleanQuery.Builder()
+            .add(composeStringStrictEqFilter("isEnabled", "true"))
+            .add(composeStringEqFilter("os_eq", "ios"))
+
+            .add(composeStringEqFilter("osVersion_eq", index))
+            .add(composeNumberMoreFilter("osVersion_more", index))
+            .add(composeNumberMoreFilter("osVersionDisabled_more", index))
+
+            .add(composeStringEqFilter("aUser_eq", "true"))
+            .add(composeStringEqFilter("bUser_eq", "true"))
+            .add(composeStringEqFilter("cUser_eq", "true"))
+            .add(composeStringEqFilter("dUser_eq", null))
+            .add(composeStringEqFilter("eUser_eq", "false"))
+            .add(composeStringEqFilter("fUser_eq", "true"))
+            .add(composeStringEqFilter("gUser_eq", "false"))
+
+        (1..50).map { genericIt ->
+            mainQuery.add(composeStringEqFilter("genericFt_${genericIt}_eq", "${genericIt}"))
+        }
+
+        (1..50).map { genericIt ->
+            mainQuery.add(composeStringEqFilter("generic1Ft_${genericIt}_eq", "user${genericIt}${index}"))
+        }
+
+        return mainQuery.build()
+    }
+
+    fun composeStringStrictEqFilter(field: String, value: String): BooleanClause {
+        return BooleanClause(
+            TermQuery(Term(field, value)),
+            BooleanClause.Occur.MUST
+        )
+    }
+
+    fun composeStringEqFilter(field: String, value: String?): BooleanClause {
+        return if (value == null) {
+            return BooleanClause(
+                TermQuery(Term(field, FILTER_DISABLED_VALUE)),
+                BooleanClause.Occur.MUST
+            )
+        } else {
+            BooleanClause(
+                BooleanQuery.Builder()
+                    .add(TermQuery(Term(field, value)), BooleanClause.Occur.SHOULD)
+                    .add(TermQuery(Term(field, FILTER_DISABLED_VALUE)), BooleanClause.Occur.SHOULD)
+                    .build(),
+                BooleanClause.Occur.MUST
+            )
+        }
+    }
+
+    fun composeNumberMoreFilter(field: String, value: String): BooleanClause {
+        return BooleanClause(
+            BooleanQuery.Builder()
+                .add(
+                    LongField.newRangeQuery(field, Long.MIN_VALUE, parseLong(value)),
+                    BooleanClause.Occur.SHOULD
+                )
+                .add(LongField.newExactQuery(field, Long.MAX_VALUE), BooleanClause.Occur.SHOULD)
+                .build(),
+            BooleanClause.Occur.MUST
+        )
+    }
+
+    fun generate() {
+        (1..COUNT).forEach {
+            val document = Document()
+            document.add(StringField("ft", "superUser_${it}", Field.Store.YES))
+            document.add(StringField("isEnabled", "true", Field.Store.NO))
+
+            document.add(StringField("os_eq", "ios", Field.Store.NO))
+            document.add(StringField("osVersion_eq", "${it}", Field.Store.NO))
+            document.add(LongField("osVersion_more", it.toLong() - 10))
+            document.add(LongField("osVersionDisabled_more", Long.MAX_VALUE))
+
+            document.add(StringField("aUser_eq", "true", Field.Store.NO))
+            document.add(StringField("bUser_eq", "true", Field.Store.NO))
+            document.add(StringField("cUser_eq", "disfft", Field.Store.NO))
+            document.add(StringField("dUser_eq", "disfft", Field.Store.NO))
+            document.add(StringField("eUser_eq", "disfft", Field.Store.NO))
+            document.add(StringField("fUser_eq", "disfft", Field.Store.NO))
+            document.add(StringField("gUser_eq", "disfft", Field.Store.NO))
+
+            (1..50).forEach { genericIt ->
+                document.add(StringField("genericFt_${genericIt}_eq", "disfft", Field.Store.NO))
+            }
+
+            (1..50).forEach { genericIt ->
+                document.add(StringField("generic1Ft_${genericIt}_eq", "user${genericIt}${it}", Field.Store.NO))
+            }
+
+            document.add(StringField("group_eq", "vip${it}", Field.Store.NO))
+
+            document.add(StringField("isBoss_eq", "disfft", Field.Store.NO))
+            writter.addDocument(document)
+        }
+
+        writter.close()
+    }
+
+    companion object : KLogging() {
+        val FILTER_DISABLED_VALUE = "disfft"
+        val COUNT = 1000000
+    }
+}
