@@ -18,7 +18,7 @@ class IndexTest {
 
 
     fun go() {
-        logger.info("start")
+        logger.info("start ${COUNT}")
         generate()
         logger.info("finish indexing")
         find()
@@ -27,9 +27,34 @@ class IndexTest {
 
     fun find() {
         /*
-        17:23:43.626 [main] INFO com.go.feature.IndexTest - start
+        17:38:26.758 [main] INFO com.go.feature.IndexTest - start 100
+        17:38:27.118 [main] INFO com.go.feature.IndexTest - finish indexing
+        17:38:29.964 [main] INFO com.go.feature.IndexTest - finish searching
+
+        17:39:00.836 [main] INFO com.go.feature.IndexTest - start 1000
+        17:39:01.642 [main] INFO com.go.feature.IndexTest - finish indexing
+        17:39:05.071 [main] INFO com.go.feature.IndexTest - finish searching
+
+        17:39:34.947 [main] INFO com.go.feature.IndexTest - start 10000
+        17:39:38.696 [main] INFO com.go.feature.IndexTest - finish indexing
+        17:39:42.939 [main] INFO com.go.feature.IndexTest - finish searching
+
+        17:40:20.858 [main] INFO com.go.feature.IndexTest - start 100000
+        17:40:36.183 [main] INFO com.go.feature.IndexTest - finish indexing
+        17:40:49.627 [main] INFO com.go.feature.IndexTest - finish searching
+
+
+        17:23:43.626 [main] INFO com.go.feature.IndexTest - start 1000000
         17:25:23.921 [main] INFO com.go.feature.IndexTest - finish indexing
         17:25:39.133 [main] INFO com.go.feature.IndexTest - finish searching
+
+        17:41:29.633 [main] INFO com.go.feature.IndexTest - start 1000000 - with user short list - 15
+        17:43:22.748 [main] INFO com.go.feature.IndexTest - finish indexing
+        17:43:40.449 [main] INFO com.go.feature.IndexTest - finish searching
+
+        17:55:40.202 [main] INFO com.go.feature.IndexTest - start 1000000 - with user long list - 1000
+        18:02:49.845 [main] INFO com.go.feature.IndexTest - finish indexing
+        18:03:04.827 [main] INFO com.go.feature.IndexTest - finish searching
          */
 
         val indexReader: IndexReader = DirectoryReader.open(memoryIndex)
@@ -59,6 +84,8 @@ class IndexTest {
         val mainQuery: BooleanQuery.Builder = BooleanQuery.Builder()
             .add(composeStringStrictEqFilter("isEnabled", "true"))
             .add(composeStringEqFilter("os_eq", "ios"))
+
+            .add(composeStringEqFilter("user_eqList", "user${index}"))
 
             .add(composeStringEqFilter("osVersion_eq", index))
             .add(composeNumberMoreFilter("osVersion_more", index))
@@ -125,6 +152,16 @@ class IndexTest {
             val document = Document()
             document.add(StringField("ft", "superUser_${it}", Field.Store.YES))
             document.add(StringField("isEnabled", "true", Field.Store.NO))
+
+            val users: String = (1 .. 15).map { userCount ->
+                if(userCount == 10) {
+                    "user${it}"
+                } else {
+                    "user${userCount}"
+                }
+            }.joinToString(" ")
+
+            document.add(TextField("user_eqList", users, Field.Store.NO))
 
             document.add(StringField("os_eq", "ios", Field.Store.NO))
             document.add(StringField("osVersion_eq", "${it}", Field.Store.NO))
