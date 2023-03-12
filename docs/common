@@ -8,6 +8,7 @@
 
     - filters
         - id - randomUUID
+        - name - ui формирует автоматически подставляя "$parameter $operator" - уникальный (можно сменить)
         - namespace - KEY - внешний ключ на namespaces.id
         - parameter - KEY - имя параметра, который будет передаваться в json пользователем
         - operator - KEY - eq more less listEq
@@ -69,13 +70,13 @@
             - name: newFeature
             - filters:
                 - фильтр 1
-                    - id: пользователь выбирает тип (userName listEq) из выпадающего списка, id подставляется автоматически
+                    - id: пользователь выбирает имя (userName listEq) из выпадающего списка, id подставляется автоматически
                     - value: "userName1 userName2"
                 - фильтр 2
-                    - id: пользователь выбирает тип (os eq) из выпадающего списка, id подставляется автоматически
+                    - id: пользователь выбирает имя (os eq) из выпадающего списка, id подставляется автоматически
                     - value: "ios"
                 - фильтр 3
-                    - id: пользователь выбирает тип (osVersion more) из выпадающего списка, id подставляется автоматически
+                    - id: пользователь выбирает имя (osVersion more) из выпадающего списка, id подставляется автоматически
                     - value: 12
             - status: ENABLED
             - description: Новая фича с названием newFeature для параметров userName os osVersion
