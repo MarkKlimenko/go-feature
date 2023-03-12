@@ -1,6 +1,6 @@
-package com.go.feature.persistance.repository
+package com.go.feature.persistence.repository
 
-import com.go.feature.persistance.entity.Namespace
+import com.go.feature.persistence.entity.Namespace
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 
 interface NamespaceRepository : CoroutineCrudRepository<Namespace, String>

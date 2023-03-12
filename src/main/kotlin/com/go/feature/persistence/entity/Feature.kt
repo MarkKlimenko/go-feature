@@ -1,4 +1,4 @@
-package com.go.feature.persistance.entity
+package com.go.feature.persistence.entity
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Version

@@ -1,6 +1,6 @@
-package com.go.feature.persistance.repository
+package com.go.feature.persistence.repository
 
-import com.go.feature.persistance.entity.IndexVersion
+import com.go.feature.persistence.entity.IndexVersion
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 
 interface IndexVersionRepository : CoroutineCrudRepository<IndexVersion, String> {

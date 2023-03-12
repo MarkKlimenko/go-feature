@@ -1,23 +1,26 @@
-package com.go.feature.persistance.entity
+package com.go.feature.persistence.entity
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Version
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-import java.util.*
 
-@Table("index_versions")
-data class IndexVersion(
+@Table("namespaces")
+data class Namespace(
     @field:Id
     @field:Column("id")
     val id: String,
 
-    @field:Column("namespace")
-    val namespace: String,
+    @field:Column("name")
+    val name: String,
 
-    @field:Column("index_version")
-    val indexVersion: String,
+    @field:Column("status")
+    val status: Status,
 
     @field:Version
     val version: Int? = null
-)
+) {
+    enum class Status {
+        ENABLED, DISABLED
+    }
+}

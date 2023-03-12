@@ -4,10 +4,9 @@ import com.go.feature.controller.dto.namespace.NamespaceCreateRequest
 import com.go.feature.controller.dto.namespace.NamespaceEditRequest
 import com.go.feature.controller.dto.namespace.NamespaceResponse
 import com.go.feature.controller.dto.namespace.NamespaceStatus
-import com.go.feature.persistance.entity.Namespace
+import com.go.feature.persistence.entity.Namespace
 import com.go.feature.util.randomId
 import org.springframework.stereotype.Component
-import java.util.*
 
 @Component
 class NamespaceConverter {

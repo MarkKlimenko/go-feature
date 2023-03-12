@@ -1,30 +1,22 @@
-package com.go.feature.persistance.entity
+package com.go.feature.persistence.entity
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Version
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
+import java.util.*
 
-@Table("filters")
-data class Filter(
+@Table("index_versions")
+data class IndexVersion(
     @field:Id
     @field:Column("id")
     val id: String,
 
-    @field:Column("name")
-    val name: String,
-
     @field:Column("namespace")
     val namespace: String,
 
-    @field:Column("parameter")
-    val parameter: String,
-
-    @field:Column("operator")
-    val operator: String,
-
-    @field:Column("description")
-    val description: String? = null,
+    @field:Column("index_version")
+    val indexVersion: String,
 
     @field:Version
     val version: Int? = null

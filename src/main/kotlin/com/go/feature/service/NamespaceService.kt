@@ -7,8 +7,8 @@ import com.go.feature.controller.dto.namespace.NamespaceResponse
 import com.go.feature.controller.dto.namespace.NamespaceStatus
 import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.converter.NamespaceConverter
-import com.go.feature.persistance.entity.Namespace
-import com.go.feature.persistance.repository.NamespaceRepository
+import com.go.feature.persistence.entity.Namespace
+import com.go.feature.persistence.repository.NamespaceRepository
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import mu.KLogging
