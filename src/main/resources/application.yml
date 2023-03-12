@@ -1,22 +1,29 @@
-postgres:
-  url-postfix: postgresql://localhost:5432/postgres
-  username: postgres
-  password: postgres
+# User properties ==================
+application:
+  namespace:
+    default: default
+  storage:
+    postgres:
+      url-postfix: postgresql://localhost:5432/postgres
+      username: postgres
+      password: postgres
 
+
+# Internal properties ==================
 spring:
   r2dbc:
-    url: r2dbc:${postgres.url-postfix}
-    username: ${postgres.username}
-    password: ${postgres.password}
+    url: r2dbc:${application.storage.postgres.url-postfix}
+    username: ${application.storage.postgres.username}
+    password: ${application.storage.postgres.password}
     pool:
       enabled: true
       initial-size: 10
       max-size: 30
       max-idle-time: 1m
   flyway:
-    url: jdbc:${postgres.url-postfix}
-    user: ${postgres.username}
-    password: ${postgres.password}
+    url: jdbc:${application.storage.postgres.url-postfix}
+    user: ${application.storage.postgres.username}
+    password: ${application.storage.postgres.password}
     baseline-on-migrate: true
     baseline-version: 0
     # TODO: disable for production - just for POC versions!

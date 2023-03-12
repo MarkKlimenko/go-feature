@@ -2,19 +2,20 @@
 
 - TABLES
     - namespaces
-        - name - KEY - по умолчанию default
+        - id - randomUUID
+        - name - unique - по умолчанию default
         - status - ENABLED/DISABLED
 
     - filters
         - id - randomUUID
-        - namespace - KEY - внешний ключ на namespaces.name
+        - namespace - KEY - внешний ключ на namespaces.id
         - parameter - KEY - имя параметра, который будет передаваться в json пользователем
         - operator - KEY - eq more less listEq
         - description - описание фильтра, пользователь придумывает самостоятельно
 
     - features
         - id - randomUUID
-        - namespace - внешний ключ на namespaces.name
+        - namespace - внешний ключ на namespaces.id
         - name - имя фичи (должно быть уникальным)
         - filters - json object следующего вида
             - LIST

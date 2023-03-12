@@ -1,12 +1,16 @@
-CREATE TABLE NAMESPACES
+CREATE TABLE namespaces
 (
-    NAME   VARCHAR(100) PRIMARY KEY,
-    STATUS VARCHAR(40) NOT NULL
+    id      VARCHAR(100) PRIMARY KEY,
+    name    VARCHAR(100) NOT NULL UNIQUE,
+    status  VARCHAR(40)  NOT NULL,
+    version INTEGER      NOT NULL
 );
+CREATE INDEX namespaces_status_idx ON namespaces (status);
 
-CREATE TABLE VERSIONS
+CREATE TABLE index_versions
 (
-    ID        VARCHAR(100) PRIMARY KEY,
-    NAMESPACE VARCHAR(100) NOT NULL,
-    VERSION   VARCHAR(100) NOT NULL
+    id            VARCHAR(100) PRIMARY KEY,
+    namespace     VARCHAR(100) NOT NULL UNIQUE REFERENCES namespaces (id),
+    index_version VARCHAR(100) NOT NULL,
+    version       INTEGER      NOT NULL
 );
