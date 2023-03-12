@@ -9,10 +9,16 @@ import javax.validation.constraints.NotBlank
 @ConstructorBinding
 @Validated
 data class ApplicationProperties(
-    val namespace: Namespace
+    val namespace: Namespace,
+    val loader: Loader
 ) {
     data class Namespace(
         @field:NotBlank
         val default: String
+    )
+
+    data class Loader(
+        val enabled: Boolean,
+        val location: String
     )
 }

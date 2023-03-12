@@ -7,6 +7,9 @@ application:
       url-postfix: postgresql://localhost:5432/postgres
       username: postgres
       password: postgres
+  loader:
+    enabled: true
+    location: /Users/markklimenko/data/settings-ns-default.json
 
 
 # Internal properties ==================

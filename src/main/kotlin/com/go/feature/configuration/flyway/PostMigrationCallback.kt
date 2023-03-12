@@ -1,7 +1,9 @@
 package com.go.feature.configuration.flyway
 
 import com.go.feature.service.NamespaceService
+import com.go.feature.service.SettingsLoaderService
 import kotlinx.coroutines.runBlocking
+import mu.KLogging
 import org.flywaydb.core.api.callback.Callback
 import org.flywaydb.core.api.callback.Context
 import org.flywaydb.core.api.callback.Event
@@ -12,7 +14,8 @@ import org.springframework.stereotype.Component
  */
 @Component
 class PostMigrationCallback(
-    val namespaceService: NamespaceService
+    val namespaceService: NamespaceService,
+    val settingsLoaderService: SettingsLoaderService,
 ) : Callback {
 
     override fun supports(event: Event, context: Context): Boolean {
@@ -21,7 +24,17 @@ class PostMigrationCallback(
 
     override fun handle(event: Event, context: Context) {
         runBlocking {
-            namespaceService.createDefaultNamespace()
+            try {
+                namespaceService.createDefaultNamespace()
+            } catch (e: Exception) {
+                logger.error("Error creating default namespace: ", e)
+            }
+
+            try {
+                settingsLoaderService.loadSettings()
+            } catch (e: Exception) {
+                logger.error("Error loading settings: ", e)
+            }
         }
     }
 
@@ -32,4 +45,6 @@ class PostMigrationCallback(
     override fun getCallbackName(): String {
         return PostMigrationCallback::class.java.simpleName
     }
+
+    companion object: KLogging()
 }

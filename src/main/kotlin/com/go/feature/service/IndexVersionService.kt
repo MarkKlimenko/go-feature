@@ -1,7 +1,7 @@
 package com.go.feature.service
 
-import com.go.feature.entity.IndexVersion
-import com.go.feature.repository.IndexVersionRepository
+import com.go.feature.persistance.entity.IndexVersion
+import com.go.feature.persistance.repository.IndexVersionRepository
 import com.go.feature.util.randomId
 import com.go.feature.util.randomVersion
 import org.springframework.stereotype.Service
