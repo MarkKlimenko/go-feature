@@ -24,7 +24,7 @@ data class Filter(
     val operator: String,
 
     @field:Column("description")
-    val description: String,
+    val description: String? = null,
 
     @field:Version
     val version: Int? = null

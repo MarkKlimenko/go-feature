@@ -11,11 +11,11 @@ data class Feature(
     @field:Column("id")
     val id: String,
 
-    @field:Column("namespace")
-    val namespace: String,
-
     @field:Column("name")
     val name: String,
+
+    @field:Column("namespace")
+    val namespace: String,
 
     @field:Column("filters")
     val filters: List<Filter>,
@@ -24,7 +24,7 @@ data class Feature(
     val status: Status,
 
     @field:Column("description")
-    val description: String,
+    val description: String? = null,
 
     @field:Version
     val version: Int? = null
