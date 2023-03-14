@@ -17,8 +17,11 @@ data class Feature(
     @field:Column("namespace")
     val namespace: String,
 
+    /**
+     * List<Filter>
+     */
     @field:Column("filters")
-    val filters: List<Filter>,
+    val filters: String,
 
     @field:Column("status")
     val status: Status,

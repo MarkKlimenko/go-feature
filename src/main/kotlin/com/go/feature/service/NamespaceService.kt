@@ -57,10 +57,6 @@ class NamespaceService(
         return namespaceConverter.convert(editedNamespace)
     }
 
-    /*
-
-     */
-
     suspend fun createDefaultNamespace() {
         if (namespaceRepository.count() == 0L) {
             val defaultNamespace: String = applicationProperties.namespace.default
@@ -74,10 +70,6 @@ class NamespaceService(
                 )
             )
         }
-    }
-
-    suspend fun createNamespaceInternal(request: LoadedSettings.Namespace): Namespace {
-        return namespaceRepository.save(namespaceConverter.create(request))
     }
 
     private companion object : KLogging()

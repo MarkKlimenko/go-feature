@@ -15,7 +15,7 @@ import com.go.feature.persistence.repository.IndexVersionRepository
 import com.go.feature.persistence.repository.NamespaceRepository
 import com.go.feature.service.dto.loader.LoadedSettings
 import com.go.feature.util.randomId
-import com.go.feature.util.randomVersion
+import kotlinx.coroutines.flow.collect
 import org.springframework.stereotype.Service
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -35,11 +35,13 @@ class SettingsLoaderService(
     //TODO: load all directory
     suspend fun loadSettings() {
         // TODO: do for each file
+        // TODO: transactional for each file
         if (applicationProperties.loader.enabled) {
+            // TODO: read bytes nonblocking
             val settings: LoadedSettings =
                 objectMapper.readValue(Files.readAllBytes(Paths.get(applicationProperties.loader.location)))
 
-            val configHash: String = "TODO"
+            val configHash: String = "TODO1" // TODO: implement
 
             val namespace: Namespace = namespaceRepository.findByName(settings.namespace.name)
                 ?: namespaceRepository.save(namespaceConverter.create(settings.namespace))
@@ -63,21 +65,29 @@ class SettingsLoaderService(
                         description = it.description
                     )
                 }
-                filterRepository.saveAll(filters)
+                filterRepository.saveAll(filters).collect()
+
+                val nameToFilterMap: Map<String, Filter> = filters.associateBy { it.name }
 
                 val features: List<Feature> = settings.features.map {
-                    // TODO: implement
+                    val featureFilters: List<Feature.Filter> = it.filters.map { filter ->
+                        Feature.Filter(
+                            id = nameToFilterMap[filter.name]?.id
+                                ?: throw IllegalArgumentException("No filter with name=${filter.name}"),
+                            value = filter.value
+                        )
+                    }
 
                     Feature(
                         id = randomId(),
                         name = it.name,
                         namespace = namespace.id,
-                        filters = ,
+                        filters = objectMapper.writeValueAsString(featureFilters),
                         status = featureConverter.convertStatus(it.status),
                         description = it.description
                     )
                 }
-                featureRepository.saveAll(features)
+                featureRepository.saveAll(features).collect()
 
                 // update index version
                 if (indexVersion != null) {
@@ -94,7 +104,7 @@ class SettingsLoaderService(
                     )
                 }
             } else {
-                // do nothing configs already updated
+                // do nothing, configs are already updated
             }
         }
     }

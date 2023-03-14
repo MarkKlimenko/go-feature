@@ -25,15 +25,15 @@ class PostMigrationCallback(
     override fun handle(event: Event, context: Context) {
         runBlocking {
             try {
-                namespaceService.createDefaultNamespace()
-            } catch (e: Exception) {
-                logger.error("Error creating default namespace: ", e)
-            }
-
-            try {
                 settingsLoaderService.loadSettings()
             } catch (e: Exception) {
                 logger.error("Error loading settings: ", e)
+            }
+
+            try {
+                namespaceService.createDefaultNamespace()
+            } catch (e: Exception) {
+                logger.error("Error creating default namespace: ", e)
             }
         }
     }

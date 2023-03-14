@@ -26,7 +26,7 @@ CREATE TABLE features
     id          VARCHAR(100) PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     namespace   VARCHAR(100) NOT NULL REFERENCES namespaces (id),
-    filters     JSONB NOT NULL,
+    filters     VARCHAR      NOT NULL,
     status      VARCHAR(100) NOT NULL,
     description VARCHAR(4000),
     version     INTEGER      NOT NULL
