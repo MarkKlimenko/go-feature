@@ -18,7 +18,11 @@ plugins {
 
 group "org.example"
 version "1.0-SNAPSHOT"
-sourceCompatibility = "15"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
     mavenCentral()

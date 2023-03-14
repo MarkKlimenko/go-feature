@@ -9,6 +9,7 @@ import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.converter.NamespaceConverter
 import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
+import com.go.feature.service.dto.loader.LoadedSettings
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import mu.KLogging
@@ -56,6 +57,10 @@ class NamespaceService(
         return namespaceConverter.convert(editedNamespace)
     }
 
+    /*
+
+     */
+
     suspend fun createDefaultNamespace() {
         if (namespaceRepository.count() == 0L) {
             val defaultNamespace: String = applicationProperties.namespace.default
@@ -69,6 +74,10 @@ class NamespaceService(
                 )
             )
         }
+    }
+
+    suspend fun createNamespaceInternal(request: LoadedSettings.Namespace): Namespace {
+        return namespaceRepository.save(namespaceConverter.create(request))
     }
 
     private companion object : KLogging()

@@ -7,7 +7,7 @@ data class LoadedSettings(
 ) {
     data class Namespace(
         val name: String,
-        val status: Status,
+        val status: Status = Status.ENABLED,
     )
 
     data class Filter(
@@ -19,7 +19,7 @@ data class LoadedSettings(
 
     data class Features(
         val name: String,
-        val status: Status,
+        val status: Status = Status.ENABLED,
         val filters: List<FeatureFilter>,
         val description: String?,
     )

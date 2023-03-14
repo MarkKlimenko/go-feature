@@ -5,6 +5,7 @@ import com.go.feature.controller.dto.namespace.NamespaceEditRequest
 import com.go.feature.controller.dto.namespace.NamespaceResponse
 import com.go.feature.controller.dto.namespace.NamespaceStatus
 import com.go.feature.persistence.entity.Namespace
+import com.go.feature.service.dto.loader.LoadedSettings
 import com.go.feature.util.randomId
 import org.springframework.stereotype.Component
 
@@ -19,6 +20,14 @@ class NamespaceConverter {
     }
 
     fun create(request: NamespaceCreateRequest): Namespace {
+        return Namespace(
+            id = randomId(),
+            name = request.name,
+            status = convertStatus(request.status),
+        )
+    }
+
+    fun create(request: LoadedSettings.Namespace): Namespace {
         return Namespace(
             id = randomId(),
             name = request.name,
@@ -44,6 +53,13 @@ class NamespaceConverter {
         return when (status) {
             NamespaceStatus.ENABLED -> Namespace.Status.ENABLED
             NamespaceStatus.DISABLED -> Namespace.Status.DISABLED
+        }
+    }
+
+    fun convertStatus(status: LoadedSettings.Status): Namespace.Status {
+        return when (status) {
+            LoadedSettings.Status.ENABLED -> Namespace.Status.ENABLED
+            LoadedSettings.Status.DISABLED -> Namespace.Status.DISABLED
         }
     }
 }
