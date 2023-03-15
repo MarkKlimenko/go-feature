@@ -27,11 +27,11 @@ class NamespaceConverter {
         )
     }
 
-    fun create(request: LoadedSettings.Namespace): Namespace {
+    fun create(namespaceSetting: LoadedSettings.Namespace): Namespace {
         return Namespace(
             id = randomId(),
-            name = request.name,
-            status = convertStatus(request.status),
+            name = namespaceSetting.name,
+            status = convertStatus(namespaceSetting.status),
         )
     }
 

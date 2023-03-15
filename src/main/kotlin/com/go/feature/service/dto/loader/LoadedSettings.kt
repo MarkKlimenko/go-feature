@@ -3,7 +3,7 @@ package com.go.feature.service.dto.loader
 data class LoadedSettings(
     val namespace: Namespace,
     val filters: List<Filter>,
-    val features: List<Features>,
+    val features: List<Feature>,
 ) {
     data class Namespace(
         val name: String,
@@ -17,7 +17,7 @@ data class LoadedSettings(
         val description: String?,
     )
 
-    data class Features(
+    data class Feature(
         val name: String,
         val status: Status = Status.ENABLED,
         val filters: List<FeatureFilter>,

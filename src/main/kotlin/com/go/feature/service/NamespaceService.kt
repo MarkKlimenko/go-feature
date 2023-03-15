@@ -9,7 +9,6 @@ import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.converter.NamespaceConverter
 import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
-import com.go.feature.service.dto.loader.LoadedSettings
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import mu.KLogging
@@ -39,7 +38,7 @@ class NamespaceService(
     suspend fun createNamespace(request: NamespaceCreateRequest): NamespaceResponse {
         val createdNamespace: Namespace = namespaceRepository.save(namespaceConverter.create(request))
 
-        versionService.updateIndex(createdNamespace.id)
+        versionService.update(createdNamespace.id)
 
         return namespaceConverter.convert(createdNamespace)
     }
@@ -52,7 +51,7 @@ class NamespaceService(
 
         val editedNamespace: Namespace = namespaceRepository.save(namespaceConverter.edit(requiredNamespace, request))
 
-        versionService.updateIndex(id)
+        versionService.update(id)
 
         return namespaceConverter.convert(editedNamespace)
     }

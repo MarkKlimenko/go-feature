@@ -16,7 +16,7 @@ data class IndexVersion(
     val namespace: String,
 
     @field:Column("index_version")
-    val indexVersion: String,
+    val indexVersionValue: String,
 
     @field:Version
     val version: Int? = null

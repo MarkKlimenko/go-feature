@@ -11,15 +11,35 @@ class IndexVersionService(
     val indexVersionRepository: IndexVersionRepository,
 ) {
 
-    suspend fun updateIndex(namespaceId: String) {
+    suspend fun find(namespaceId: String): IndexVersion? {
+        return indexVersionRepository.findByNamespace(namespaceId)
+    }
+
+    suspend fun update(namespaceId: String) {
         val version: IndexVersion = indexVersionRepository.findByNamespace(namespaceId)
-            ?.copy(indexVersion = randomVersion())
+            ?.copy(indexVersionValue = randomVersion())
             ?: IndexVersion(
                 id = randomId(),
                 namespace = namespaceId,
-                indexVersion = randomVersion()
+                indexVersionValue = randomVersion()
             )
 
         indexVersionRepository.save(version)
+    }
+
+    suspend fun update(indexVersion: IndexVersion?, namespaceId: String, indexVersionValue: String) {
+        if (indexVersion != null) {
+            indexVersionRepository.save(
+                indexVersion.copy(indexVersionValue = indexVersionValue)
+            )
+        } else {
+            indexVersionRepository.save(
+                IndexVersion(
+                    id = randomId(),
+                    namespace = namespaceId,
+                    indexVersionValue = indexVersionValue
+                )
+            )
+        }
     }
 }

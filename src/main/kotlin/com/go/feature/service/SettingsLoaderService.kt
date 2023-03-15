@@ -11,7 +11,6 @@ import com.go.feature.persistence.entity.IndexVersion
 import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.persistence.repository.FilterRepository
-import com.go.feature.persistence.repository.IndexVersionRepository
 import com.go.feature.persistence.repository.NamespaceRepository
 import com.go.feature.service.dto.loader.LoadedSettings
 import com.go.feature.util.randomId
@@ -26,11 +25,11 @@ import java.io.File
 class SettingsLoaderService(
     val applicationProperties: ApplicationProperties,
     val objectMapper: ObjectMapper,
+    val indexVersionService: IndexVersionService,
     val namespaceRepository: NamespaceRepository,
-    val namespaceConverter: NamespaceConverter,
-    val indexVersionRepository: IndexVersionRepository,
     val filterRepository: FilterRepository,
     val featureRepository: FeatureRepository,
+    val namespaceConverter: NamespaceConverter,
     val featureConverter: FeatureConverter,
 ) {
 
@@ -74,17 +73,14 @@ class SettingsLoaderService(
 
         logger.info("${LOG_PREFIX} Prepare settings for namespace ${namespace.name}")
 
-        val indexVersion: IndexVersion? = indexVersionRepository.findByNamespace(namespace.id)
+        val indexVersion: IndexVersion? = indexVersionService.find(namespace.id)
 
-        // update configs
-        if (indexVersion == null || indexVersion.indexVersion != configHash) {
+        if (indexVersion == null || indexVersion.indexVersionValue != configHash) {
             logger.info("${LOG_PREFIX} Start settings loading for namespace ${namespace.name}")
 
-            // clean old configs
             filterRepository.deleteAllByNamespace(namespace.id)
             featureRepository.deleteAllByNamespace(namespace.id)
 
-            // add new configs
             val filters: List<Filter> = settings.filters.map {
                 Filter(
                     id = randomId(),
@@ -98,41 +94,17 @@ class SettingsLoaderService(
             filterRepository.saveAll(filters).collect()
 
             val nameToFilterMap: Map<String, Filter> = filters.associateBy { it.name }
-
             val features: List<Feature> = settings.features.map {
-                val featureFilters: List<Feature.Filter> = it.filters.map { filter ->
-                    Feature.Filter(
-                        id = nameToFilterMap[filter.name]?.id
-                            ?: throw IllegalArgumentException("${LOG_PREFIX} No filter with name=${filter.name}"),
-                        value = filter.value
-                    )
-                }
-
-                Feature(
-                    id = randomId(),
-                    name = it.name,
-                    namespace = namespace.id,
-                    filters = objectMapper.writeValueAsString(featureFilters),
-                    status = featureConverter.convertStatus(it.status),
-                    description = it.description
+                featureConverter.create(
+                    namespace.id,
+                    it,
+                    nameToFilterMap
                 )
             }
             featureRepository.saveAll(features).collect()
 
-            // update index version
-            if (indexVersion != null) {
-                indexVersionRepository.save(
-                    indexVersion.copy(indexVersion = configHash)
-                )
-            } else {
-                indexVersionRepository.save(
-                    IndexVersion(
-                        id = randomId(),
-                        namespace = namespace.id,
-                        indexVersion = configHash
-                    )
-                )
-            }
+            indexVersionService.update(indexVersion, namespace.id, configHash)
+
             logger.info("${LOG_PREFIX} Finish settings loading for namespace ${namespace.name}")
         } else {
             logger.info("${LOG_PREFIX} Settings are up to date for namespace ${namespace.name}")
