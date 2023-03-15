@@ -9,7 +9,7 @@ application:
       password: postgres
   loader:
     enabled: true
-    location: /Users/markklimenko/data/settings-ns-default.json
+    location: /data
 
 
 # Internal properties ==================

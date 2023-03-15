@@ -1,0 +1,55 @@
+{
+  "namespace": {
+    "name": "mobile"
+  },
+  "filters": [
+    {
+      "name": "userNameListEq",
+      "parameter": "userName",
+      "operator": "listEq",
+      "description": "Фильтр по имени пользователя (можно внести список имен пользователей, на которые будет распространена фича, спецсимволы применять нельзя)"
+    },
+    {
+      "name": "osEq",
+      "parameter": "os",
+      "operator": "eq",
+      "description": "Фильтр по типу операционной системы"
+    },
+    {
+      "name": "osVersionMore",
+      "parameter": "osVersion",
+      "operator": "more"
+    }
+  ],
+  "features": [
+    {
+      "name": "enablePayments",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "osEq",
+          "value": "ios"
+        },
+        {
+          "name": "osVersionMore",
+          "value": "13"
+        }
+      ],
+      "description": "Включает payments для новых версий"
+    },
+    {
+      "name": "enableAdvancedScroll",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "osEq",
+          "value": "ios"
+        },
+        {
+          "name": "userNameListEq",
+          "value": "patrik crabs"
+        }
+      ]
+    }
+  ]
+}
