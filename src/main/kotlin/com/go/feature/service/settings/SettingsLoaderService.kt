@@ -1,4 +1,4 @@
-package com.go.feature.service
+package com.go.feature.service.settings
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -12,7 +12,8 @@ import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.persistence.repository.NamespaceRepository
-import com.go.feature.service.dto.loader.LoadedSettings
+import com.go.feature.service.IndexVersionService
+import com.go.feature.service.settings.dto.LoadedSettings
 import com.go.feature.util.randomId
 import kotlinx.coroutines.flow.collect
 import mu.KLogging
@@ -40,7 +41,7 @@ class SettingsLoaderService(
 
             if (files == null) {
                 logger.warn(
-                    "${LOG_PREFIX} Settings location not found; " +
+                    "$LOG_PREFIX Settings location not found; " +
                             "location=${applicationProperties.loader.location}"
                 )
                 return
@@ -48,8 +49,8 @@ class SettingsLoaderService(
 
             if (files.isEmpty()) {
                 logger.warn(
-                    "${LOG_PREFIX} Settings location is empty; " +
-                            "fileType=${SETTINGS_FILE_TYPE}, " +
+                    "$LOG_PREFIX Settings location is empty; " +
+                            "fileType=$SETTINGS_FILE_TYPE, " +
                             "location=${applicationProperties.loader.location}"
                 )
                 return
@@ -71,12 +72,12 @@ class SettingsLoaderService(
         val namespace: Namespace = namespaceRepository.findByName(settings.namespace.name)
             ?: namespaceRepository.save(namespaceConverter.create(settings.namespace))
 
-        logger.info("${LOG_PREFIX} Prepare settings for namespace ${namespace.name}")
+        logger.info("$LOG_PREFIX Prepare settings for namespace ${namespace.name}")
 
         val indexVersion: IndexVersion? = indexVersionService.find(namespace.id)
 
         if (indexVersion == null || indexVersion.indexVersionValue != configHash) {
-            logger.info("${LOG_PREFIX} Start settings loading for namespace ${namespace.name}")
+            logger.info("$LOG_PREFIX Start settings loading for namespace ${namespace.name}")
 
             filterRepository.deleteAllByNamespace(namespace.id)
             featureRepository.deleteAllByNamespace(namespace.id)
@@ -105,9 +106,9 @@ class SettingsLoaderService(
 
             indexVersionService.update(indexVersion, namespace.id, configHash)
 
-            logger.info("${LOG_PREFIX} Finish settings loading for namespace ${namespace.name}")
+            logger.info("$LOG_PREFIX Finish settings loading for namespace ${namespace.name}")
         } else {
-            logger.info("${LOG_PREFIX} Settings are up to date for namespace ${namespace.name}")
+            logger.info("$LOG_PREFIX Settings are up to date for namespace ${namespace.name}")
         }
     }
 

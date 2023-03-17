@@ -3,7 +3,7 @@ package com.go.feature.converter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.entity.Filter
-import com.go.feature.service.dto.loader.LoadedSettings
+import com.go.feature.service.settings.dto.LoadedSettings
 import com.go.feature.util.randomId
 import org.springframework.stereotype.Component
 

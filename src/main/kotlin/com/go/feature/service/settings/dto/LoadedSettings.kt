@@ -1,4 +1,4 @@
-package com.go.feature.service.dto.loader
+package com.go.feature.service.settings.dto
 
 data class LoadedSettings(
     val namespace: Namespace,
