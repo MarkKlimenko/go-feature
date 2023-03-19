@@ -44,6 +44,7 @@ class IndexService(
             val value: String? = parameterToDataMapper[it.parameter]?.value
 
             // TODO: refactor
+            // TODO: add other filters
             when (it.operator) {
                 Filter.Operator.EQ, Filter.Operator.LIST_EQ -> {
                     mainQuery.add(composeStringEqFilter(it.column, value))

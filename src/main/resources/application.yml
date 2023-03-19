@@ -3,11 +3,13 @@ application:
   namespace:
     default: default
   storage:
+    enabled: false
     postgres:
       url-postfix: postgresql://localhost:5432/postgres
       username: postgres
       password: postgres
   loader:
+    type: directory
     enabled: true
     force-update: false
     location: /data
@@ -31,4 +33,4 @@ spring:
     baseline-on-migrate: true
     baseline-version: 0
     # TODO: disable for production - just for POC versions!
-    clean-on-validation-error: true
+    clean-on-validation-error: false

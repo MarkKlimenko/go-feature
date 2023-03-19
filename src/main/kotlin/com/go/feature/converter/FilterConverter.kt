@@ -1,7 +1,7 @@
 package com.go.feature.converter
 
 import com.go.feature.persistence.entity.Filter
-import com.go.feature.service.settings.dto.LoadedSettings
+import com.go.feature.service.loader.dto.LoadedSettings
 import com.go.feature.util.randomId
 import org.springframework.stereotype.Component
 

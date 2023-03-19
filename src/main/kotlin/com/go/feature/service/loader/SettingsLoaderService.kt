@@ -1,4 +1,4 @@
-package com.go.feature.service.settings
+package com.go.feature.service.loader
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -14,8 +14,7 @@ import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.persistence.repository.NamespaceRepository
 import com.go.feature.service.IndexVersionService
-import com.go.feature.service.settings.dto.LoadedSettings
-import com.go.feature.util.randomId
+import com.go.feature.service.loader.dto.LoadedSettings
 import kotlinx.coroutines.flow.collect
 import mu.KLogging
 import org.apache.commons.codec.digest.DigestUtils
@@ -35,7 +34,7 @@ class SettingsLoaderService(
     val featureConverter: FeatureConverter,
     val filterConverter: FilterConverter,
 ) {
-
+    //TODO: use lock between services
     suspend fun loadSettings() {
         if (applicationProperties.loader.enabled) {
             val files: Array<File>? = File(applicationProperties.loader.location)
