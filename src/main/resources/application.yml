@@ -9,6 +9,7 @@ application:
       password: postgres
   loader:
     enabled: true
+    force-update: false
     location: /data
 
 

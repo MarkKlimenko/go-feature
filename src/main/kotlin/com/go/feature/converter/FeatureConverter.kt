@@ -14,25 +14,27 @@ class FeatureConverter(
 
     fun create(
         namespaceId: String,
-        featureSetting: LoadedSettings.Feature,
+        featureSettings: List<LoadedSettings.Feature>,
         nameToFilterMap: Map<String, Filter>
-    ): Feature {
-        val featureFilters: List<Feature.Filter> = featureSetting.filters.map { filter ->
-            Feature.Filter(
-                id = nameToFilterMap[filter.name]?.id
-                    ?: throw IllegalArgumentException("No filter with name=${filter.name}"),
-                value = filter.value
+    ): List<Feature> {
+        return featureSettings.map {
+            val featureFilters: List<Feature.Filter> = it.filters.map { filter ->
+                Feature.Filter(
+                    id = nameToFilterMap[filter.name]?.id
+                        ?: throw IllegalArgumentException("No filter with name=${filter.name}"),
+                    value = filter.value
+                )
+            }
+
+            Feature(
+                id = randomId(),
+                name = it.name,
+                namespace = namespaceId,
+                filters = objectMapper.writeValueAsString(featureFilters),
+                status = convertStatus(it.status),
+                description = it.description
             )
         }
-
-        return Feature(
-            id = randomId(),
-            name = featureSetting.name,
-            namespace = namespaceId,
-            filters = objectMapper.writeValueAsString(featureFilters),
-            status = convertStatus(featureSetting.status),
-            description = featureSetting.description
-        )
     }
 
     fun convertStatus(status: LoadedSettings.Status): Feature.Status {

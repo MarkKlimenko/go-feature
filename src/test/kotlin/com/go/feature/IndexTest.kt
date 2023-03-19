@@ -12,9 +12,6 @@ import java.util.*
 
 class IndexTest {
     val memoryIndex: Directory = ByteBuffersDirectory()
-    val analyzer = StandardAnalyzer()
-    val indexWriterConfig = IndexWriterConfig(analyzer)
-    val writter = IndexWriter(memoryIndex, indexWriterConfig)
 
 
     fun go() {
@@ -148,6 +145,8 @@ class IndexTest {
     }
 
     fun generate() {
+        val writter = IndexWriter(memoryIndex, IndexWriterConfig(StandardAnalyzer()))
+
         (1..COUNT).forEach {
             val document = Document()
             document.add(StringField("ft", "superUser_${it}", Field.Store.YES))

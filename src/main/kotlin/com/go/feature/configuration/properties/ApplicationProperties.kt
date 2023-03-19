@@ -19,6 +19,7 @@ data class ApplicationProperties(
 
     data class Loader(
         val enabled: Boolean,
+        val forceUpdate: Boolean,
         val location: String
     )
 }

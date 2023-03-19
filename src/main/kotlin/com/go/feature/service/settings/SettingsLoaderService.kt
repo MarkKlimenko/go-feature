@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.go.feature.configuration.properties.ApplicationProperties
 import com.go.feature.converter.FeatureConverter
+import com.go.feature.converter.FilterConverter
 import com.go.feature.converter.NamespaceConverter
 import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.entity.Filter
@@ -32,6 +33,7 @@ class SettingsLoaderService(
     val featureRepository: FeatureRepository,
     val namespaceConverter: NamespaceConverter,
     val featureConverter: FeatureConverter,
+    val filterConverter: FilterConverter,
 ) {
 
     suspend fun loadSettings() {
@@ -76,32 +78,19 @@ class SettingsLoaderService(
 
         val indexVersion: IndexVersion? = indexVersionService.find(namespace.id)
 
-        if (indexVersion == null || indexVersion.indexVersionValue != configHash) {
+        if (applicationProperties.loader.forceUpdate
+            || indexVersion == null
+            || indexVersion.indexVersionValue != configHash) {
             logger.info("$LOG_PREFIX Start settings loading for namespace ${namespace.name}")
 
             filterRepository.deleteAllByNamespace(namespace.id)
             featureRepository.deleteAllByNamespace(namespace.id)
 
-            val filters: List<Filter> = settings.filters.map {
-                Filter(
-                    id = randomId(),
-                    name = it.name,
-                    namespace = namespace.id,
-                    parameter = it.parameter,
-                    operator = it.operator,
-                    description = it.description
-                )
-            }
+            val filters: List<Filter> = filterConverter.convert(namespace.id, settings.filters)
             filterRepository.saveAll(filters).collect()
 
             val nameToFilterMap: Map<String, Filter> = filters.associateBy { it.name }
-            val features: List<Feature> = settings.features.map {
-                featureConverter.create(
-                    namespace.id,
-                    it,
-                    nameToFilterMap
-                )
-            }
+            val features: List<Feature> = featureConverter.create(namespace.id, settings.features, nameToFilterMap)
             featureRepository.saveAll(features).collect()
 
             indexVersionService.update(indexVersion, namespace.id, configHash)

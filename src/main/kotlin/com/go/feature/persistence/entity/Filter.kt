@@ -21,11 +21,20 @@ data class Filter(
     val parameter: String,
 
     @field:Column("operator")
-    val operator: String,
+    val operator: Operator,
 
     @field:Column("description")
     val description: String? = null,
 
     @field:Version
     val version: Int? = null
-)
+) {
+    enum class Operator(
+        val value: String
+    ) {
+        EQ("eq"),
+        LIST_EQ("listEq"),
+
+        MORE("more")
+    }
+}
