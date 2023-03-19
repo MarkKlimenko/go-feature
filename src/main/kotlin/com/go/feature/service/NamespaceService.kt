@@ -17,10 +17,10 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class NamespaceService(
+    val applicationProperties: ApplicationProperties,
     val namespaceRepository: NamespaceRepository,
     val namespaceConverter: NamespaceConverter,
     val versionService: IndexVersionService,
-    val applicationProperties: ApplicationProperties,
 ) {
 
     suspend fun getNamespaces(): NamespacesResponse {

@@ -26,8 +26,7 @@ class IndexLoaderService(
     //TODO: get from settings 60 - 60
     @Scheduled(fixedDelay = 60000, initialDelayString = "#{new java.util.Random().nextInt(10000)}")
     fun loadIndexes() = runBlocking {
-        //TODO: debug
-        logger.info("${LOG_PREFIX} Start index update checker")
+        logger.debug("${LOG_PREFIX} Start index update checker")
 
         indexVersionRepository.findAll()
             .collect { indexVersion: IndexVersion ->
@@ -50,8 +49,7 @@ class IndexLoaderService(
                         logger.info("${LOG_PREFIX} Finish index update for namespace=${namespace.name}")
                     }
                 } else {
-                    //TODO: debug
-                    logger.info("${LOG_PREFIX} Index for namespaceId=${indexVersion.namespace} is already up to date")
+                    logger.debug("${LOG_PREFIX} Index for namespaceId=${indexVersion.namespace} is already up to date")
                 }
             }
     }

@@ -17,3 +17,34 @@ java \
 -Dapplication.loader.force-update=true \
 -jar build/libs/go-feature-1.0-SNAPSHOT.jar
 ```
+
+## test request
+```
+curl --location --request POST 'localhost:8080/api/v1/feature-toggle/find' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "namespace": "default",
+    "data": [
+        {
+            "parameter": "os",
+            "value": "ios"
+        },
+        {
+            "parameter": "userName",
+            "value": "patrik"
+        },
+        {
+            "parameter": "osVersion",
+            "value": "13"
+        }
+    ]
+}'
+
+>>
+{
+    "features": [
+        "enablePayments",
+        "enableAdvancedScroll"
+    ]
+}
+```
