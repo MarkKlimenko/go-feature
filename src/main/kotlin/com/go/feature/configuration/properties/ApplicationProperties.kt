@@ -10,11 +10,16 @@ import javax.validation.constraints.NotBlank
 @Validated
 data class ApplicationProperties(
     val namespace: Namespace,
+    val storage: Storage,
     val loader: Loader
 ) {
     data class Namespace(
         @field:NotBlank
         val default: String
+    )
+
+    data class Storage(
+        val enabled: Boolean
     )
 
     data class Loader(

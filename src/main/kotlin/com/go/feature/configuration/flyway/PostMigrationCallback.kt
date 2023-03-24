@@ -46,5 +46,5 @@ class PostMigrationCallback(
         return PostMigrationCallback::class.java.simpleName
     }
 
-    companion object: KLogging()
+    companion object : KLogging()
 }
