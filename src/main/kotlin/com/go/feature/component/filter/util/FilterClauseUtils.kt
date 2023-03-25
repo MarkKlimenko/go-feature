@@ -1,6 +1,6 @@
 package com.go.feature.component.filter.util
 
-import org.apache.lucene.document.LongField
+import org.apache.lucene.document.DoubleField
 import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
@@ -30,34 +30,34 @@ fun composeStringEqFilter(field: String, value: String?): BooleanClause {
     }
 }
 
-fun composeNumberMoreFilter(field: String, value: Long?): BooleanClause {
+fun composeNumberMoreFilter(field: String, value: Double?): BooleanClause {
     return if (value == null) {
         BooleanClause(
-            LongField.newExactQuery(field, Long.MAX_VALUE),
+            DoubleField.newExactQuery(field, Double.MAX_VALUE),
             BooleanClause.Occur.MUST
         )
     } else {
         BooleanClause(
             BooleanQuery.Builder()
-                .add(LongField.newRangeQuery(field, Long.MIN_VALUE, value), BooleanClause.Occur.SHOULD)
-                .add(LongField.newExactQuery(field, Long.MAX_VALUE), BooleanClause.Occur.SHOULD)
+                .add(DoubleField.newRangeQuery(field, Double.MIN_VALUE, value), BooleanClause.Occur.SHOULD)
+                .add(DoubleField.newExactQuery(field, Double.MAX_VALUE), BooleanClause.Occur.SHOULD)
                 .build(),
             BooleanClause.Occur.MUST
         )
     }
 }
 
-fun composeNumberLessFilter(field: String, value: Long?): BooleanClause {
+fun composeNumberLessFilter(field: String, value: Double?): BooleanClause {
     return if (value == null) {
         BooleanClause(
-            LongField.newExactQuery(field, Long.MIN_VALUE),
+            DoubleField.newExactQuery(field, Double.MIN_VALUE),
             BooleanClause.Occur.MUST
         )
     } else {
         BooleanClause(
             BooleanQuery.Builder()
-                .add(LongField.newRangeQuery(field, value, Long.MAX_VALUE), BooleanClause.Occur.SHOULD)
-                .add(LongField.newExactQuery(field, Long.MIN_VALUE), BooleanClause.Occur.SHOULD)
+                .add(DoubleField.newRangeQuery(field, value, Double.MAX_VALUE), BooleanClause.Occur.SHOULD)
+                .add(DoubleField.newExactQuery(field, Double.MIN_VALUE), BooleanClause.Occur.SHOULD)
                 .build(),
             BooleanClause.Occur.MUST
         )
