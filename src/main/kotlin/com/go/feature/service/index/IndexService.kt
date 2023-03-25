@@ -2,6 +2,8 @@ package com.go.feature.service.index
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.go.feature.component.filter.FilterComponent
+import com.go.feature.component.filter.util.FT_INDEX
 import com.go.feature.controller.dto.featuretoggle.FeatureToggleRequest
 import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.entity.Filter
@@ -11,24 +13,21 @@ import mu.KLogging
 import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.document.Document
 import org.apache.lucene.document.Field
-import org.apache.lucene.document.LongField
 import org.apache.lucene.document.StringField
-import org.apache.lucene.document.TextField
 import org.apache.lucene.index.DirectoryReader
 import org.apache.lucene.index.IndexWriter
 import org.apache.lucene.index.IndexWriterConfig
-import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
 import org.apache.lucene.search.IndexSearcher
-import org.apache.lucene.search.TermQuery
 import org.apache.lucene.store.ByteBuffersDirectory
 import org.apache.lucene.store.Directory
 import org.springframework.stereotype.Service
 
 @Service
 class IndexService(
-    val objectMapper: ObjectMapper
+    val objectMapper: ObjectMapper,
+    val filterComponent: FilterComponent,
 ) {
     private val namespaceIdToIndexMapper: MutableMap<String, IndexStorage> = mutableMapOf()
 
@@ -37,28 +36,14 @@ class IndexService(
             ?: return emptyList()
 
         val parameterToDataMapper: Map<String, FeatureToggleRequest.DataItem> = data.associateBy { it.parameter }
-
         val mainQuery: BooleanQuery.Builder = BooleanQuery.Builder()
 
         storage.indexFilters.forEach {
             val value: String? = parameterToDataMapper[it.parameter]?.value
+            val searchClause: BooleanClause = filterComponent.getFilterBuilder(it.operator)
+                .buildClause(it.column, value)
 
-            // TODO: refactor
-            // TODO: add other filters
-            when (it.operator) {
-                Filter.Operator.EQ, Filter.Operator.LIST_EQ -> {
-                    mainQuery.add(composeStringEqFilter(it.column, value))
-                }
-                Filter.Operator.MORE -> {
-                    val longValue: Long? = try {
-                        value?.toLong()
-                    } catch (e: NumberFormatException) {
-                        throw IllegalArgumentException("Value is not compatible with filter type; filter=${it.column}, value=${value}")
-                    }
-
-                    mainQuery.add(composeNumberMoreFilter(it.column, longValue))
-                }
-            }
+            mainQuery.add(searchClause)
         }
 
         return storage.indexSearcher
@@ -85,7 +70,6 @@ class IndexService(
             val document = Document()
             document.add(StringField(FT_INDEX, feature.name, Field.Store.YES))
 
-
             val featureFilterIdToFilterMap: Map<String, Feature.Filter> =
                 objectMapper.readValue<List<Feature.Filter>>(feature.filters)
                     .associateBy { it.id }
@@ -94,40 +78,10 @@ class IndexService(
                 val fieldName = "${filter.parameter}_${filter.operator}"
                 val value: String? = featureFilterIdToFilterMap[filter.id]?.value
 
-                //TODO: refactor
-                when (filter.operator) {
-                    Filter.Operator.EQ -> {
-                        if (value != null) {
-                            document.add(StringField(fieldName, value, Field.Store.NO))
-                        } else {
-                            document.add(
-                                StringField(fieldName, FILTER_DISABLED_VALUE, Field.Store.NO)
-                            )
-                        }
-                    }
-                    Filter.Operator.LIST_EQ -> {
-                        if (value != null) {
-                            document.add(TextField(fieldName, value, Field.Store.NO))
-                        } else {
-                            document.add(
-                                TextField(fieldName, FILTER_DISABLED_VALUE, Field.Store.NO)
-                            )
-                        }
-                    }
-                    Filter.Operator.MORE -> {
-                        if (value != null) {
-                            val longValue: Long = try {
-                                value.toLong()
-                            } catch (e: NumberFormatException) {
-                                throw IllegalArgumentException("Value is not compatible with filter type; filter=${filter.name}, value=${value}")
-                            }
+                val documentField: Field = filterComponent.getFilterBuilder(filter.operator)
+                    .buildField(fieldName, value)
 
-                            document.add(LongField(fieldName, longValue))
-                        } else {
-                            document.add(LongField(fieldName, Long.MAX_VALUE))
-                        }
-                    }
-                }
+                document.add(documentField)
             }
 
             writer.addDocument(document)
@@ -164,55 +118,7 @@ class IndexService(
         val operator: Filter.Operator,
     )
 
-
-    // TODO: refactor
-    private fun composeStringStrictEqFilter(field: String, value: String): BooleanClause {
-        return BooleanClause(
-            TermQuery(Term(field, value)),
-            BooleanClause.Occur.MUST
-        )
-    }
-
-    private fun composeStringEqFilter(field: String, value: String?): BooleanClause {
-        return if (value == null) {
-            BooleanClause(
-                TermQuery(Term(field, FILTER_DISABLED_VALUE)),
-                BooleanClause.Occur.MUST
-            )
-        } else {
-            BooleanClause(
-                BooleanQuery.Builder()
-                    .add(TermQuery(Term(field, value)), BooleanClause.Occur.SHOULD)
-                    .add(TermQuery(Term(field, FILTER_DISABLED_VALUE)), BooleanClause.Occur.SHOULD)
-                    .build(),
-                BooleanClause.Occur.MUST
-            )
-        }
-    }
-
-    private fun composeNumberMoreFilter(field: String, value: Long?): BooleanClause {
-        return if (value == null) {
-            BooleanClause(
-                LongField.newExactQuery(field, Long.MAX_VALUE),
-                BooleanClause.Occur.MUST
-            )
-        } else {
-            BooleanClause(
-                BooleanQuery.Builder()
-                    .add(LongField.newRangeQuery(field, Long.MIN_VALUE, value), BooleanClause.Occur.SHOULD)
-                    .add(LongField.newExactQuery(field, Long.MAX_VALUE), BooleanClause.Occur.SHOULD)
-                    .build(),
-                BooleanClause.Occur.MUST
-            )
-        }
-    }
-
-
     private companion object : KLogging() {
         const val LOG_PREFIX = "INDEX_LOADER:"
-
-        const val FT_INDEX = "ft"
-
-        const val FILTER_DISABLED_VALUE = "disfft"
     }
 }

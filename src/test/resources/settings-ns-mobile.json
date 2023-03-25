@@ -4,9 +4,9 @@
   },
   "filters": [
     {
-      "name": "userNameListEq",
+      "name": "userNameContains",
       "parameter": "userName",
-      "operator": "listEq",
+      "operator": "contains",
       "description": "Фильтр по имени пользователя (можно внести список имен пользователей, на которые будет распространена фича, спецсимволы применять нельзя)"
     },
     {
@@ -46,7 +46,7 @@
           "value": "ios"
         },
         {
-          "name": "userNameListEq",
+          "name": "userNameContains",
           "value": "patrik crabs"
         }
       ]

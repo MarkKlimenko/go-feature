@@ -33,7 +33,7 @@ data class Filter(
         val value: String
     ) {
         EQ("eq"),
-        LIST_EQ("listEq"),
+        CONTAINS("contains"),
 
         MORE("more")
     }
