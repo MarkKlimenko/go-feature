@@ -46,3 +46,20 @@ fun composeNumberMoreFilter(field: String, value: Long?): BooleanClause {
         )
     }
 }
+
+fun composeNumberLessFilter(field: String, value: Long?): BooleanClause {
+    return if (value == null) {
+        BooleanClause(
+            LongField.newExactQuery(field, Long.MIN_VALUE),
+            BooleanClause.Occur.MUST
+        )
+    } else {
+        BooleanClause(
+            BooleanQuery.Builder()
+                .add(LongField.newRangeQuery(field, value, Long.MAX_VALUE), BooleanClause.Occur.SHOULD)
+                .add(LongField.newExactQuery(field, Long.MIN_VALUE), BooleanClause.Occur.SHOULD)
+                .build(),
+            BooleanClause.Occur.MUST
+        )
+    }
+}

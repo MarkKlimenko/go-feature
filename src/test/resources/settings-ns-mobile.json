@@ -19,6 +19,11 @@
       "name": "osVersionMore",
       "parameter": "osVersion",
       "operator": "more"
+    },
+    {
+      "name": "osVersionLess",
+      "parameter": "osVersion",
+      "operator": "less"
     }
   ],
   "features": [
@@ -33,6 +38,10 @@
         {
           "name": "osVersionMore",
           "value": "13"
+        },
+        {
+          "name": "osVersionLess",
+          "value": "15"
         }
       ],
       "description": "Включает payments для новых версий"

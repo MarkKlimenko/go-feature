@@ -35,6 +35,7 @@ data class Filter(
         EQ("eq"),
         CONTAINS("contains"),
 
-        MORE("more")
+        MORE("more"),
+        LESS("less"),
     }
 }
