@@ -37,5 +37,8 @@ data class Filter(
 
         MORE("more"),
         LESS("less"),
+
+        VERSION_MORE("versionMore"),
+        VERSION_LESS("versionLess"),
     }
 }

@@ -16,6 +16,10 @@ application:
 
 
 # Internal properties ==================
+server:
+  error:
+    include-message: always
+
 spring:
   r2dbc:
     url: r2dbc:${application.storage.database.url}
@@ -32,5 +36,4 @@ spring:
     password: ${application.storage.database.password}
     baseline-on-migrate: true
     baseline-version: 0
-    # TODO: disable for production - just for POC versions!
     clean-on-validation-error: false

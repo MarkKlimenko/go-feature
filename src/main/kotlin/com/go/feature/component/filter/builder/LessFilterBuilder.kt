@@ -13,7 +13,7 @@ class LessFilterBuilder : FilterBuilder {
     override fun getOperator(): Filter.Operator = Filter.Operator.LESS
 
     override fun buildField(field: String, value: String?): Field {
-        val doubleValue: Double? = parseDouble(field, value)
+        val doubleValue: Double? = parseValue(field, value)
 
         return if (doubleValue != null) {
             DoubleField(field, doubleValue)
@@ -23,6 +23,10 @@ class LessFilterBuilder : FilterBuilder {
     }
 
     override fun buildClause(field: String, value: String?): BooleanClause {
-        return composeNumberLessFilter(field, parseDouble(field, value))
+        return composeNumberLessFilter(field, parseValue(field, value))
+    }
+
+    protected fun parseValue(field: String, value: String?): Double? {
+        return parseDouble(field, value)
     }
 }

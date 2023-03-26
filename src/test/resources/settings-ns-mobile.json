@@ -18,12 +18,48 @@
     {
       "name": "osVersionMore",
       "parameter": "osVersion",
-      "operator": "more"
+      "operator": "versionMore"
     },
     {
       "name": "osVersionLess",
       "parameter": "osVersion",
-      "operator": "less"
+      "operator": "versionLess"
+    },
+    {
+      "name": "isInternalUserEq",
+      "parameter": "isInternalUser",
+      "operator": "eq",
+      "description": "Фильтр по типу пользователя (сотрудник компании или нет)"
+    },
+    {
+      "name": "locationEq",
+      "parameter": "location",
+      "operator": "eq",
+      "description": "Фильтр по месту нахождения пользователя"
+    },
+    {
+      "name": "registrationDateMore",
+      "parameter": "registrationDate",
+      "operator": "more",
+      "description": "Фильтр по дате регистрациии"
+    },
+    {
+      "name": "registrationDateLess",
+      "parameter": "registrationDate",
+      "operator": "less",
+      "description": "Фильтр по дате регистрациии"
+    },
+    {
+      "name": "hasSupportRequestEq",
+      "parameter": "hasSupportRequest",
+      "operator": "eq",
+      "description": "Фильтр по наличию запроса к саппорту"
+    },
+    {
+      "name": "hasRemovedDevicesEq",
+      "parameter": "hasRemovedDevices",
+      "operator": "eq",
+      "description": "Фильтр по наличию удаленных девайсов"
     }
   ],
   "features": [

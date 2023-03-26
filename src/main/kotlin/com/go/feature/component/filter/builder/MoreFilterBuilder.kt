@@ -13,7 +13,7 @@ class MoreFilterBuilder : FilterBuilder {
     override fun getOperator(): Filter.Operator = Filter.Operator.MORE
 
     override fun buildField(field: String, value: String?): Field {
-        val doubleValue: Double? = parseDouble(field, value)
+        val doubleValue: Double? = parseValue(field, value)
 
         return if (doubleValue != null) {
             DoubleField(field, doubleValue)
@@ -23,6 +23,10 @@ class MoreFilterBuilder : FilterBuilder {
     }
 
     override fun buildClause(field: String, value: String?): BooleanClause {
-        return composeNumberMoreFilter(field, parseDouble(field, value))
+        return composeNumberMoreFilter(field, parseValue(field, value))
+    }
+
+    protected fun parseValue(field: String, value: String?): Double? {
+        return parseDouble(field, value)
     }
 }

@@ -75,7 +75,7 @@ class IndexService(
                     .associateBy { it.id }
 
             filters.forEach { filter: Filter ->
-                val fieldName = "${filter.parameter}_${filter.operator}"
+                val fieldName = "${filter.parameter}_${filter.operator.value}"
                 val value: String? = featureFilterIdToFilterMap[filter.id]?.value
 
                 val documentField: Field = filterComponent.getFilterBuilder(filter.operator)
@@ -93,7 +93,7 @@ class IndexService(
             internalIndexVersion = index.indexVersionValue,
             indexFilters = filters.map {
                 IndexFilter(
-                    column = "${it.parameter}_${it.operator}",
+                    column = "${it.parameter}_${it.operator.value}",
                     parameter = it.parameter,
                     operator = it.operator,
                 )
