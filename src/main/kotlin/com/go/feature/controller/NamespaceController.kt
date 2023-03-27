@@ -30,6 +30,4 @@ class NamespaceController(
     suspend fun editNamespace(
         @PathVariable id: String, request: NamespaceEditRequest
     ): NamespaceResponse = namespaceService.editNamespace(id, request)
-
-    //TODO: rm namespace
 }

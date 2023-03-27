@@ -8,6 +8,7 @@ import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.persistence.repository.IndexVersionRepository
 import com.go.feature.persistence.repository.NamespaceRepository
+import com.go.feature.util.exception.ValidationException
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import mu.KLogging
@@ -23,8 +24,7 @@ class IndexLoaderService(
     val featureRepository: FeatureRepository,
 ) {
 
-    //TODO: get from settings 60 - 60
-    @Scheduled(fixedDelay = 60000, initialDelayString = "#{new java.util.Random().nextInt(10000)}")
+    @Scheduled(fixedDelayString = "\${application.index.ttl}")
     fun loadIndexes() = runBlocking {
         logger.debug("${LOG_PREFIX} Start index update checker")
 
@@ -34,7 +34,7 @@ class IndexLoaderService(
 
                 if (internalIndexVersion == null || internalIndexVersion != indexVersion.indexVersionValue) {
                     val namespace: Namespace = namespaceRepository.findById(indexVersion.namespace)
-                        ?: throw IllegalArgumentException("Namespace not found for index=${indexVersion}")
+                        ?: throw ValidationException("Namespace not found for index=${indexVersion}")
 
                     if (namespace.status == Namespace.Status.ENABLED) {
                         logger.info("${LOG_PREFIX} Start index update for namespace=${namespace.name}")
@@ -42,7 +42,8 @@ class IndexLoaderService(
                         val filters: List<Filter> =
                             filterRepository.findByNamespace(indexVersion.namespace).toList()
                         val features: List<Feature> =
-                            featureRepository.findByNamespaceAndStatus(indexVersion.namespace, Feature.Status.ENABLED).toList()
+                            featureRepository.findByNamespaceAndStatus(indexVersion.namespace, Feature.Status.ENABLED)
+                                .toList()
 
                         indexService.createIndex(indexVersion, namespace, filters, features)
 

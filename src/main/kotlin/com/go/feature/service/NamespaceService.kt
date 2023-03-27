@@ -9,6 +9,7 @@ import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.converter.NamespaceConverter
 import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
+import com.go.feature.util.exception.ValidationException
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import mu.KLogging
@@ -47,7 +48,7 @@ class NamespaceService(
     @Transactional(rollbackFor = [Exception::class])
     suspend fun editNamespace(id: String, request: NamespaceEditRequest): NamespaceResponse {
         val requiredNamespace: Namespace = namespaceRepository.findById(id)
-            ?: throw IllegalArgumentException("Namespace not found")
+            ?: throw ValidationException("Namespace not found")
 
         val editedNamespace: Namespace = namespaceRepository.save(namespaceConverter.edit(requiredNamespace, request))
 

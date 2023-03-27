@@ -13,6 +13,8 @@ application:
     enabled: true
     force-update: false
     location: /data
+  index:
+    ttl: 60000
 
 
 # Internal properties ==================
@@ -21,6 +23,8 @@ server:
     include-message: always
 
 spring:
+  main:
+    banner-mode: off
   r2dbc:
     url: r2dbc:${application.storage.database.url}
     username: ${application.storage.database.username}

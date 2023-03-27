@@ -1,10 +1,12 @@
 package com.go.feature.component.filter.util
 
+import com.go.feature.util.exception.ValidationException
+
 fun parseDouble(field: String, value: String?): Double? {
     return try {
         value?.toDouble()
     } catch (e: NumberFormatException) {
-        throw IllegalArgumentException("Value is not compatible with filter; field=${field}, value=${value}")
+        throw ValidationException("Value is not compatible with filter; field=${field}, value=${value}")
     }
 }
 
@@ -18,8 +20,7 @@ fun parseVersion(field: String, value: String?): Double? {
     }
 
     if (!value.matches(VERSION_REGEX)) {
-        //TODO: use 400 and silent log
-        throw IllegalArgumentException("Version value format exception; field=${field}, value=${value}")
+        throw ValidationException("Version value format exception; field=${field}, value=${value}")
     }
 
     val versionList: List<String> = value.split(".")
@@ -37,6 +38,6 @@ fun parseVersion(field: String, value: String?): Double? {
     return try {
         versionList.joinToString("").toDouble()
     } catch (e: NumberFormatException) {
-        throw IllegalArgumentException("Value is not compatible with filter; field=${field}, value=${value}")
+        throw ValidationException("Value is not compatible with filter; field=${field}, value=${value}")
     }
 }

@@ -1,0 +1,106 @@
+{
+  "namespace": {
+    "name": "mobile-long-filter"
+  },
+  "filters": [
+    {
+      "name": "userNameContains",
+      "parameter": "userName",
+      "operator": "contains",
+      "description": "Фильтр по имени пользователя (можно внести список имен пользователей, на которые будет распространена фича, спецсимволы применять нельзя)"
+    },
+    {
+      "name": "osEq",
+      "parameter": "os",
+      "operator": "eq",
+      "description": "Фильтр по типу операционной системы"
+    },
+    {
+      "name": "osVersionMore",
+      "parameter": "osVersion",
+      "operator": "versionMore"
+    },
+    {
+      "name": "osVersionLess",
+      "parameter": "osVersion",
+      "operator": "versionLess"
+    },
+    {
+      "name": "isInternalUserEq",
+      "parameter": "isInternalUser",
+      "operator": "eq",
+      "description": "Фильтр по типу пользователя (сотрудник компании или нет)"
+    },
+    {
+      "name": "locationEq",
+      "parameter": "location",
+      "operator": "eq",
+      "description": "Фильтр по месту нахождения пользователя"
+    },
+    {
+      "name": "registrationDateMore",
+      "parameter": "registrationDate",
+      "operator": "more",
+      "description": "Фильтр по дате регистрациии"
+    },
+    {
+      "name": "registrationDateLess",
+      "parameter": "registrationDate",
+      "operator": "less",
+      "description": "Фильтр по дате регистрациии"
+    },
+    {
+      "name": "hasSupportRequestEq",
+      "parameter": "hasSupportRequest",
+      "operator": "eq",
+      "description": "Фильтр по наличию запроса к саппорту"
+    },
+    {
+      "name": "hasRemovedDevicesEq",
+      "parameter": "hasRemovedDevices",
+      "operator": "eq",
+      "description": "Фильтр по наличию удаленных девайсов"
+    },
+    {
+      "name": "isBlockedEq",
+      "parameter": "isBlocked",
+      "operator": "eq",
+      "description": "Фильтр по статусу блокировки"
+    }
+  ],
+  "features": [
+    {
+      "name": "enablePayments",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "osEq",
+          "value": "ios"
+        },
+        {
+          "name": "osVersionMore",
+          "value": "13"
+        },
+        {
+          "name": "osVersionLess",
+          "value": "15"
+        }
+      ],
+      "description": "Включает payments для новых версий"
+    },
+    {
+      "name": "enableAdvancedScroll",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "osEq",
+          "value": "ios"
+        },
+        {
+          "name": "userNameContains",
+          "value": "patrik crabs"
+        }
+      ]
+    }
+  ]
+}

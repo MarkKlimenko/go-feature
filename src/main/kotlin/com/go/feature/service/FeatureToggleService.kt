@@ -6,6 +6,7 @@ import com.go.feature.controller.dto.featuretoggle.FeatureToggleResponse
 import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
 import com.go.feature.service.index.IndexService
+import com.go.feature.util.exception.ValidationException
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,7 +19,7 @@ class FeatureToggleService(
     suspend fun findFeatureToggles(request: FeatureToggleRequest): FeatureToggleResponse {
         val namespaceName: String = request.namespace ?: applicationProperties.namespace.default
         val namespace: Namespace = namespaceRepository.findByName(namespaceName)
-            ?: throw IllegalArgumentException("Namespace '${namespaceName}' not found")
+            ?: throw ValidationException("Namespace '${namespaceName}' not found")
 
         return FeatureToggleResponse(
             features = indexService.getFeaturesFromIndex(namespace.id, request.data)

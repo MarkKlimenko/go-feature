@@ -2,6 +2,7 @@ package com.go.feature.converter
 
 import com.go.feature.persistence.entity.Filter
 import com.go.feature.service.loader.dto.LoadedSettings
+import com.go.feature.util.exception.ValidationException
 import com.go.feature.util.randomId
 import org.springframework.stereotype.Component
 
@@ -24,6 +25,6 @@ class FilterConverter {
 
     fun convertOperator(operator: String): Filter.Operator {
         return stringToOperatorMap[operator]
-            ?: throw IllegalArgumentException("Operator '${operator}' is not supported")
+            ?: throw ValidationException("Operator '${operator}' is not supported")
     }
 }

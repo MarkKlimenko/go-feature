@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.entity.Filter
 import com.go.feature.service.loader.dto.LoadedSettings
+import com.go.feature.util.exception.ValidationException
 import com.go.feature.util.randomId
 import org.springframework.stereotype.Component
 
@@ -21,7 +22,7 @@ class FeatureConverter(
             val featureFilters: List<Feature.Filter> = it.filters.map { filter ->
                 Feature.Filter(
                     id = nameToFilterMap[filter.name]?.id
-                        ?: throw IllegalArgumentException("No filter with name=${filter.name}"),
+                        ?: throw ValidationException("No filter with name=${filter.name}"),
                     value = filter.value
                 )
             }

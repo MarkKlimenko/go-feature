@@ -15,6 +15,7 @@ import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.persistence.repository.NamespaceRepository
 import com.go.feature.service.IndexVersionService
 import com.go.feature.service.loader.dto.LoadedSettings
+import com.go.feature.util.exception.ValidationException
 import kotlinx.coroutines.flow.collect
 import mu.KLogging
 import org.apache.commons.codec.digest.DigestUtils
@@ -34,7 +35,7 @@ class SettingsLoaderService(
     val featureConverter: FeatureConverter,
     val filterConverter: FilterConverter,
 ) {
-    //TODO: use lock between services
+    //TODO: use lock between services for external storage
     suspend fun loadSettings() {
         if (applicationProperties.loader.enabled) {
             val files: Array<File>? = File(applicationProperties.loader.location)
@@ -58,7 +59,13 @@ class SettingsLoaderService(
             }
 
             files.forEach {
-                loadSetting(it)
+                try {
+                    loadSetting(it)
+                } catch (e: ValidationException) {
+                    logger.error("Error: ${e.message}")
+                } catch (e: Exception) {
+                    logger.error("Error: ", e)
+                }
             }
         }
     }
@@ -69,6 +76,7 @@ class SettingsLoaderService(
         val configHash: String = DigestUtils.md5Hex(fileByteArray)
 
         val settings: LoadedSettings = objectMapper.readValue(fileByteArray)
+        checkSettings(settings)
 
         val namespace: Namespace = namespaceRepository.findByName(settings.namespace.name)
             ?: namespaceRepository.save(namespaceConverter.create(settings.namespace))
@@ -79,7 +87,8 @@ class SettingsLoaderService(
 
         if (applicationProperties.loader.forceUpdate
             || indexVersion == null
-            || indexVersion.indexVersionValue != configHash) {
+            || indexVersion.indexVersionValue != configHash
+        ) {
             logger.info("$LOG_PREFIX Start settings loading for namespace ${namespace.name}")
 
             filterRepository.deleteAllByNamespace(namespace.id)
@@ -97,6 +106,16 @@ class SettingsLoaderService(
             logger.info("$LOG_PREFIX Finish settings loading for namespace ${namespace.name}")
         } else {
             logger.info("$LOG_PREFIX Settings are up to date for namespace ${namespace.name}")
+        }
+    }
+
+    private fun checkSettings(settings: LoadedSettings) {
+        if (settings.filters.size > 10) {
+            throw ValidationException("filters.size exceeds 10 filters")
+        }
+
+        if (settings.features.size > 10000) {
+            throw ValidationException("features.size exceeds 10000 features")
         }
     }
 
