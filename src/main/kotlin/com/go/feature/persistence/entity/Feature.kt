@@ -1,5 +1,6 @@
 package com.go.feature.persistence.entity
 
+import com.go.feature.dto.status.Status
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.Version
 import org.springframework.data.relational.core.mapping.Column
@@ -36,8 +37,4 @@ data class Feature(
         val id: String,
         val value: String,
     )
-
-    enum class Status {
-        ENABLED, DISABLED
-    }
 }

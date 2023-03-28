@@ -5,6 +5,9 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.go.feature.component.filter.FilterComponent
 import com.go.feature.component.filter.util.FT_INDEX
 import com.go.feature.controller.dto.featuretoggle.FeatureToggleRequest
+import com.go.feature.dto.operator.FilterOperator
+import com.go.feature.dto.status.FilterStatus
+import com.go.feature.dto.status.Status
 import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.entity.IndexVersion
@@ -40,10 +43,13 @@ class IndexService(
 
         storage.indexFilters.forEach {
             val value: String? = parameterToDataMapper[it.parameter]?.value
-            val searchClause: BooleanClause = filterComponent.getFilterBuilder(it.operator)
-                .buildClause(it.column, value)
 
-            mainQuery.add(searchClause)
+            if (it.status == FilterStatus.ENABLED || it.status == FilterStatus.DISABLED_ON_NULL && value != null) {
+                val searchClause: BooleanClause = filterComponent.getFilterBuilder(it.operator)
+                    .buildClause(it.column, value)
+
+                mainQuery.add(searchClause)
+            }
         }
 
         return storage.indexSearcher
@@ -67,24 +73,28 @@ class IndexService(
         val writer = IndexWriter(memoryIndex, IndexWriterConfig(StandardAnalyzer()))
 
         features.forEach { feature: Feature ->
-            val document = Document()
-            document.add(StringField(FT_INDEX, feature.name, Field.Store.YES))
+            if (feature.status == Status.ENABLED) {
+                val document = Document()
+                document.add(StringField(FT_INDEX, feature.name, Field.Store.YES))
 
-            val featureFilterIdToFilterMap: Map<String, Feature.Filter> =
-                objectMapper.readValue<List<Feature.Filter>>(feature.filters)
-                    .associateBy { it.id }
+                val featureFilterIdToFilterMap: Map<String, Feature.Filter> =
+                    objectMapper.readValue<List<Feature.Filter>>(feature.filters)
+                        .associateBy { it.id }
 
-            filters.forEach { filter: Filter ->
-                val fieldName = "${filter.parameter}_${filter.operator.value}"
-                val value: String? = featureFilterIdToFilterMap[filter.id]?.value
+                filters.forEach { filter: Filter ->
+                    if (filter.status != FilterStatus.DISABLED) {
+                        val fieldName = "${filter.parameter}_${filter.operator}"
+                        val value: String? = featureFilterIdToFilterMap[filter.id]?.value
 
-                val documentField: Field = filterComponent.getFilterBuilder(filter.operator)
-                    .buildField(fieldName, value)
+                        val documentField: Field = filterComponent.getFilterBuilder(filter.operator)
+                            .buildField(fieldName, value)
 
-                document.add(documentField)
+                        document.add(documentField)
+                    }
+                }
+
+                writer.addDocument(document)
             }
-
-            writer.addDocument(document)
         }
 
         writer.close()
@@ -93,9 +103,10 @@ class IndexService(
             internalIndexVersion = index.indexVersionValue,
             indexFilters = filters.map {
                 IndexFilter(
-                    column = "${it.parameter}_${it.operator.value}",
+                    column = "${it.parameter}_${it.operator}",
                     parameter = it.parameter,
                     operator = it.operator,
+                    status = it.status
                 )
             },
             indexSearcher = IndexSearcher(DirectoryReader.open(memoryIndex))
@@ -115,7 +126,8 @@ class IndexService(
     private data class IndexFilter(
         val column: String,
         val parameter: String,
-        val operator: Filter.Operator,
+        val operator: FilterOperator,
+        val status: FilterStatus,
     )
 
     private companion object : KLogging() {

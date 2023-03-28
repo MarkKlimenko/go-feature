@@ -1,9 +1,9 @@
 package com.go.feature.converter
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.go.feature.dto.settings.loader.LoadedSettings
 import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.entity.Filter
-import com.go.feature.service.loader.dto.LoadedSettings
 import com.go.feature.util.exception.ValidationException
 import com.go.feature.util.randomId
 import org.springframework.stereotype.Component
@@ -32,16 +32,9 @@ class FeatureConverter(
                 name = it.name,
                 namespace = namespaceId,
                 filters = objectMapper.writeValueAsString(featureFilters),
-                status = convertStatus(it.status),
+                status = it.status,
                 description = it.description
             )
-        }
-    }
-
-    fun convertStatus(status: LoadedSettings.Status): Feature.Status {
-        return when (status) {
-            LoadedSettings.Status.ENABLED -> Feature.Status.ENABLED
-            LoadedSettings.Status.DISABLED -> Feature.Status.DISABLED
         }
     }
 }

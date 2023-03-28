@@ -2,7 +2,7 @@ package com.go.feature.component.filter.builder
 
 import com.go.feature.component.filter.util.composeNumberMoreFilter
 import com.go.feature.component.filter.util.parseDouble
-import com.go.feature.persistence.entity.Filter
+import com.go.feature.dto.operator.FilterOperator
 import org.apache.lucene.document.DoubleField
 import org.apache.lucene.document.Field
 import org.apache.lucene.search.BooleanClause
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class MoreFilterBuilder : FilterBuilder {
-    override fun getOperator(): Filter.Operator = Filter.Operator.MORE
+    override fun getOperator(): FilterOperator = FilterOperator.MORE
 
     override fun buildField(field: String, value: String?): Field {
-        val doubleValue: Double? = parseValue(field, value)
+        val doubleValue: Double? = value?.let { parseValue(field, value) }
 
         return if (doubleValue != null) {
             DoubleField(field, doubleValue)
@@ -23,10 +23,12 @@ class MoreFilterBuilder : FilterBuilder {
     }
 
     override fun buildClause(field: String, value: String?): BooleanClause {
-        return composeNumberMoreFilter(field, parseValue(field, value))
+        val doubleValue: Double? = value?.let { parseValue(field, value) }
+
+        return composeNumberMoreFilter(field, doubleValue)
     }
 
-    protected fun parseValue(field: String, value: String?): Double? {
+    protected fun parseValue(field: String, value: String): Double {
         return parseDouble(field, value)
     }
 }

@@ -1,11 +1,11 @@
 package com.go.feature.component.filter.builder
 
-import com.go.feature.persistence.entity.Filter
+import com.go.feature.dto.operator.FilterOperator
 import org.apache.lucene.document.Field
 import org.apache.lucene.search.BooleanClause
 
 interface FilterBuilder {
-    fun getOperator(): Filter.Operator
+    fun getOperator(): FilterOperator
 
     fun buildField(field: String, value: String?): Field
 

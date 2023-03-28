@@ -4,9 +4,9 @@ import com.go.feature.configuration.properties.ApplicationProperties
 import com.go.feature.controller.dto.namespace.NamespaceCreateRequest
 import com.go.feature.controller.dto.namespace.NamespaceEditRequest
 import com.go.feature.controller.dto.namespace.NamespaceResponse
-import com.go.feature.controller.dto.namespace.NamespaceStatus
 import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.converter.NamespaceConverter
+import com.go.feature.dto.status.Status
 import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
 import com.go.feature.util.exception.ValidationException
@@ -66,7 +66,7 @@ class NamespaceService(
             createNamespace(
                 NamespaceCreateRequest(
                     name = defaultNamespace,
-                    status = NamespaceStatus.ENABLED
+                    status = Status.ENABLED
                 )
             )
         }

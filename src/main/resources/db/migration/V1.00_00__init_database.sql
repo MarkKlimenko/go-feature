@@ -14,6 +14,7 @@ CREATE TABLE filters
     namespace   VARCHAR(100) NOT NULL REFERENCES namespaces (id),
     parameter   VARCHAR(100) NOT NULL,
     operator    VARCHAR(100) NOT NULL,
+    status      VARCHAR(100) NOT NULL,
     description VARCHAR(4000),
     version     INTEGER      NOT NULL
 );

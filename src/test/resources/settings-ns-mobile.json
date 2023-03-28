@@ -6,60 +6,57 @@
     {
       "name": "userNameContains",
       "parameter": "userName",
-      "operator": "contains",
+      "operator": "CONTAINS",
       "description": "Фильтр по имени пользователя (можно внести список имен пользователей, на которые будет распространена фича, спецсимволы применять нельзя)"
     },
     {
       "name": "osEq",
       "parameter": "os",
-      "operator": "eq",
+      "operator": "EQ",
+      "status": "DISABLED",
       "description": "Фильтр по типу операционной системы"
     },
     {
-      "name": "osVersionMore",
-      "parameter": "osVersion",
-      "operator": "versionMore"
+      "name": "iosVersionMore",
+      "parameter": "iosVersion",
+      "operator": "VERSION_MORE",
+      "status": "DISABLED_ON_NULL"
     },
     {
-      "name": "osVersionLess",
-      "parameter": "osVersion",
-      "operator": "versionLess"
+      "name": "iosVersionLess",
+      "parameter": "iosVersion",
+      "operator": "VERSION_LESS",
+      "status": "DISABLED_ON_NULL"
+    },
+    {
+      "name": "androidVersionMore",
+      "parameter": "androidVersion",
+      "operator": "VERSION_MORE",
+      "status": "DISABLED_ON_NULL"
+    },
+    {
+      "name": "androidVersionLess",
+      "parameter": "androidVersion",
+      "operator": "VERSION_LESS",
+      "status": "DISABLED_ON_NULL"
     },
     {
       "name": "isInternalUserEq",
       "parameter": "isInternalUser",
-      "operator": "eq",
+      "operator": "EQ",
       "description": "Фильтр по типу пользователя (сотрудник компании или нет)"
-    },
-    {
-      "name": "locationEq",
-      "parameter": "location",
-      "operator": "eq",
-      "description": "Фильтр по месту нахождения пользователя"
     },
     {
       "name": "registrationDateMore",
       "parameter": "registrationDate",
-      "operator": "more",
+      "operator": "MORE",
       "description": "Фильтр по дате регистрациии"
     },
     {
       "name": "registrationDateLess",
       "parameter": "registrationDate",
-      "operator": "less",
+      "operator": "LESS",
       "description": "Фильтр по дате регистрациии"
-    },
-    {
-      "name": "hasSupportRequestEq",
-      "parameter": "hasSupportRequest",
-      "operator": "eq",
-      "description": "Фильтр по наличию запроса к саппорту"
-    },
-    {
-      "name": "hasRemovedDevicesEq",
-      "parameter": "hasRemovedDevices",
-      "operator": "eq",
-      "description": "Фильтр по наличию удаленных девайсов"
     }
   ],
   "features": [
@@ -72,12 +69,20 @@
           "value": "ios"
         },
         {
-          "name": "osVersionMore",
+          "name": "iosVersionMore",
           "value": "13"
         },
         {
-          "name": "osVersionLess",
+          "name": "iosVersionLess",
           "value": "15"
+        },
+        {
+          "name": "androidVersionMore",
+          "value": "20"
+        },
+        {
+          "name": "androidVersionLess",
+          "value": "25"
         }
       ],
       "description": "Включает payments для новых версий"
@@ -86,10 +91,6 @@
       "name": "enableAdvancedScroll",
       "status": "ENABLED",
       "filters": [
-        {
-          "name": "osEq",
-          "value": "ios"
-        },
         {
           "name": "userNameContains",
           "value": "patrik crabs"

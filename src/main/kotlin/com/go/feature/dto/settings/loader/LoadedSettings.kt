@@ -1,4 +1,8 @@
-package com.go.feature.service.loader.dto
+package com.go.feature.dto.settings.loader
+
+import com.go.feature.dto.operator.FilterOperator
+import com.go.feature.dto.status.FilterStatus
+import com.go.feature.dto.status.Status
 
 data class LoadedSettings(
     val namespace: Namespace,
@@ -13,7 +17,8 @@ data class LoadedSettings(
     data class Filter(
         val name: String,
         val parameter: String,
-        val operator: String,
+        val operator: FilterOperator,
+        val status: FilterStatus = FilterStatus.ENABLED,
         val description: String?,
     )
 
@@ -28,8 +33,4 @@ data class LoadedSettings(
         val name: String,
         val value: String,
     )
-
-    enum class Status {
-        ENABLED, DISABLED
-    }
 }

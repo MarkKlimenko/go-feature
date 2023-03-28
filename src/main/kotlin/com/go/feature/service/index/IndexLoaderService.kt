@@ -1,5 +1,6 @@
 package com.go.feature.service.index
 
+import com.go.feature.dto.status.Status
 import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.entity.IndexVersion
@@ -36,14 +37,13 @@ class IndexLoaderService(
                     val namespace: Namespace = namespaceRepository.findById(indexVersion.namespace)
                         ?: throw ValidationException("Namespace not found for index=${indexVersion}")
 
-                    if (namespace.status == Namespace.Status.ENABLED) {
+                    if (namespace.status == Status.ENABLED) {
                         logger.info("${LOG_PREFIX} Start index update for namespace=${namespace.name}")
 
                         val filters: List<Filter> =
                             filterRepository.findByNamespace(indexVersion.namespace).toList()
                         val features: List<Feature> =
-                            featureRepository.findByNamespaceAndStatus(indexVersion.namespace, Feature.Status.ENABLED)
-                                .toList()
+                            featureRepository.findByNamespaceAndStatus(indexVersion.namespace, Status.ENABLED).toList()
 
                         indexService.createIndex(indexVersion, namespace, filters, features)
 

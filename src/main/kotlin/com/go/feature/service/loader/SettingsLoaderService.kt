@@ -6,6 +6,9 @@ import com.go.feature.configuration.properties.ApplicationProperties
 import com.go.feature.converter.FeatureConverter
 import com.go.feature.converter.FilterConverter
 import com.go.feature.converter.NamespaceConverter
+import com.go.feature.dto.settings.loader.LoadedSettings
+import com.go.feature.dto.status.FilterStatus
+import com.go.feature.dto.status.Status
 import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.entity.IndexVersion
@@ -14,7 +17,6 @@ import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.persistence.repository.NamespaceRepository
 import com.go.feature.service.IndexVersionService
-import com.go.feature.service.loader.dto.LoadedSettings
 import com.go.feature.util.exception.ValidationException
 import kotlinx.coroutines.flow.collect
 import mu.KLogging
@@ -110,12 +112,12 @@ class SettingsLoaderService(
     }
 
     private fun checkSettings(settings: LoadedSettings) {
-        if (settings.filters.size > 10) {
-            throw ValidationException("filters.size exceeds 10 filters")
+        if (settings.filters.filter { it.status != FilterStatus.DISABLED }.size > 20) {
+            throw ValidationException("Enabled filters size exceeds 20")
         }
 
-        if (settings.features.size > 10000) {
-            throw ValidationException("features.size exceeds 10000 features")
+        if (settings.features.filter { it.status != Status.DISABLED }.size > 100) {
+            throw ValidationException("Enabled features size exceeds 100")
         }
     }
 
