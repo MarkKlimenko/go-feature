@@ -15,6 +15,3 @@ fun main(args: Array<String>) {
 // TODO: add tests
 // TODO: add test coverage
 // TODO: add code analyser
-
-// TODO: add settings engine
-

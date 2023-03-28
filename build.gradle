@@ -11,6 +11,7 @@ plugins {
     id "org.jetbrains.kotlin.plugin.allopen" version "1.7.22"
     id "org.jetbrains.kotlin.plugin.jpa" version "1.7.22"
     id "org.jetbrains.kotlin.plugin.spring" version "1.7.22"
+    id "org.jetbrains.kotlin.kapt" version "1.7.22"
 
     id "io.spring.dependency-management" version "1.0.15.RELEASE"
     id "org.springframework.boot" version "2.7.9"
@@ -29,6 +30,7 @@ repositories {
 }
 
 dependencies {
+    //spring
     implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "org.springframework.boot:spring-boot-starter-validation"
 
@@ -63,6 +65,10 @@ dependencies {
     //other
     implementation "commons-codec:commons-codec:1.15"
 
+    //annotation processor
+    kapt "org.springframework.boot:spring-boot-configuration-processor"
+
+    //test
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.1"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.1"
 }
