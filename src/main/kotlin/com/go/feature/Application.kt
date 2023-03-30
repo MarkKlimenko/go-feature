@@ -10,8 +10,6 @@ fun main(args: Array<String>) {
     runApplication<Application>(*args)
 }
 
-// TODO: add actuator + liveness + readiness
-
 // TODO: add tests
 // TODO: add test coverage
 // TODO: add code analyser

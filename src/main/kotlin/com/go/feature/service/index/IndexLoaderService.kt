@@ -15,6 +15,7 @@ import kotlinx.coroutines.runBlocking
 import mu.KLogging
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import java.util.concurrent.atomic.AtomicBoolean
 
 @Service
 class IndexLoaderService(
@@ -24,9 +25,18 @@ class IndexLoaderService(
     val filterRepository: FilterRepository,
     val featureRepository: FeatureRepository,
 ) {
+    private val isLoaded: AtomicBoolean = AtomicBoolean(false)
 
     @Scheduled(fixedDelayString = "\${application.index.ttl}")
-    fun loadIndexes() = runBlocking {
+    private fun loadIndexesScheduler() = runBlocking {
+        loadIndexes()
+    }
+
+    fun isIndexLoaded(): Boolean {
+        return isLoaded.get()
+    }
+
+    private suspend fun loadIndexes() {
         logger.debug("${LOG_PREFIX} Start index update checker")
 
         indexVersionRepository.findAll()
@@ -34,25 +44,37 @@ class IndexLoaderService(
                 val internalIndexVersion: String? = indexService.getInternalIndexVersion(indexVersion.namespace)
 
                 if (internalIndexVersion == null || internalIndexVersion != indexVersion.indexVersionValue) {
-                    val namespace: Namespace = namespaceRepository.findById(indexVersion.namespace)
-                        ?: throw ValidationException("Namespace not found for index=${indexVersion}")
-
-                    if (namespace.status == Status.ENABLED) {
-                        logger.info("${LOG_PREFIX} Start index update for namespace=${namespace.name}")
-
-                        val filters: List<Filter> =
-                            filterRepository.findByNamespace(indexVersion.namespace).toList()
-                        val features: List<Feature> =
-                            featureRepository.findByNamespaceAndStatus(indexVersion.namespace, Status.ENABLED).toList()
-
-                        indexService.createIndex(indexVersion, namespace, filters, features)
-
-                        logger.info("${LOG_PREFIX} Finish index update for namespace=${namespace.name}")
+                    try {
+                        loadIndexForNamespace(indexVersion)
+                    } catch (e: Exception) {
+                        logger.error("Error: ", e)
                     }
+
                 } else {
                     logger.debug("${LOG_PREFIX} Index for namespaceId=${indexVersion.namespace} is already up to date")
                 }
             }
+
+        logger.debug("${LOG_PREFIX} Finish index update checker")
+        isLoaded.set(true)
+    }
+
+    private suspend fun loadIndexForNamespace(indexVersion: IndexVersion) {
+        val namespace: Namespace = namespaceRepository.findById(indexVersion.namespace)
+            ?: throw ValidationException("Namespace not found for index=${indexVersion}")
+
+        if (namespace.status == Status.ENABLED) {
+            logger.info("${LOG_PREFIX} Start index update for namespace=${namespace.name}")
+
+            val filters: List<Filter> =
+                filterRepository.findByNamespace(indexVersion.namespace).toList()
+            val features: List<Feature> =
+                featureRepository.findByNamespaceAndStatus(indexVersion.namespace, Status.ENABLED).toList()
+
+            indexService.createIndex(indexVersion, namespace, filters, features)
+
+            logger.info("${LOG_PREFIX} Finish index update for namespace=${namespace.name}")
+        }
     }
 
     private companion object : KLogging() {
