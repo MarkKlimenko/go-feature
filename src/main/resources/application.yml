@@ -23,6 +23,8 @@ server:
     include-message: always
 
 spring:
+  application:
+    name: feature-toggle
   main:
     banner-mode: off
   r2dbc:

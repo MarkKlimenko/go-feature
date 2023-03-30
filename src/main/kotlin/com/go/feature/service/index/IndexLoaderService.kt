@@ -28,7 +28,7 @@ class IndexLoaderService(
     private val isLoaded: AtomicBoolean = AtomicBoolean(false)
 
     @Scheduled(fixedDelayString = "\${application.index.ttl}")
-    private fun loadIndexesScheduler() = runBlocking {
+    fun loadIndexesScheduler() = runBlocking {
         loadIndexes()
     }
 

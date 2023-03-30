@@ -12,11 +12,7 @@ class ReadinessService(
 ) {
     fun checkReadiness(): ProbeResponse {
         return ProbeResponse(
-            status = if (indexLoaderService.isIndexLoaded()) {
-                UP
-            } else {
-                WAITING
-            }
+            status = if (indexLoaderService.isIndexLoaded()) UP else WAITING
         )
     }
 }

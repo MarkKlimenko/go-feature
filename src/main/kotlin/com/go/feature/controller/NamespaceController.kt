@@ -28,6 +28,7 @@ class NamespaceController(
 
     @PostMapping("{id}")
     suspend fun editNamespace(
-        @PathVariable id: String, request: NamespaceEditRequest
+        @PathVariable id: String,
+        request: NamespaceEditRequest
     ): NamespaceResponse = namespaceService.editNamespace(id, request)
 }
