@@ -17,7 +17,7 @@ class HttpExceptionHandler(
     fun validationExceptionHandler(e: ValidationException): ResponseEntity<ErrorResponse> {
         val message: String = e.message ?: "Empty message"
 
-        logger.error("Validation exception: ${message}")
+        logger.error("Validation exception: $message")
         return ResponseEntity(createResponse(message), HttpStatus.BAD_REQUEST)
     }
 

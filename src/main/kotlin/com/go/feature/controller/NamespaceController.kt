@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 @RestController
 @RequestMapping("api/v1/namespaces")
@@ -18,8 +17,7 @@ class NamespaceController(
     val namespaceService: NamespaceService
 ) {
     @GetMapping
-    suspend fun getNamespaces(
-    ): NamespacesResponse = namespaceService.getNamespaces()
+    suspend fun getNamespaces(): NamespacesResponse = namespaceService.getNamespaces()
 
     @PostMapping
     suspend fun createNamespace(

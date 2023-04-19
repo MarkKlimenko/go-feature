@@ -8,7 +8,5 @@ import org.springframework.stereotype.Component
 class VersionMoreFilterBuilder : MoreFilterBuilder() {
     override fun getOperator(): FilterOperator = FilterOperator.VERSION_MORE
 
-    override fun parseValue(field: String, value: String): Double {
-        return parseVersion(field, value)
-    }
+    override fun parseValue(field: String, value: String): Double = parseVersion(field, value)
 }

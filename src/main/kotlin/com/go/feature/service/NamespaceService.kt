@@ -6,6 +6,7 @@ import com.go.feature.controller.dto.namespace.NamespaceEditRequest
 import com.go.feature.controller.dto.namespace.NamespaceResponse
 import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.converter.NamespaceConverter
+import com.go.feature.dto.settings.loader.LoadedSettings
 import com.go.feature.dto.status.Status
 import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
@@ -34,7 +35,7 @@ class NamespaceService(
         )
     }
 
-    //TODO: check Transactional
+    // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun createNamespace(request: NamespaceCreateRequest): NamespaceResponse {
         val createdNamespace: Namespace = namespaceRepository.save(namespaceConverter.create(request))
@@ -44,7 +45,7 @@ class NamespaceService(
         return namespaceConverter.convert(createdNamespace)
     }
 
-    //TODO: check Transactional
+    // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun editNamespace(id: String, request: NamespaceEditRequest): NamespaceResponse {
         val requiredNamespace: Namespace = namespaceRepository.findById(id)
@@ -61,7 +62,7 @@ class NamespaceService(
         if (namespaceRepository.count() == 0L) {
             val defaultNamespace: String = applicationProperties.namespace.default
 
-            logger.info("Create default namespace with name=${defaultNamespace}")
+            logger.info("Create default namespace with name=$defaultNamespace")
 
             createNamespace(
                 NamespaceCreateRequest(
@@ -70,6 +71,11 @@ class NamespaceService(
                 )
             )
         }
+    }
+
+    suspend fun getNamespaceForSettings(settings: LoadedSettings): Namespace {
+        return namespaceRepository.findByName(settings.namespace.name)
+            ?: namespaceRepository.save(namespaceConverter.create(settings.namespace))
     }
 
     private companion object : KLogging()

@@ -53,7 +53,7 @@ class IndexService(
         }
 
         return storage.indexSearcher
-            .search(mainQuery.build(), 1000) // TODO: return more than 1000
+            .search(mainQuery.build(), FEATURES_COUNT_FOR_SEARCH)
             .scoreDocs
             .map {
                 storage.indexSearcher.storedFields()
@@ -65,13 +65,19 @@ class IndexService(
 
     fun createIndex(index: IndexVersion, namespace: Namespace, filters: List<Filter>, features: List<Feature>) {
         if (filters.isEmpty() || features.isEmpty()) {
-            logger.debug("${LOG_PREFIX} Filters or features are empty for namespace=${namespace.name}")
+            logger.debug("$LOG_PREFIX Filters or features are empty for namespace=${namespace.name}")
             return
         }
 
         val memoryIndex: Directory = ByteBuffersDirectory()
         val writer = IndexWriter(memoryIndex, IndexWriterConfig(StandardAnalyzer()))
 
+        processIndexData(filters, features, writer)
+        writer.close()
+        saveIndexStorage(namespace, index, filters, memoryIndex)
+    }
+
+    private fun processIndexData(filters: List<Filter>, features: List<Feature>, writer: IndexWriter) {
         features.forEach { feature: Feature ->
             if (feature.status == Status.ENABLED) {
                 val document = Document()
@@ -96,9 +102,14 @@ class IndexService(
                 writer.addDocument(document)
             }
         }
+    }
 
-        writer.close()
-
+    private fun saveIndexStorage(
+        namespace: Namespace,
+        index: IndexVersion,
+        filters: List<Filter>,
+        memoryIndex: Directory
+    ) {
         namespaceIdToIndexMapper[namespace.id] = IndexStorage(
             internalIndexVersion = index.indexVersionValue,
             indexFilters = filters.map {
@@ -113,9 +124,8 @@ class IndexService(
         )
     }
 
-    fun getInternalIndexVersion(namespaceId: String): String? {
-        return namespaceIdToIndexMapper[namespaceId]?.internalIndexVersion
-    }
+    fun getInternalIndexVersion(namespaceId: String): String? =
+        namespaceIdToIndexMapper[namespaceId]?.internalIndexVersion
 
     private data class IndexStorage(
         val internalIndexVersion: String,
@@ -132,5 +142,8 @@ class IndexService(
 
     private companion object : KLogging() {
         const val LOG_PREFIX = "INDEX_LOADER:"
+
+        // TODO: return more than 1000
+        const val FEATURES_COUNT_FOR_SEARCH = 1000
     }
 }

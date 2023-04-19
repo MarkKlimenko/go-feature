@@ -20,7 +20,5 @@ class ContainsFilterBuilder : FilterBuilder {
         }
     }
 
-    override fun buildClause(field: String, value: String?): BooleanClause {
-        return composeStringEqFilter(field, value)
-    }
+    override fun buildClause(field: String, value: String?): BooleanClause = composeStringEqFilter(field, value)
 }

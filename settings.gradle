@@ -1,2 +1,12 @@
+pluginManagement {
+    repositories {
+        // need for plugin test
+        maven {
+            url '../local-plugin-repository'
+        }
+        gradlePluginPortal()
+    }
+}
+
 rootProject.name = 'go-feature'
 

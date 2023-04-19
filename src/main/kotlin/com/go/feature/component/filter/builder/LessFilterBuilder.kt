@@ -24,11 +24,8 @@ class LessFilterBuilder : FilterBuilder {
 
     override fun buildClause(field: String, value: String?): BooleanClause {
         val doubleValue: Double? = value?.let { parseValue(field, value) }
-
         return composeNumberLessFilter(field, doubleValue)
     }
 
-    protected fun parseValue(field: String, value: String): Double {
-        return parseDouble(field, value)
-    }
+    fun parseValue(field: String, value: String): Double = parseDouble(field, value)
 }

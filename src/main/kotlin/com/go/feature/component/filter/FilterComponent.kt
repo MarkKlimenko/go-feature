@@ -13,6 +13,6 @@ class FilterComponent(
 
     fun getFilterBuilder(operator: FilterOperator): FilterBuilder {
         return filterBuildersMap[operator]
-            ?: throw ValidationException("Filter operator '${operator}' is not supported for current app version")
+            ?: throw ValidationException("Filter operator '$operator' is not supported for current app version")
     }
 }

@@ -11,9 +11,8 @@ class IndexVersionService(
     val indexVersionRepository: IndexVersionRepository,
 ) {
 
-    suspend fun find(namespaceId: String): IndexVersion? {
-        return indexVersionRepository.findByNamespace(namespaceId)
-    }
+    suspend fun find(namespaceId: String): IndexVersion? =
+        indexVersionRepository.findByNamespace(namespaceId)
 
     suspend fun update(namespaceId: String) {
         val version: IndexVersion = indexVersionRepository.findByNamespace(namespaceId)

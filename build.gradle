@@ -1,24 +1,52 @@
 buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url '../local-plugin-repository'
+        }
+        gradlePluginPortal()
+    }
+
+    ext {
+        jacocoExc = ['**/**']
+
+        // versions
+        kotlinVersion = "1.7.22"
+        springBootVersion = "2.7.9"
+        springCloudVersion = "2021.0.6"
+        springManagementVersion = "1.0.15.RELEASE"
+        codeQualityVersion = "1.0"
+        luceneVersion = "9.5.0"
+
+    }
+
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.7.9"
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.15.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+        classpath "io.spring.gradle:dependency-management-plugin:$springManagementVersion"
+        classpath "com.markklim.plugins:popcorn-quality:$codeQualityVersion"
+
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion"
     }
 }
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.7.22"
-    id "org.jetbrains.kotlin.plugin.noarg" version "1.7.22"
-    id "org.jetbrains.kotlin.plugin.allopen" version "1.7.22"
-    id "org.jetbrains.kotlin.plugin.jpa" version "1.7.22"
-    id "org.jetbrains.kotlin.plugin.spring" version "1.7.22"
-    id "org.jetbrains.kotlin.kapt" version "1.7.22"
+    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.plugin.noarg" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.plugin.allopen" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.plugin.jpa" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.plugin.spring" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.kapt" version "$kotlinVersion"
 
-    id "io.spring.dependency-management" version "1.0.15.RELEASE"
-    id "org.springframework.boot" version "2.7.9"
+    id "io.spring.dependency-management" version "$springManagementVersion"
+    id "org.springframework.boot" version "$springBootVersion"
+
+    id "popcorn.code.quality" version "$codeQualityVersion"
 }
 
-group "org.example"
-version "1.0-SNAPSHOT"
+group "com.go.feature"
+version "1.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -31,7 +59,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.6"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
     }
 }
 
@@ -59,8 +87,8 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
 
     //index
-    implementation "org.apache.lucene:lucene-core:9.5.0"
-    implementation "org.apache.lucene:lucene-queryparser:9.5.0"
+    implementation "org.apache.lucene:lucene-core:$luceneVersion"
+    implementation "org.apache.lucene:lucene-queryparser:$luceneVersion"
 
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-reflect"

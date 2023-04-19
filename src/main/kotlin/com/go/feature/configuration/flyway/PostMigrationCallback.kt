@@ -18,9 +18,8 @@ class PostMigrationCallback(
     val settingsLoaderService: SettingsLoaderService,
 ) : Callback {
 
-    override fun supports(event: Event, context: Context): Boolean {
-        return event === Event.AFTER_MIGRATE
-    }
+    override fun supports(event: Event, context: Context): Boolean =
+        event == Event.AFTER_MIGRATE
 
     override fun handle(event: Event, context: Context) {
         runBlocking {
@@ -38,13 +37,9 @@ class PostMigrationCallback(
         }
     }
 
-    override fun canHandleInTransaction(event: Event, context: Context): Boolean {
-        return true
-    }
+    override fun canHandleInTransaction(event: Event, context: Context): Boolean = true
 
-    override fun getCallbackName(): String {
-        return PostMigrationCallback::class.java.simpleName
-    }
+    override fun getCallbackName(): String = PostMigrationCallback::class.java.simpleName
 
     companion object : KLogging()
 }

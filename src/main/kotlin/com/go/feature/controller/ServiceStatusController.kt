@@ -14,10 +14,8 @@ class ServiceStatusController(
     val readinessService: ReadinessService
 ) {
     @GetMapping("liveness")
-    suspend fun checkLiveness(
-    ): ProbeResponse = livenessService.checkLiveness()
+    suspend fun checkLiveness(): ProbeResponse = livenessService.checkLiveness()
 
     @GetMapping("readiness")
-    suspend fun checkReadiness(
-    ): ProbeResponse = readinessService.checkReadiness()
+    suspend fun checkReadiness(): ProbeResponse = readinessService.checkReadiness()
 }

@@ -2,13 +2,25 @@ package com.go.feature
 
 import mu.KLogging
 import org.apache.lucene.analysis.standard.StandardAnalyzer
-import org.apache.lucene.document.*
-import org.apache.lucene.index.*
-import org.apache.lucene.search.*
+import org.apache.lucene.document.Document
+import org.apache.lucene.document.Field
+import org.apache.lucene.document.LongField
+import org.apache.lucene.document.StringField
+import org.apache.lucene.document.TextField
+import org.apache.lucene.index.DirectoryReader
+import org.apache.lucene.index.IndexReader
+import org.apache.lucene.index.IndexWriter
+import org.apache.lucene.index.IndexWriterConfig
+import org.apache.lucene.index.Term
+import org.apache.lucene.search.BooleanClause
+import org.apache.lucene.search.BooleanQuery
+import org.apache.lucene.search.IndexSearcher
+import org.apache.lucene.search.Query
+import org.apache.lucene.search.TermQuery
+import org.apache.lucene.search.TopDocs
 import org.apache.lucene.store.ByteBuffersDirectory
 import org.apache.lucene.store.Directory
 import java.lang.Long.parseLong
-import java.util.*
 
 class IndexTest {
     val memoryIndex: Directory = ByteBuffersDirectory()
@@ -59,7 +71,7 @@ class IndexTest {
 
         (1..1000).forEach {
             val documents: MutableList<Document> = findOne("${(1..COUNT).random()}", searcher)
-            //logger.debug("documents=${documents}")
+            // logger.debug("documents=${documents}")
         }
     }
 
@@ -152,8 +164,8 @@ class IndexTest {
             document.add(StringField("ft", "superUser_${it}", Field.Store.YES))
             document.add(StringField("isEnabled", "true", Field.Store.NO))
 
-            val users: String = (1 .. 15).map { userCount ->
-                if(userCount == 10) {
+            val users: String = (1..15).map { userCount ->
+                if (userCount == 10) {
                     "user${it}"
                 } else {
                     "user${userCount}"
@@ -193,7 +205,7 @@ class IndexTest {
     }
 
     companion object : KLogging() {
-        val FILTER_DISABLED_VALUE = "disfft"
-        val COUNT = 1000000
+        const val FILTER_DISABLED_VALUE = "disfft"
+        const val COUNT = 1000000
     }
 }

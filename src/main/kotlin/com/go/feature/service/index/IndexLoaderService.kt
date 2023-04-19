@@ -32,12 +32,10 @@ class IndexLoaderService(
         loadIndexes()
     }
 
-    fun isIndexLoaded(): Boolean {
-        return isLoaded.get()
-    }
+    fun isIndexLoaded(): Boolean = isLoaded.get()
 
     private suspend fun loadIndexes() {
-        logger.debug("${LOG_PREFIX} Start index update checker")
+        logger.debug("$LOG_PREFIX Start index update checker")
 
         indexVersionRepository.findAll()
             .collect { indexVersion: IndexVersion ->
@@ -49,22 +47,21 @@ class IndexLoaderService(
                     } catch (e: Exception) {
                         logger.error("Error: ", e)
                     }
-
                 } else {
-                    logger.debug("${LOG_PREFIX} Index for namespaceId=${indexVersion.namespace} is already up to date")
+                    logger.debug("$LOG_PREFIX Index for namespaceId=${indexVersion.namespace} is already up to date")
                 }
             }
 
-        logger.debug("${LOG_PREFIX} Finish index update checker")
+        logger.debug("$LOG_PREFIX Finish index update checker")
         isLoaded.set(true)
     }
 
     private suspend fun loadIndexForNamespace(indexVersion: IndexVersion) {
         val namespace: Namespace = namespaceRepository.findById(indexVersion.namespace)
-            ?: throw ValidationException("Namespace not found for index=${indexVersion}")
+            ?: throw ValidationException("Namespace not found for index=$indexVersion")
 
         if (namespace.status == Status.ENABLED) {
-            logger.info("${LOG_PREFIX} Start index update for namespace=${namespace.name}")
+            logger.info("$LOG_PREFIX Start index update for namespace=${namespace.name}")
 
             val filters: List<Filter> =
                 filterRepository.findByNamespace(indexVersion.namespace).toList()
@@ -73,7 +70,7 @@ class IndexLoaderService(
 
             indexService.createIndex(indexVersion, namespace, filters, features)
 
-            logger.info("${LOG_PREFIX} Finish index update for namespace=${namespace.name}")
+            logger.info("$LOG_PREFIX Finish index update for namespace=${namespace.name}")
         }
     }
 

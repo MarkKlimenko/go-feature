@@ -19,7 +19,7 @@ class FeatureToggleService(
     suspend fun findFeatureToggles(request: FeatureToggleRequest): FeatureToggleResponse {
         val namespaceName: String = request.namespace ?: applicationProperties.namespace.default
         val namespace: Namespace = namespaceRepository.findByName(namespaceName)
-            ?: throw ValidationException("Namespace '${namespaceName}' not found")
+            ?: throw ValidationException("Namespace '$namespaceName' not found")
 
         return FeatureToggleResponse(
             features = indexService.getFeaturesFromIndex(namespace.id, request.data)

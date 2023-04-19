@@ -6,21 +6,22 @@ fun parseDouble(field: String, value: String): Double {
     return try {
         value.toDouble()
     } catch (e: NumberFormatException) {
-        throw ValidationException("Value is not compatible with filter; field=${field}, value=${value}")
+        throw ValidationException("Value is not compatible with filter; field=$field, value=$value")
     }
 }
 
 val VERSION_REGEX: Regex = "(^[0-9]{1,4})(\\.[0-9]{1,4}){0,2}".toRegex()
-private val DEFAULT_VERSION_GROUP_VALUE = "0000"
+private const val DEFAULT_VERSION_GROUP_VALUE = "0000"
+private const val VERSION_LENGTH = 4
 private val DEFAULT_MINOR_PATCH_GROUPS = listOf(DEFAULT_VERSION_GROUP_VALUE, DEFAULT_VERSION_GROUP_VALUE)
 
 fun parseVersion(field: String, value: String): Double {
     if (!value.matches(VERSION_REGEX)) {
-        throw ValidationException("Version value format exception; field=${field}, value=${value}")
+        throw ValidationException("Version value format exception; field=$field, value=$value")
     }
 
     val versionList: List<String> = value.split(".")
-        .map { it.padStart(4, '0') }
+        .map { it.padStart(VERSION_LENGTH, '0') }
         .toMutableList()
         .let {
             if (it.size == 1) {
@@ -34,6 +35,6 @@ fun parseVersion(field: String, value: String): Double {
     return try {
         versionList.joinToString("").toDouble()
     } catch (e: NumberFormatException) {
-        throw ValidationException("Value is not compatible with filter; field=${field}, value=${value}")
+        throw ValidationException("Value is not compatible with filter; field=$field, value=$value")
     }
 }

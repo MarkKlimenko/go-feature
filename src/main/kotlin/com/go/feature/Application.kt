@@ -9,7 +9,3 @@ class Application
 fun main(args: Array<String>) {
     runApplication<Application>(*args)
 }
-
-// TODO: add tests
-// TODO: add test coverage
-// TODO: add code analyser
