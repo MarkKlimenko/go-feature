@@ -15,19 +15,9 @@ buildscript {
         springBootVersion = "2.7.9"
         springCloudVersion = "2021.0.6"
         springManagementVersion = "1.0.15.RELEASE"
-        codeQualityVersion = "1.0"
+        codeQualityVersion = "1.1"
         luceneVersion = "9.5.0"
 
-    }
-
-    dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
-        classpath "io.spring.gradle:dependency-management-plugin:$springManagementVersion"
-        classpath "com.markklim.plugins:popcorn-quality:$codeQualityVersion"
-
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion"
-        classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion"
     }
 }
 
