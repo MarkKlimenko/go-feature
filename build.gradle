@@ -8,7 +8,7 @@ buildscript {
     }
 
     ext {
-        //jacocoExc = ['**/**']
+        // coverageExclusion = ['**/**']
 
         // versions
         kotlinVersion = "1.7.22"
@@ -42,7 +42,7 @@ plugins {
     id "io.spring.dependency-management" version "$springManagementVersion"
     id "org.springframework.boot" version "$springBootVersion"
 
-    id "popcorn.code.quality" version "$codeQualityVersion"
+    id "com.markklim.popcorn.quality" version "$codeQualityVersion"
 }
 
 group "com.go.feature"

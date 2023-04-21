@@ -22,7 +22,7 @@ class NamespaceService(
     val applicationProperties: ApplicationProperties,
     val namespaceRepository: NamespaceRepository,
     val namespaceConverter: NamespaceConverter,
-    val versionService: IndexVersionService,
+    val indexVersionService: IndexVersionService,
 ) {
 
     suspend fun getNamespaces(): NamespacesResponse {
@@ -40,7 +40,7 @@ class NamespaceService(
     suspend fun createNamespace(request: NamespaceCreateRequest): NamespaceResponse {
         val createdNamespace: Namespace = namespaceRepository.save(namespaceConverter.create(request))
 
-        versionService.update(createdNamespace.id)
+        indexVersionService.update(createdNamespace.id)
 
         return namespaceConverter.convert(createdNamespace)
     }
@@ -53,7 +53,7 @@ class NamespaceService(
 
         val editedNamespace: Namespace = namespaceRepository.save(namespaceConverter.edit(requiredNamespace, request))
 
-        versionService.update(id)
+        indexVersionService.update(id)
 
         return namespaceConverter.convert(editedNamespace)
     }
