@@ -9,6 +9,7 @@ buildscript {
 
     ext {
         coverageExclusion = [
+                '**/feature/Application*',
                 '**/feature/dto/**',
                 '**/feature/controller/dto/**',
                 '**/feature/persistence/entity/**',

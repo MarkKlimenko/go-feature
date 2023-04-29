@@ -1,0 +1,69 @@
+{
+  "namespace": {
+    "name": "version"
+  },
+  "filters": [
+    {
+      "name": "iosVersionMore",
+      "parameter": "iosVersion",
+      "operator": "VERSION_MORE",
+      "status": "DISABLED_ON_NULL"
+    },
+    {
+      "name": "iosVersionLess",
+      "parameter": "iosVersion",
+      "operator": "VERSION_LESS",
+      "status": "DISABLED_ON_NULL"
+    },
+    {
+      "name": "androidVersionMore",
+      "parameter": "androidVersion",
+      "operator": "VERSION_MORE",
+      "status": "DISABLED_ON_NULL"
+    },
+    {
+      "name": "androidVersionLess",
+      "parameter": "androidVersion",
+      "operator": "VERSION_LESS",
+      "status": "DISABLED_ON_NULL"
+    }
+  ],
+  "features": [
+    {
+      "name": "testFtEnabled",
+      "filters": [
+        {
+          "name": "iosVersionMore",
+          "value": "13"
+        },
+        {
+          "name": "iosVersionLess",
+          "value": "15"
+        },
+        {
+          "name": "androidVersionMore",
+          "value": "20"
+        },
+        {
+          "name": "androidVersionLess",
+          "value": "25"
+        }
+      ],
+      "description": "Включает testFtEnabled для определенных версий"
+    },
+    {
+      "name": "testFtDisabled",
+      "filters": [
+        {
+          "name": "iosVersionMore",
+          "value": "50"
+        },
+        {
+          "name": "androidVersionMore",
+          "value": "30"
+        }
+      ],
+      "description": "Включает testFtDisabled для новых версий"
+    }
+  ]
+}

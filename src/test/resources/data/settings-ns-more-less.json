@@ -1,0 +1,60 @@
+{
+  "namespace": {
+    "name": "more-less"
+  },
+  "filters": [
+    {
+      "name": "registrationDateMore",
+      "parameter": "registrationDate",
+      "operator": "MORE",
+      "description": "Фильтр по дате регистрации"
+    },
+    {
+      "name": "registrationDateLess",
+      "parameter": "registrationDate",
+      "operator": "LESS",
+      "description": "Фильтр по дате регистрации"
+    }
+  ],
+  "features": [
+    {
+      "name": "ftEnabled1",
+      "filters": [
+        {
+          "name": "registrationDateMore",
+          "value": "120"
+        },
+        {
+          "name": "registrationDateLess",
+          "value": "150"
+        }
+      ]
+    },
+    {
+      "name": "ftEnabled2",
+      "filters": [
+        {
+          "name": "registrationDateMore",
+          "value": "130"
+        },
+        {
+          "name": "registrationDateLess",
+          "value": "160"
+        }
+      ]
+    },
+    {
+      "name": "ftDisabled",
+      "filters": [
+        {
+          "name": "registrationDateMore",
+          "value": "160"
+        },
+        {
+          "name": "registrationDateLess",
+          "value": "170"
+        }
+      ]
+    }
+  ]
+}

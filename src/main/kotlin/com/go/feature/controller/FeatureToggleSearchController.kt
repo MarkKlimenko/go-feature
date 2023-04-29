@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("api/v1/feature-toggle")
-class FeatureToggleController(
+@RequestMapping("api/v1/features/search")
+class FeatureToggleSearchController(
     val featureToggleService: FeatureToggleService
 ) {
-    @PostMapping("find")
+    @PostMapping
     suspend fun findFeatureToggles(
         @RequestBody request: FeatureToggleRequest
     ): FeatureToggleResponse = featureToggleService.findFeatureToggles(request)

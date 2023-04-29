@@ -11,12 +11,17 @@ class FeatureToggleControllerTest : WebIntegrationTest() {
     @ParameterizedTest
     @CsvSource(
         "contains: simple, contains",
-        "contains: multiple value, contains_multi",
+        "contains: multiple values, contains_multi",
         "eq: simple, eq",
+        "more_less: simple, more_less",
+        "version: one of params (ios), version_ios",
+        "version: one of params (android), version_android",
+        "mix: no features for request, mix_no_features",
+        "mix: empty data, mix_empty_data",
     )
     fun ftTest(description: String, type: String) {
         webTestClient.post()
-            .uri("/api/v1/feature-toggle/find")
+            .uri("/api/v1/features/search")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(fileToString("feature/${type}_ft_request.json"))
             .exchange()
@@ -25,4 +30,6 @@ class FeatureToggleControllerTest : WebIntegrationTest() {
             .expectBody()
             .json(fileToString("feature/${type}_ft_response.json"))
     }
+
+    // TODO: default namespace
 }
