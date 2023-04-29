@@ -10,7 +10,7 @@ import com.go.feature.util.exception.ValidationException
 import org.springframework.stereotype.Service
 
 @Service
-class FeatureToggleService(
+class FeatureSearchService(
     val applicationProperties: ApplicationProperties,
     val namespaceRepository: NamespaceRepository,
     val indexService: IndexService,

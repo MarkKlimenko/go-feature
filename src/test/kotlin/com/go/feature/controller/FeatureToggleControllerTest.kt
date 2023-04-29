@@ -31,5 +31,5 @@ class FeatureToggleControllerTest : WebIntegrationTest() {
             .json(fileToString("feature/${type}_ft_response.json"))
     }
 
-    // TODO: default namespace
+    // TODO: check empty default namespace
 }

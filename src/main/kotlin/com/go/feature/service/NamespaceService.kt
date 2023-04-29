@@ -31,13 +31,21 @@ class NamespaceService(
             .toList()
 
         return NamespacesResponse(
-            data = namespaces
+            namespaces = namespaces
         )
     }
+
+    suspend fun getNamespace(id: String): NamespaceResponse =
+        namespaceRepository.findById(id)
+            ?.let { namespaceConverter.convert(it) }
+            ?: throw ValidationException("Namespace not found")
 
     // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun createNamespace(request: NamespaceCreateRequest): NamespaceResponse {
+        namespaceRepository.findByName(request.name)
+            ?.let { throw ValidationException("Namespace already exists") }
+
         val createdNamespace: Namespace = namespaceRepository.save(namespaceConverter.create(request))
 
         indexVersionService.update(createdNamespace.id)
@@ -59,15 +67,17 @@ class NamespaceService(
     }
 
     suspend fun createDefaultNamespace() {
-        if (namespaceRepository.count() == 0L) {
-            val defaultNamespace: String = applicationProperties.namespace.default
+        val defaultNamespace: String = applicationProperties.namespace.default
 
+        if (namespaceRepository.findByName(defaultNamespace) == null) {
             logger.info("Create default namespace with name=$defaultNamespace")
 
-            createNamespace(
-                NamespaceCreateRequest(
-                    name = defaultNamespace,
-                    status = Status.ENABLED
+            namespaceRepository.save(
+                namespaceConverter.create(
+                    NamespaceCreateRequest(
+                        name = defaultNamespace,
+                        status = Status.ENABLED
+                    )
                 )
             )
         }

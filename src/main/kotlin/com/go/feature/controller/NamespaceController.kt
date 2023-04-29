@@ -8,6 +8,7 @@ import com.go.feature.service.NamespaceService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -19,14 +20,19 @@ class NamespaceController(
     @GetMapping
     suspend fun getNamespaces(): NamespacesResponse = namespaceService.getNamespaces()
 
+    @GetMapping("{id}")
+    suspend fun getNamespace(
+        @PathVariable id: String,
+    ): NamespaceResponse = namespaceService.getNamespace(id)
+
     @PostMapping
     suspend fun createNamespace(
-        request: NamespaceCreateRequest
+        @RequestBody request: NamespaceCreateRequest
     ): NamespaceResponse = namespaceService.createNamespace(request)
 
     @PostMapping("{id}")
     suspend fun editNamespace(
         @PathVariable id: String,
-        request: NamespaceEditRequest
+        @RequestBody request: NamespaceEditRequest
     ): NamespaceResponse = namespaceService.editNamespace(id, request)
 }
