@@ -7,6 +7,8 @@ docker run --name go-feature-postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres
 
 ## build application
 ```
+sdk use java 17.0.5-librca
+
 ./gradlew build
 ```
 

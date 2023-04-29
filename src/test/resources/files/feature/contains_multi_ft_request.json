@@ -1,0 +1,13 @@
+{
+  "namespace": "contains",
+  "data": [
+    {
+      "parameter": "userName",
+      "value": "patrik"
+    },
+    {
+      "parameter": "deviceId",
+      "value": "65436346"
+    }
+  ]
+}

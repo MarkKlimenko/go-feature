@@ -10,18 +10,16 @@ import java.io.File
 class SettingsLoaderService(
     val applicationProperties: ApplicationProperties,
     val fileLoaderService: SettingFileLoaderService,
+    val settingsLocation: String
 ) {
     // TODO: use lock between services for external storage
     suspend fun loadSettings() {
         if (applicationProperties.loader.enabled) {
-            val files: Array<File>? = File(applicationProperties.loader.location)
+            val files: Array<File>? = File(settingsLocation)
                 .listFiles { _: File, name: String -> name.endsWith(SETTINGS_FILE_TYPE) }
 
             if (files == null) {
-                logger.warn(
-                    "$LOG_PREFIX Settings location not found; " +
-                        "location=${applicationProperties.loader.location}"
-                )
+                logger.warn("$LOG_PREFIX Settings location not found; location=$settingsLocation")
                 return
             }
 
@@ -29,7 +27,7 @@ class SettingsLoaderService(
                 logger.warn(
                     "$LOG_PREFIX Settings location is empty; " +
                         "fileType=$SETTINGS_FILE_TYPE, " +
-                        "location=${applicationProperties.loader.location}"
+                        "location=$settingsLocation"
                 )
                 return
             }

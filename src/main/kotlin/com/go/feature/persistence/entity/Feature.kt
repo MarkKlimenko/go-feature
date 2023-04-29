@@ -32,6 +32,8 @@ data class Feature(
 
     @field:Version
     val version: Int? = null
+
+    // TODO: implement required data parameters
 ) {
     data class Filter(
         val id: String,

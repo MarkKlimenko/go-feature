@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component
 class FilterComponent(
     filterBuilders: List<FilterBuilder>
 ) {
-    private val filterBuildersMap: Map<FilterOperator, FilterBuilder> = filterBuilders.associateBy { it.getOperator() }
+    private val filterBuildersMap: Map<FilterOperator, FilterBuilder> =
+        filterBuilders.associateBy { it.getOperator() }
 
-    fun getFilterBuilder(operator: FilterOperator): FilterBuilder {
-        return filterBuildersMap[operator]
+    fun getFilterBuilder(operator: FilterOperator): FilterBuilder =
+        filterBuildersMap[operator]
             ?: throw ValidationException("Filter operator '$operator' is not supported for current app version")
-    }
 }

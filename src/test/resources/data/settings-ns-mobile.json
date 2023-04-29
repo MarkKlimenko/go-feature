@@ -13,7 +13,7 @@
       "name": "osEq",
       "parameter": "os",
       "operator": "EQ",
-      "status": "DISABLED",
+      "status": "ENABLED",
       "description": "Фильтр по типу операционной системы"
     },
     {
@@ -84,6 +84,10 @@
           "name": "androidVersionLess",
           "value": "25"
         }
+      ],
+      "requiredDataParameters": [
+        ["iosVersion"],
+        ["androidVersion"]
       ],
       "description": "Включает payments для новых версий"
     },

@@ -8,16 +8,31 @@ buildscript {
     }
 
     ext {
-        // coverageExclusion = ['**/**']
+        coverageExclusion = [
+                '**/feature/dto/**',
+                '**/feature/controller/dto/**',
+                '**/feature/persistence/entity/**',
+                '**/feature/configuration/**',
+                '**/feature/configuration/properties/**',
+                '**/feature/**/exception/**',
+                // '**/**'
+        ]
 
         // versions
         kotlinVersion = "1.7.22"
+        kotlinLoggingVersion = "2.0.11"
+        kotlinJacksonVersion = "2.14.1"
+
         springBootVersion = "2.7.9"
         springCloudVersion = "2021.0.6"
         springManagementVersion = "1.0.15.RELEASE"
-        codeQualityVersion = "1.1"
-        luceneVersion = "9.5.0"
 
+        luceneVersion = "9.5.0"
+        commonsCodecVersion = "1.15"
+        commonsIoVersion = "2.11.0"
+
+        junitVersion = "5.8.1"
+        codeQualityVersion = "1.1"
     }
 }
 
@@ -54,50 +69,54 @@ dependencyManagement {
 }
 
 dependencies {
-    //spring
+    // spring
     implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "org.springframework.boot:spring-boot-starter-validation"
 
     implementation "org.springframework.cloud:spring-cloud-starter-bootstrap"
     implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
 
-    //database
-    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+    // database
+    implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"
 
-    //database - h2
-    implementation("com.h2database:h2")
-    implementation("io.r2dbc:r2dbc-h2")
+    // database - h2
+    implementation "com.h2database:h2"
+    implementation "io.r2dbc:r2dbc-h2"
 
-    //database - postgres
-    implementation("org.postgresql:postgresql")
-    implementation("org.postgresql:r2dbc-postgresql")
+    // database - postgres
+    implementation "org.postgresql:postgresql"
+    implementation "org.postgresql:r2dbc-postgresql"
 
-    //flyway
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("org.flywaydb:flyway-core")
+    // flyway
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
+    implementation "org.flywaydb:flyway-core"
 
-    //index
+    // index
     implementation "org.apache.lucene:lucene-core:$luceneVersion"
     implementation "org.apache.lucene:lucene-queryparser:$luceneVersion"
 
-    //kotlin
+    // kotlin
     implementation "org.jetbrains.kotlin:kotlin-reflect"
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-reactive"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-reactor"
-    implementation "io.github.microutils:kotlin-logging-jvm:2.0.11"
-    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.14.1"
+    implementation "io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$kotlinJacksonVersion"
 
-    //other
-    implementation "commons-codec:commons-codec:1.15"
+    // other
+    implementation "commons-codec:commons-codec:$commonsCodecVersion"
+    implementation "commons-io:commons-io:$commonsIoVersion"
 
-    //annotation processor
+    // annotation processor
     kapt "org.springframework.boot:spring-boot-configuration-processor"
 
-    //test
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.1"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.1"
+    // test
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 }
 
 test {

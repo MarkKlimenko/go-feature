@@ -34,7 +34,7 @@ class IndexLoaderService(
 
     fun isIndexLoaded(): Boolean = isLoaded.get()
 
-    private suspend fun loadIndexes() {
+    suspend fun loadIndexes() {
         logger.debug("$LOG_PREFIX Start index update checker")
 
         indexVersionRepository.findAll()

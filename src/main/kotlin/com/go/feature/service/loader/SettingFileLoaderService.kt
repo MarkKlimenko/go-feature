@@ -29,6 +29,7 @@ class SettingFileLoaderService(
     val filterService: FilterService,
     val featureService: FeatureService,
 ) {
+    // TODO: check constraints before db loading
     @Transactional(rollbackFor = [Exception::class])
     suspend fun loadSettingFile(file: File) {
         val fileByteArray: ByteArray = file.readBytes()
