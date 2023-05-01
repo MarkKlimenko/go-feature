@@ -1,21 +1,21 @@
 package com.go.feature.service.namespace
 
 import com.go.feature.WebIntegrationTest
-import com.go.feature.service.NamespaceService
+import com.go.feature.service.loader.SettingsLoaderService
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class NamespaceServiceTest : WebIntegrationTest() {
+class SettingsLoaderServiceTest : WebIntegrationTest() {
     @Autowired
-    lateinit var namespaceService: NamespaceService
+    lateinit var settingsLoaderService: SettingsLoaderService
 
     @Test
-    fun createDefaultNamespaceTest() {
+    fun loadSettingsTest() {
         // no errors for repeatable method launch
         runBlocking {
-            namespaceService.createDefaultNamespace()
-            namespaceService.createDefaultNamespace()
+            settingsLoaderService.loadSettings()
+            settingsLoaderService.loadSettings()
         }
     }
 }

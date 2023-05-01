@@ -17,12 +17,11 @@ class WebIntegrationTest {
     @Autowired
     lateinit var webTestClient: WebTestClient
 
-
     @Autowired(required = false)
     lateinit var wireMockServer: WireMockServer
 
     @Autowired
-    lateinit var indexLoaderService: IndexLoaderService
+    private lateinit var indexLoaderService: IndexLoaderService
 
     @BeforeEach
     fun init() {
