@@ -67,19 +67,19 @@ class NamespaceService(
     }
 
     suspend fun createDefaultNamespace() {
-        val defaultNamespace: String = applicationProperties.namespace.default
+        val namespaceName: String = applicationProperties.namespace.default
 
-        if (namespaceRepository.findByName(defaultNamespace) == null) {
-            logger.info("Create default namespace with name=$defaultNamespace")
+        if (namespaceRepository.findByName(namespaceName) == null) {
+            logger.info("Create default namespace with name=$namespaceName")
 
-            namespaceRepository.save(
-                namespaceConverter.create(
-                    NamespaceCreateRequest(
-                        name = defaultNamespace,
-                        status = Status.ENABLED
-                    )
+            createNamespace(
+                NamespaceCreateRequest(
+                    name = namespaceName,
+                    status = Status.ENABLED
                 )
             )
+        } else {
+            logger.debug("Default namespace with name=$namespaceName already created")
         }
     }
 

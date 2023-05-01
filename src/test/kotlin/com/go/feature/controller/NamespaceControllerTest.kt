@@ -5,13 +5,22 @@ import com.go.feature.controller.dto.namespace.NamespaceCreateRequest
 import com.go.feature.controller.dto.namespace.NamespaceEditRequest
 import com.go.feature.controller.dto.namespace.NamespaceResponse
 import com.go.feature.dto.status.Status
+import com.go.feature.persistence.entity.IndexVersion
+import com.go.feature.service.IndexVersionService
+import kotlinx.coroutines.reactive.awaitFirst
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
 class NamespaceControllerTest : WebIntegrationTest() {
+    @Autowired
+    lateinit var indexVersionService: IndexVersionService
+
     @Test
     fun getNamespacesTest() {
         webTestClient.get()
@@ -57,37 +66,45 @@ class NamespaceControllerTest : WebIntegrationTest() {
     }
 
     @Test
-    fun editNamespaceTest() {
-        val editedNamespace: NamespaceResponse = createNamespace("forEditingNamespace")
+    fun editNamespaceTest() = runBlocking {
+        val namespace: NamespaceResponse = createNamespace("forEditingNamespace")
 
-        val request = NamespaceEditRequest(
+        val indexVersionBeforeUpdate: IndexVersion = indexVersionService.find(namespace.id)
+            ?: fail("Index version before update is null")
+
+        val editRequest = NamespaceEditRequest(
             name = "editedNamespace",
             status = Status.DISABLED
         )
 
-        val response: NamespaceResponse = webTestClient.post()
-            .uri("/api/v1/namespaces/${editedNamespace.id}")
+        val editedNamespace: NamespaceResponse = webTestClient.post()
+            .uri("/api/v1/namespaces/${namespace.id}")
             .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(request)
+            .bodyValue(editRequest)
             .exchange()
             .expectStatus().isOk
             .returnResult(NamespaceResponse::class.java)
             .responseBody
-            .blockFirst()
+            .awaitFirst()
             ?: fail("Namespace was not returned")
 
-        assertNotNull(response)
-        assertEquals(request.name, response.name)
-        assertEquals(request.status, response.status)
+        assertNotNull(editedNamespace)
+        assertEquals(editRequest.name, editedNamespace.name)
+        assertEquals(editRequest.status, editedNamespace.status)
 
         webTestClient.get()
-            .uri("/api/v1/namespaces/${response.id}")
+            .uri("/api/v1/namespaces/${editedNamespace.id}")
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("$.id").isEqualTo(editedNamespace.id)
-            .jsonPath("$.name").isEqualTo(request.name)
-            .jsonPath("$.status").isEqualTo(request.status.name)
+            .jsonPath("$.id").isEqualTo(namespace.id)
+            .jsonPath("$.name").isEqualTo(editRequest.name)
+            .jsonPath("$.status").isEqualTo(editRequest.status.name)
+
+        val indexVersionAfterUpdate: IndexVersion = indexVersionService.find(editedNamespace.id)
+            ?: fail("Index version before update is null")
+
+        assertTrue(indexVersionBeforeUpdate.indexVersionValue != indexVersionAfterUpdate.indexVersionValue)
     }
 
     @Test
@@ -107,7 +124,7 @@ class NamespaceControllerTest : WebIntegrationTest() {
             .jsonPath("message").isEqualTo("Namespace not found")
     }
 
-    private fun createNamespace(name: String): NamespaceResponse {
+    private fun createNamespace(name: String): NamespaceResponse = runBlocking {
         val request = NamespaceCreateRequest(
             name = name,
             status = Status.ENABLED
@@ -121,7 +138,7 @@ class NamespaceControllerTest : WebIntegrationTest() {
             .expectStatus().isOk
             .returnResult(NamespaceResponse::class.java)
             .responseBody
-            .blockFirst()
+            .awaitFirst()
             ?: fail("Namespace was not returned")
 
         assertEquals(request.name, response.name)
@@ -136,6 +153,9 @@ class NamespaceControllerTest : WebIntegrationTest() {
             .jsonPath("$.name").isEqualTo(request.name)
             .jsonPath("$.status").isEqualTo(request.status.name)
 
-        return response
+        indexVersionService.find(response.id)
+            ?: fail("Index version is null")
+
+        response
     }
 }
