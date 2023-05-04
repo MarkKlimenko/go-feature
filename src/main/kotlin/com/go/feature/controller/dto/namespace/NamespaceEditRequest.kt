@@ -4,5 +4,6 @@ import com.go.feature.dto.status.Status
 
 data class NamespaceEditRequest(
     val name: String,
-    val status: Status
+    val status: Status,
+    val version: Int,
 )

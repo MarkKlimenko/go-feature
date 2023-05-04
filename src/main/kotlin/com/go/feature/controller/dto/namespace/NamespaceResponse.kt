@@ -5,5 +5,6 @@ import com.go.feature.dto.status.Status
 data class NamespaceResponse(
     val id: String,
     val name: String,
-    val status: Status
+    val status: Status,
+    val version: Int
 )

@@ -15,6 +15,7 @@ class NamespaceConverter {
             id = entity.id,
             name = entity.name,
             status = entity.status,
+            version = entity.version!!
         )
     }
 
@@ -37,7 +38,8 @@ class NamespaceConverter {
     fun edit(editedNamespace: Namespace, request: NamespaceEditRequest): Namespace {
         return editedNamespace.copy(
             name = request.name,
-            status = request.status
+            status = request.status,
+            version = request.version
         )
     }
 }

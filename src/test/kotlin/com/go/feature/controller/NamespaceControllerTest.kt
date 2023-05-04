@@ -74,7 +74,8 @@ class NamespaceControllerTest : WebIntegrationTest() {
 
         val editRequest = NamespaceEditRequest(
             name = "editedNamespace",
-            status = Status.DISABLED
+            status = Status.DISABLED,
+            version = namespace.version
         )
 
         val editedNamespace: NamespaceResponse = webTestClient.post()
@@ -111,7 +112,8 @@ class NamespaceControllerTest : WebIntegrationTest() {
     fun editedNamespaceNotFoundTest() {
         val request = NamespaceEditRequest(
             name = "NOT_FOUND",
-            status = Status.DISABLED
+            status = Status.DISABLED,
+            version = 0
         )
 
         webTestClient.post()
