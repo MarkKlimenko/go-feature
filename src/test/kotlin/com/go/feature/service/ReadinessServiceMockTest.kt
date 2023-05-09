@@ -1,4 +1,4 @@
-package com.go.feature.service.namespace
+package com.go.feature.service
 
 import com.go.feature.WebIntegrationTest
 import com.go.feature.controller.dto.service.ProbeResponse

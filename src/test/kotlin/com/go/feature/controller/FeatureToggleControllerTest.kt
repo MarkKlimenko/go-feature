@@ -2,6 +2,7 @@ package com.go.feature.controller
 
 import com.go.feature.WebIntegrationTest
 import com.go.feature.test.utils.fileToString
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.http.MediaType
@@ -18,6 +19,7 @@ class FeatureToggleControllerTest : WebIntegrationTest() {
         "version: one of params (android), version_android",
         "mix: no features for request, mix_no_features",
         "mix: empty data, mix_empty_data",
+        "default: empty namespace / empty property in request, default_empty_namespace",
     )
     fun ftTest(description: String, type: String) {
         webTestClient.post()
@@ -31,5 +33,16 @@ class FeatureToggleControllerTest : WebIntegrationTest() {
             .json(fileToString("feature/${type}_ft_response.json"))
     }
 
-    // TODO: check empty default namespace
+    @Test
+    fun namespaceNotFoundTest() {
+        webTestClient.post()
+            .uri("/api/v1/features/search")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(fileToString("feature/namespace_not_found_ft_request.json"))
+            .exchange()
+            .expectStatus()
+            .is4xxClientError
+            .expectBody()
+            .jsonPath("$.message").isEqualTo("Namespace 'not_found' not found")
+    }
 }

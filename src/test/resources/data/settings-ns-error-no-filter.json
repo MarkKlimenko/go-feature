@@ -1,0 +1,25 @@
+{
+  "namespace": {
+    "name": "error-no-filter"
+  },
+  "filters": [
+    {
+      "name": "iosVersionMore",
+      "parameter": "iosVersion",
+      "operator": "VERSION_MORE",
+      "status": "DISABLED_ON_NULL"
+    }
+  ],
+  "features": [
+    {
+      "name": "testFtEnabled",
+      "filters": [
+        {
+          "name": "androidVersionMore",
+          "value": "13"
+        }
+      ],
+      "description": "Ошибка, фильтр не существует"
+    }
+  ]
+}

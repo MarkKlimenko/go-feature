@@ -1,0 +1,25 @@
+{
+  "namespace": {
+    "name": "error-unsupported-operator"
+  },
+  "filters": [
+    {
+      "name": "iosVersionMore",
+      "parameter": "iosVersion",
+      "operator": "NEW_OPERATOR",
+      "status": "DISABLED_ON_NULL"
+    }
+  ],
+  "features": [
+    {
+      "name": "testFtEnabled",
+      "filters": [
+        {
+          "name": "androidVersionMore",
+          "value": "13"
+        }
+      ],
+      "description": "Ошибка, фильтр не существует"
+    }
+  ]
+}
