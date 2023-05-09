@@ -9,6 +9,7 @@ import com.go.feature.persistence.entity.IndexVersion
 import com.go.feature.service.IndexVersionService
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -66,46 +67,65 @@ class NamespaceControllerTest : WebIntegrationTest() {
     }
 
     @Test
-    fun editNamespaceTest() = runBlocking {
-        val namespace: NamespaceResponse = createNamespace("forEditingNamespace")
+    fun editNamespaceTest() {
+        runBlocking {
+            val namespace: NamespaceResponse = createNamespace("forEditingNamespace")
 
-        val indexVersionBeforeUpdate: IndexVersion = indexVersionService.find(namespace.id)
-            ?: fail("Index version before update is null")
+            val indexVersionBeforeUpdate: IndexVersion = indexVersionService.find(namespace.id)
+                ?: fail("Index version before update is null")
 
-        val editRequest = NamespaceEditRequest(
-            name = "editedNamespace",
-            status = Status.DISABLED,
-            version = namespace.version
-        )
+            val editRequest = NamespaceEditRequest(
+                name = "editedNamespace",
+                status = Status.DISABLED,
+                version = namespace.version
+            )
 
-        val editedNamespace: NamespaceResponse = webTestClient.post()
-            .uri("/api/v1/namespaces/${namespace.id}")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(editRequest)
-            .exchange()
-            .expectStatus().isOk
-            .returnResult(NamespaceResponse::class.java)
-            .responseBody
-            .awaitFirst()
-            ?: fail("Namespace was not returned")
+            val editedNamespace: NamespaceResponse = webTestClient.post()
+                .uri("/api/v1/namespaces/${namespace.id}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(editRequest)
+                .exchange()
+                .expectStatus().isOk
+                .returnResult(NamespaceResponse::class.java)
+                .responseBody
+                .awaitFirst()
+                ?: fail("Namespace was not returned")
 
-        assertNotNull(editedNamespace)
-        assertEquals(editRequest.name, editedNamespace.name)
-        assertEquals(editRequest.status, editedNamespace.status)
+            assertNotNull(editedNamespace)
+            assertEquals(editRequest.name, editedNamespace.name)
+            assertEquals(editRequest.status, editedNamespace.status)
 
-        webTestClient.get()
-            .uri("/api/v1/namespaces/${editedNamespace.id}")
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .jsonPath("$.id").isEqualTo(namespace.id)
-            .jsonPath("$.name").isEqualTo(editRequest.name)
-            .jsonPath("$.status").isEqualTo(editRequest.status.name)
+            webTestClient.get()
+                .uri("/api/v1/namespaces/${editedNamespace.id}")
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(namespace.id)
+                .jsonPath("$.name").isEqualTo(editRequest.name)
+                .jsonPath("$.status").isEqualTo(editRequest.status.name)
 
-        val indexVersionAfterUpdate: IndexVersion = indexVersionService.find(editedNamespace.id)
-            ?: fail("Index version before update is null")
+            val indexVersionAfterUpdate: IndexVersion = indexVersionService.find(editedNamespace.id)
+                ?: fail("Index version before update is null")
 
-        assertTrue(indexVersionBeforeUpdate.indexVersionValue != indexVersionAfterUpdate.indexVersionValue)
+            assertTrue(indexVersionBeforeUpdate.indexVersionValue != indexVersionAfterUpdate.indexVersionValue)
+
+            // update with outdated version
+            val editRequestOutdated = NamespaceEditRequest(
+                name = "editedNamespace",
+                status = Status.DISABLED,
+                version = namespace.version
+            )
+
+            webTestClient.post()
+                .uri("/api/v1/namespaces/${namespace.id}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(editRequestOutdated)
+                .exchange()
+                .expectStatus().is5xxServerError
+                .expectBody()
+                .jsonPath("$.message")
+                .value(Matchers.containsString("Failed to update table [namespaces]. Version does not match for row with Id"))
+        }
     }
 
     @Test
