@@ -19,14 +19,14 @@ data class LoadedSettings(
         val parameter: String,
         val operator: FilterOperator,
         val status: FilterStatus = FilterStatus.ENABLED,
-        val description: String?,
+        val description: String? = null,
     )
 
     data class Feature(
         val name: String,
         val status: Status = Status.ENABLED,
         val filters: List<FeatureFilter>,
-        val description: String?,
+        val description: String? = null,
     )
 
     data class FeatureFilter(

@@ -16,7 +16,6 @@ buildscript {
                 '**/feature/configuration/**',
                 '**/feature/configuration/properties/**',
                 '**/feature/**/exception/**',
-                // '**/**'
         ]
 
         // versions

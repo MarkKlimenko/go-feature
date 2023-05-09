@@ -6,13 +6,6 @@ import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
 import org.apache.lucene.search.TermQuery
 
-fun composeStringStrictEqFilter(field: String, value: String): BooleanClause {
-    return BooleanClause(
-        TermQuery(Term(field, value)),
-        BooleanClause.Occur.MUST
-    )
-}
-
 fun composeStringEqFilter(field: String, value: String?): BooleanClause {
     return if (value == null) {
         BooleanClause(

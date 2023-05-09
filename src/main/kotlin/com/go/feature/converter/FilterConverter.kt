@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class FilterConverter {
-    fun convert(namespaceId: String, filterSettings: List<LoadedSettings.Filter>): List<Filter> {
-        return filterSettings.map {
+    fun convert(namespaceId: String, filterSettings: List<LoadedSettings.Filter>): List<Filter> =
+        filterSettings.map {
             Filter(
                 id = randomId(),
                 name = it.name,
@@ -19,5 +19,4 @@ class FilterConverter {
                 description = it.description
             )
         }
-    }
 }

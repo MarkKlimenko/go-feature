@@ -50,7 +50,8 @@
       "name": "registrationDateMore",
       "parameter": "registrationDate",
       "operator": "MORE",
-      "description": "Фильтр по дате регистрациии"
+      "description": "Фильтр по дате регистрациии",
+      "status": "DISABLED"
     },
     {
       "name": "registrationDateLess",
@@ -94,6 +95,16 @@
     {
       "name": "enableAdvancedScroll",
       "status": "ENABLED",
+      "filters": [
+        {
+          "name": "userNameContains",
+          "value": "patrik crabs"
+        }
+      ]
+    },
+    {
+      "name": "enableAdvancedScrollDisabled",
+      "status": "DISABLED",
       "filters": [
         {
           "name": "userNameContains",

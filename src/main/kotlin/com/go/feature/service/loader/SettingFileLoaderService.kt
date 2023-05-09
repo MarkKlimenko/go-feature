@@ -32,7 +32,10 @@ class SettingFileLoaderService(
     // TODO: check constraints before db loading
     @Transactional(rollbackFor = [Exception::class])
     suspend fun loadSettingFile(file: File) {
-        val fileByteArray: ByteArray = file.readBytes()
+        loadSettingFile(file.readBytes())
+    }
+
+    suspend fun loadSettingFile(fileByteArray: ByteArray) {
         val configHash: String = DigestUtils.md5Hex(fileByteArray)
         val settings: LoadedSettings = parseSettings(fileByteArray)
 

@@ -1,10 +1,10 @@
 package com.go.feature.converter
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.go.feature.converter.util.getFilterIdByName
 import com.go.feature.dto.settings.loader.LoadedSettings
 import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.entity.Filter
-import com.go.feature.util.exception.ValidationException
 import com.go.feature.util.randomId
 import org.springframework.stereotype.Component
 
@@ -17,12 +17,11 @@ class FeatureConverter(
         namespaceId: String,
         featureSettings: List<LoadedSettings.Feature>,
         nameToFilterMap: Map<String, Filter>
-    ): List<Feature> {
-        return featureSettings.map {
+    ): List<Feature> =
+        featureSettings.map {
             val featureFilters: List<Feature.Filter> = it.filters.map { filter ->
                 Feature.Filter(
-                    id = nameToFilterMap[filter.name]?.id
-                        ?: throw ValidationException("No filter with name=${filter.name}"),
+                    id = getFilterIdByName(nameToFilterMap, filter.name),
                     value = filter.value
                 )
             }
@@ -36,5 +35,4 @@ class FeatureConverter(
                 description = it.description
             )
         }
-    }
 }
