@@ -142,8 +142,6 @@ class IndexService(
 
     private companion object : KLogging() {
         const val LOG_PREFIX = "INDEX_LOADER:"
-
-        // TODO: return more than 1000
         const val FEATURES_COUNT_FOR_SEARCH = 1000
     }
 }

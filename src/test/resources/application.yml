@@ -42,3 +42,8 @@ spring:
     baseline-on-migrate: true
     baseline-version: 0
     clean-on-validation-error: false
+
+logging:
+  http:
+    web-flux:
+      extended-logging-enabled: true
