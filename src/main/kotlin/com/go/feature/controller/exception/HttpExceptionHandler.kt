@@ -3,6 +3,7 @@ package com.go.feature.controller.exception
 import com.go.feature.util.exception.ValidationException
 import mu.KLogging
 import org.springframework.cloud.sleuth.Tracer
+import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -19,6 +20,12 @@ class HttpExceptionHandler(
 
         logger.error("Validation exception: $message")
         return ResponseEntity(createResponse(message), HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException::class)
+    fun optimisticLockExceptionHandler(e: OptimisticLockingFailureException): ResponseEntity<ErrorResponse> {
+        logger.warn("OptimisticLockingFailure: ", e)
+        return ResponseEntity(createResponse(e.message), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(Exception::class)

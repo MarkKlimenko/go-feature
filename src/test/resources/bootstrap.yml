@@ -1,0 +1,5 @@
+---
+embedded:
+  postgresql:
+    enabled: true
+    reuseContainer: true

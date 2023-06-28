@@ -43,6 +43,8 @@ class NamespaceService(
     // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun createNamespace(request: NamespaceCreateRequest): NamespaceResponse {
+        checkStorageForUpdateAction()
+
         namespaceRepository.findByName(request.name)
             ?.let { throw ValidationException("Namespace already exists") }
 
@@ -56,6 +58,8 @@ class NamespaceService(
     // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun editNamespace(id: String, request: NamespaceEditRequest): NamespaceResponse {
+        checkStorageForUpdateAction()
+
         val requiredNamespace: Namespace = namespaceRepository.findById(id)
             ?: throw ValidationException("Namespace not found")
 
@@ -72,12 +76,11 @@ class NamespaceService(
         if (namespaceRepository.findByName(namespaceName) == null) {
             logger.info("Create default namespace with name=$namespaceName")
 
-            createNamespace(
-                NamespaceCreateRequest(
-                    name = namespaceName,
-                    status = Status.ENABLED
-                )
+            val createdNamespace: Namespace = namespaceRepository.save(
+                namespaceConverter.create(namespaceName, Status.ENABLED)
             )
+
+            indexVersionService.update(createdNamespace.id)
         } else {
             logger.debug("Default namespace with name=$namespaceName already created")
         }
@@ -86,6 +89,12 @@ class NamespaceService(
     suspend fun getNamespaceForSettings(settings: LoadedSettings): Namespace {
         return namespaceRepository.findByName(settings.namespace.name)
             ?: namespaceRepository.save(namespaceConverter.create(settings.namespace))
+    }
+
+    private fun checkStorageForUpdateAction() {
+        if (!applicationProperties.storage.enabled) {
+            throw ValidationException("Operation not supported, storage disabled")
+        }
     }
 
     private companion object : KLogging()

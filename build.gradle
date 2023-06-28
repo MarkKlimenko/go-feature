@@ -118,10 +118,14 @@ dependencies {
     // test
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
+
     testImplementation "org.mockito.kotlin:mockito-kotlin:$kotlinMockitoVersion"
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+
+    testImplementation "com.playtika.testcontainers:embedded-postgresql:2.3.2"
 }
 
 test {

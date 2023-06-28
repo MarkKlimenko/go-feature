@@ -17,32 +17,14 @@ import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.test.context.TestPropertySource
 
-class NamespaceControllerTest : WebIntegrationTest() {
+@TestPropertySource(properties = [
+    "spring.config.location = classpath:application-storage-enabled.yml"
+])
+class NamespaceControllerStorageEnabledTest : WebIntegrationTest() {
     @Autowired
     lateinit var indexVersionService: IndexVersionService
-
-    @Test
-    fun getNamespacesTest() {
-        webTestClient.get()
-            .uri("/api/v1/namespaces")
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .jsonPath("$.namespaces[0].id").isNotEmpty
-            .jsonPath("$.namespaces[0].name").isNotEmpty
-            .jsonPath("$.namespaces[0].status").isNotEmpty
-    }
-
-    @Test
-    fun getNotFoundNamespaceTest() {
-        webTestClient.get()
-            .uri("/api/v1/namespaces/NOT_FOUND")
-            .exchange()
-            .expectStatus().is4xxClientError
-            .expectBody()
-            .jsonPath("message").isEqualTo("Namespace not found")
-    }
 
     @Test
     fun createNamespaceTest() {
@@ -121,7 +103,7 @@ class NamespaceControllerTest : WebIntegrationTest() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(editRequestOutdated)
                 .exchange()
-                .expectStatus().is5xxServerError
+                .expectStatus().is4xxClientError
                 .expectBody()
                 .jsonPath("$.message")
                 .value(Matchers.containsString("Failed to update table [namespaces]. Version does not match for row with Id"))

@@ -3,14 +3,14 @@ application:
   namespace:
     default: default
   storage:
-    enabled: false
+    enabled: true
     database:
-      url: postgresql://localhost:5432/postgres
-      username: postgres
-      password: postgres
-  loader: # settings loader uploads settings if storage disabled or storage empty or force-update enabled
+      url: postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
+      username: ${embedded.postgresql.user}
+      password: ${embedded.postgresql.password}
+  loader:
     type: directory
-    enabled: false
+    enabled: true
     force-update: false
     location: /data
   index:

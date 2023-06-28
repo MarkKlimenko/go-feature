@@ -41,5 +41,5 @@ class PostMigrationCallback(
 
     override fun getCallbackName(): String = PostMigrationCallback::class.java.simpleName
 
-    companion object : KLogging()
+    private companion object : KLogging()
 }
