@@ -42,3 +42,12 @@ spring:
     baseline-on-migrate: true
     baseline-version: 0
     clean-on-validation-error: false
+
+logging:
+  http:
+    client-errors-level: INFO
+    uris:
+      exclude:
+        - "/service.*"
+    body:
+      enabled: true

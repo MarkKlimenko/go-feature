@@ -32,8 +32,10 @@ buildscript {
         commonsCodecVersion = "1.15"
         commonsIoVersion = "2.11.0"
 
+        loggerVersion = "1.2.1"
+
         junitVersion = "5.8.1"
-        codeQualityVersion = "1.1"
+        codeQualityVersion = "1.2.1"
     }
 }
 
@@ -60,6 +62,7 @@ java {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -109,8 +112,8 @@ dependencies {
     implementation "commons-codec:commons-codec:$commonsCodecVersion"
     implementation "commons-io:commons-io:$commonsIoVersion"
 
-    // annotation processor
-    kapt "org.springframework.boot:spring-boot-configuration-processor"
+    // log
+    implementation "com.markklim.libs:ginger-log:$loggerVersion"
 
     // test
     testImplementation "org.springframework.boot:spring-boot-starter-test"
