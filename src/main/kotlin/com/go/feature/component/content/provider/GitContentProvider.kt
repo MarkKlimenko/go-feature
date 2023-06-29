@@ -19,6 +19,7 @@ class GitContentProvider : ContentProvider {
             git = Git.open(File("tmp/setting/git"))
             git.pull().call()
             // TODO: update here
+            // test changes
         } catch (e: RepositoryNotFoundException) {
             logger.debug("Local repository not found")
         }
