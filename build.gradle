@@ -108,12 +108,15 @@ dependencies {
     implementation "io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$kotlinJacksonVersion"
 
-    // other
+    // commons
     implementation "commons-codec:commons-codec:$commonsCodecVersion"
     implementation "commons-io:commons-io:$commonsIoVersion"
 
     // log
     implementation "com.markklim.libs:ginger-log:$loggerVersion"
+
+    // git
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:6.6.0.202305301015-r'
 
     // test
     testImplementation "org.springframework.boot:spring-boot-starter-test"

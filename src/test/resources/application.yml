@@ -9,8 +9,8 @@ application:
       username: postgres
       password: postgres
   loader:
-    type: directory
     enabled: true
+    type: directory
     force-update: false
     location: /data
   index:

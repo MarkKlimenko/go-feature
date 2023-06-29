@@ -9,8 +9,8 @@ application:
       username: postgres
       password: postgres
   loader: # settings loader uploads settings if storage disabled or storage empty or force-update enabled
-    type: directory
     enabled: false
+    type: directory
     force-update: false
     location: /data
   index:
