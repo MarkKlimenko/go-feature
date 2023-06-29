@@ -1,7 +1,7 @@
 package com.go.feature.configuration.flyway
 
 import com.go.feature.service.NamespaceService
-import com.go.feature.service.loader.SettingsLoaderService
+import com.go.feature.service.loader.settings.SettingsLoaderService
 import kotlinx.coroutines.runBlocking
 import mu.KLogging
 import org.flywaydb.core.api.callback.Callback

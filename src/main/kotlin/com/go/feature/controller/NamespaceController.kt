@@ -35,4 +35,6 @@ class NamespaceController(
         @PathVariable id: String,
         @RequestBody request: NamespaceEditRequest
     ): NamespaceResponse = namespaceService.editNamespace(id, request)
+
+    // TODO: Add DELETE namespace controller
 }

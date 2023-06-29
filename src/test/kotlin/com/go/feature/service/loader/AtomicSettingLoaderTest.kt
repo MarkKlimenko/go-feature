@@ -1,6 +1,7 @@
 package com.go.feature.service.loader
 
 import com.go.feature.WebIntegrationTest
+import com.go.feature.service.loader.settings.AtomicSettingsLoader
 import com.go.feature.test.utils.setting.SettingsProviderUtil
 import com.go.feature.util.exception.ValidationException
 import kotlinx.coroutines.runBlocking
@@ -14,11 +15,11 @@ import org.springframework.boot.test.system.CapturedOutput
 import org.springframework.boot.test.system.OutputCaptureExtension
 
 @ExtendWith(OutputCaptureExtension::class)
-class SettingFileLoaderServiceTest : WebIntegrationTest() {
+class AtomicSettingLoaderTest : WebIntegrationTest() {
     val settingsProviderUtil = SettingsProviderUtil()
 
     @Autowired
-    lateinit var settingFileLoaderService: SettingFileLoaderService
+    lateinit var settingsLoaderAtomicService: AtomicSettingsLoader
 
     @Test
     fun loadSettingsWithMaxPossibleFiltersSize(output: CapturedOutput) {
@@ -29,7 +30,7 @@ class SettingFileLoaderServiceTest : WebIntegrationTest() {
         )
 
         runBlocking {
-            settingFileLoaderService.loadSettingFile(settings)
+            settingsLoaderAtomicService.loadSettingFile(settings)
         }
 
         assertTrue(
@@ -47,7 +48,7 @@ class SettingFileLoaderServiceTest : WebIntegrationTest() {
 
         runBlocking {
             val e: ValidationException = assertThrows {
-                settingFileLoaderService.loadSettingFile(settings)
+                settingsLoaderAtomicService.loadSettingFile(settings)
             }
 
             assertEquals("Enabled filters size exceeds 20", e.message)
@@ -64,7 +65,7 @@ class SettingFileLoaderServiceTest : WebIntegrationTest() {
 
         runBlocking {
             val e: ValidationException = assertThrows {
-                settingFileLoaderService.loadSettingFile(settings)
+                settingsLoaderAtomicService.loadSettingFile(settings)
             }
 
             assertEquals("Enabled features size exceeds 100", e.message)

@@ -1,4 +1,4 @@
-package com.go.feature.service.loader
+package com.go.feature.service.loader.settings
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -18,10 +18,9 @@ import mu.KLogging
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.io.File
 
 @Service
-class SettingFileLoaderService(
+class AtomicSettingsLoader(
     val applicationProperties: ApplicationProperties,
     val objectMapper: ObjectMapper,
     val indexVersionService: IndexVersionService,
@@ -31,10 +30,6 @@ class SettingFileLoaderService(
 ) {
     // TODO: check constraints before db loading
     @Transactional(rollbackFor = [Exception::class])
-    suspend fun loadSettingFile(file: File) {
-        loadSettingFile(file.readBytes())
-    }
-
     suspend fun loadSettingFile(fileByteArray: ByteArray) {
         val configHash: String = DigestUtils.md5Hex(fileByteArray)
         val settings: LoadedSettings = parseSettings(fileByteArray)

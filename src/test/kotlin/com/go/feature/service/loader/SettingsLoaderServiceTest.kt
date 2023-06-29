@@ -1,7 +1,10 @@
 package com.go.feature.service.loader
 
 import com.go.feature.WebIntegrationTest
+import com.go.feature.component.content.provider.ContentProvider
 import com.go.feature.configuration.properties.ApplicationProperties
+import com.go.feature.service.loader.settings.AtomicSettingsLoader
+import com.go.feature.service.loader.settings.SettingsLoaderService
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -19,10 +22,13 @@ class SettingsLoaderServiceTest : WebIntegrationTest() {
     lateinit var applicationProperties: ApplicationProperties
 
     @Autowired
-    lateinit var fileLoaderService: SettingFileLoaderService
+    lateinit var fileLoaderService: AtomicSettingsLoader
 
     @Autowired
     lateinit var settingsLocation: String
+
+    @Autowired
+    lateinit var settingsContentProvider: ContentProvider
 
     @Test
     fun loadSettingsTest(output: CapturedOutput) {
@@ -47,7 +53,8 @@ class SettingsLoaderServiceTest : WebIntegrationTest() {
         val settingsLoaderService = SettingsLoaderService(
             applicationProperties,
             fileLoaderService,
-            "$settingsLocation/not_found"
+            "$settingsLocation/not_found",
+            settingsContentProvider
         )
 
         runBlocking {
@@ -55,7 +62,7 @@ class SettingsLoaderServiceTest : WebIntegrationTest() {
         }
 
         assertTrue(
-            output.out.contains("SETTINGS_LOADER: Settings location not found")
+            output.out.contains("Settings location not found")
         )
     }
 
@@ -64,7 +71,8 @@ class SettingsLoaderServiceTest : WebIntegrationTest() {
         val settingsLoaderService = SettingsLoaderService(
             applicationProperties,
             fileLoaderService,
-            "$settingsLocation/empty"
+            "$settingsLocation/empty",
+            settingsContentProvider
         )
 
         runBlocking {

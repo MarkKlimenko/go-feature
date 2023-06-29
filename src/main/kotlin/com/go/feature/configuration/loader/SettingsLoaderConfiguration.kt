@@ -1,6 +1,11 @@
 package com.go.feature.configuration.loader
 
+import com.go.feature.component.content.provider.ContentProvider
+import com.go.feature.component.content.provider.FileContentProvider
+import com.go.feature.component.content.provider.GitContentProvider
 import com.go.feature.configuration.properties.ApplicationProperties
+import com.go.feature.configuration.properties.ApplicationProperties.LoaderType.DIRECTORY
+import com.go.feature.configuration.properties.ApplicationProperties.LoaderType.GIT
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -8,6 +13,9 @@ import org.springframework.context.annotation.Configuration
 class SettingsLoaderConfiguration {
 
     @Bean
-    fun settingsLocation(properties: ApplicationProperties): String =
-        properties.loader.location
+    fun settingsContentProvider(properties: ApplicationProperties): ContentProvider =
+        when (properties.loader.type) {
+            DIRECTORY -> FileContentProvider()
+            GIT -> GitContentProvider()
+        }
 }

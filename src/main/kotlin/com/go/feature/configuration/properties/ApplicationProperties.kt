@@ -23,8 +23,13 @@ data class ApplicationProperties(
     )
 
     data class Loader(
+        val type: LoaderType,
         val enabled: Boolean,
         val forceUpdate: Boolean,
         val location: String
     )
+
+    enum class LoaderType {
+        DIRECTORY, GIT
+    }
 }

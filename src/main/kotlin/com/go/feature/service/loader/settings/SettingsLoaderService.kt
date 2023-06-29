@@ -1,29 +1,24 @@
-package com.go.feature.service.loader
+package com.go.feature.service.loader.settings
 
+import com.go.feature.component.content.provider.ContentProvider
 import com.go.feature.configuration.properties.ApplicationProperties
 import com.go.feature.util.exception.ValidationException
 import mu.KLogging
 import org.springframework.stereotype.Service
-import java.io.File
 
 @Service
 class SettingsLoaderService(
     val applicationProperties: ApplicationProperties,
-    val fileLoaderService: SettingFileLoaderService,
-    val settingsLocation: String
+    val atomicSettingsLoader: AtomicSettingsLoader,
+    val settingsLocation: String,
+    val settingsContentProvider: ContentProvider,
 ) {
     // TODO: use lock between services for external storage
     suspend fun loadSettings() {
         if (applicationProperties.loader.enabled) {
-            val files: Array<File>? = File(settingsLocation)
-                .listFiles { _: File, name: String -> name.endsWith(SETTINGS_FILE_TYPE) }
+            val content: List<ByteArray> = settingsContentProvider.getContent(settingsLocation, SETTINGS_FILE_TYPE)
 
-            if (files == null) {
-                logger.warn("$LOG_PREFIX Settings location not found; location=$settingsLocation")
-                return
-            }
-
-            if (files.isEmpty()) {
+            if (content.isEmpty()) {
                 logger.warn(
                     "$LOG_PREFIX Settings location is empty; " +
                         "fileType=$SETTINGS_FILE_TYPE, " +
@@ -32,9 +27,9 @@ class SettingsLoaderService(
                 return
             }
 
-            files.forEach {
+            content.forEach {
                 try {
-                    fileLoaderService.loadSettingFile(it)
+                    atomicSettingsLoader.loadSettingFile(it)
                 } catch (e: ValidationException) {
                     logger.error("Error: ${e.message}")
                 } catch (e: Exception) {
