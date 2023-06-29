@@ -9,10 +9,10 @@ import java.io.File
 class GitContentProvider : ContentProvider {
     override fun getContent(location: String, fileType: String): List<ByteArray> {
         Git.cloneRepository()
-            .setURI("https://github.com/eclipse/jgit.git")
-            .setDirectory(File("/data/setting/git"))
+            .setURI("https://github.com/MarkKlimenko/go-feature.git")
+            .setDirectory(File("tmp/setting/git"))
             .setBranch("settings")
-            .call();
+            .call()
 
         TODO("Not yet implemented")
     }
