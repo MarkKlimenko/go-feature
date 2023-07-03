@@ -9,13 +9,12 @@ application:
       username: postgres
       password: postgres
   loader:
-    enabled: true
     type: git
     force-update: false
     location: src/test/resources/data/git
     git:
       uri: https://github.com/MarkKlimenko/go-feature.git
-      branch: feature/implement_git_settings_loader
+      branch: main
       localDirectory: tmp/setting/git
   index:
     ttl: 60000

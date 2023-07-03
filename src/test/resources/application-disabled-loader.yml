@@ -9,9 +9,9 @@ application:
       username: postgres
       password: postgres
   loader:
-    type: directory
+    type: disabled
     force-update: false
-    location: /data
+    location: src/test/resources/data/git
     git:
       branch: main
       localDirectory: tmp/setting/git

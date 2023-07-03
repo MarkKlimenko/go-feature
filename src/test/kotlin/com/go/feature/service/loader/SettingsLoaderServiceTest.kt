@@ -2,7 +2,6 @@ package com.go.feature.service.loader
 
 import com.go.feature.WebIntegrationTest
 import com.go.feature.component.content.provider.ContentProvider
-import com.go.feature.configuration.properties.ApplicationProperties
 import com.go.feature.service.loader.settings.AtomicSettingsLoader
 import com.go.feature.service.loader.settings.SettingsLoaderService
 import kotlinx.coroutines.runBlocking
@@ -17,9 +16,6 @@ import org.springframework.boot.test.system.OutputCaptureExtension
 class SettingsLoaderServiceTest : WebIntegrationTest() {
     @Autowired
     lateinit var settingsLoaderService: SettingsLoaderService
-
-    @Autowired
-    lateinit var applicationProperties: ApplicationProperties
 
     @Autowired
     lateinit var fileLoaderService: AtomicSettingsLoader
@@ -51,7 +47,6 @@ class SettingsLoaderServiceTest : WebIntegrationTest() {
     @Test
     fun notFoundSettingsLocation(output: CapturedOutput) {
         val settingsLoaderService = SettingsLoaderService(
-            applicationProperties,
             fileLoaderService,
             "$settingsLocation/not_found",
             settingsContentProvider
@@ -69,7 +64,6 @@ class SettingsLoaderServiceTest : WebIntegrationTest() {
     @Test
     fun emptySettingsLocation(output: CapturedOutput) {
         val settingsLoaderService = SettingsLoaderService(
-            applicationProperties,
             fileLoaderService,
             "$settingsLocation/empty",
             settingsContentProvider

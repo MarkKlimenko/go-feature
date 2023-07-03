@@ -15,6 +15,7 @@ application:
     location: /data
     git:
       localDirectory: tmp/setting/git
+      branch: main
   index:
     ttl: 60000
 

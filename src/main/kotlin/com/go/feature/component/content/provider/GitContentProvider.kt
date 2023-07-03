@@ -6,9 +6,9 @@ import org.eclipse.jgit.errors.RepositoryNotFoundException
 import java.io.File
 
 class GitContentProvider(
-    val uri: String,
-    val localDirectory: String,
-    val branch: String,
+    private val uri: String,
+    private val localDirectory: String,
+    private val branch: String,
 ) : ContentProvider {
     private val fileContentProvider = FileContentProvider()
 
@@ -23,7 +23,7 @@ class GitContentProvider(
                 val git = Git.open(File(localDirectory))
                 git.pull().call()
                 true
-            } catch (e: RepositoryNotFoundException) {
+            } catch (ignored: RepositoryNotFoundException) {
                 logger.debug("$LOG_PREFIX Local repository not found")
                 false
             }

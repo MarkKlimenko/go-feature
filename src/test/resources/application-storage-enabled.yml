@@ -10,9 +10,11 @@ application:
       password: ${embedded.postgresql.password}
   loader:
     type: directory
-    enabled: true
     force-update: false
     location: /data
+    git:
+      branch: main
+      localDirectory: tmp/setting/git
   index:
     ttl: 60000
 

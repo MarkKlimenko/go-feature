@@ -24,19 +24,18 @@ data class ApplicationProperties(
 
     data class Loader(
         val type: LoaderType,
-        val enabled: Boolean,
         val forceUpdate: Boolean,
         val location: String,
         val git: GitLoader
     )
 
-    data class GitLoader (
-        val uri: String,
+    data class GitLoader(
+        val uri: String?,
         val localDirectory: String,
         val branch: String,
     )
 
     enum class LoaderType {
-        DIRECTORY, GIT
+        DISABLED, DIRECTORY, GIT
     }
 }
