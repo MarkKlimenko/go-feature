@@ -8,12 +8,14 @@ application:
       url: postgresql://localhost:5432/postgres
       username: postgres
       password: postgres
-  loader: # settings loader uploads settings if storage disabled or storage empty or force-update enabled
-    enabled: false
-    type: directory
+  loader:
+    enabled: true
+    type: git
     force-update: false
-    location: /data
+    location: src/test/resources/data/git
     git:
+      uri: https://github.com/MarkKlimenko/go-feature.git
+      branch: feature/implement_git_settings_loader
       localDirectory: tmp/setting/git
   index:
     ttl: 60000

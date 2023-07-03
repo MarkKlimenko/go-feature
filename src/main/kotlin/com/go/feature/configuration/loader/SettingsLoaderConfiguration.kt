@@ -16,6 +16,10 @@ class SettingsLoaderConfiguration {
     fun settingsContentProvider(properties: ApplicationProperties): ContentProvider =
         when (properties.loader.type) {
             DIRECTORY -> FileContentProvider()
-            GIT -> GitContentProvider()
+            GIT -> GitContentProvider(
+                uri = properties.loader.git.uri,
+                localDirectory = properties.loader.git.localDirectory,
+                branch = properties.loader.git.branch,
+            )
         }
 }

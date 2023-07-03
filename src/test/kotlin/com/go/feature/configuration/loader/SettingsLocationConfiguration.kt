@@ -9,6 +9,10 @@ class SettingsLocationConfiguration {
 
     @Bean
     fun settingsLocation(properties: ApplicationProperties): String =
-        this.javaClass.getResource(properties.loader.location)?.toURI()?.path
-            ?: throw IllegalArgumentException("test resource not found")
+        if (properties.loader.type == ApplicationProperties.LoaderType.DIRECTORY) {
+            this.javaClass.getResource(properties.loader.location)?.toURI()?.path
+                ?: throw IllegalArgumentException("test resource not found")
+        } else {
+            properties.loader.location
+        }
 }

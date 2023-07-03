@@ -3,41 +3,39 @@ package com.go.feature.component.content.provider
 import mu.KLogging
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.errors.RepositoryNotFoundException
-import org.eclipse.jgit.internal.storage.file.FileRepository
-import org.eclipse.jgit.transport.URIish
 import java.io.File
 
-// TODO: implement git loader
-// git show
-class GitContentProvider : ContentProvider {
+class GitContentProvider(
+    val uri: String,
+    val localDirectory: String,
+    val branch: String,
+) : ContentProvider {
+    private val fileContentProvider = FileContentProvider()
+
     override fun getContent(location: String, fileType: String): List<ByteArray> {
+        retrieveRepositoryFiles()
+        return fileContentProvider.getContent("$localDirectory/$location", fileType)
+    }
 
-        var git: Git? = null
+    private fun retrieveRepositoryFiles() {
+        val isRepositoryExists: Boolean =
+            try {
+                val git = Git.open(File(localDirectory))
+                git.pull().call()
+                true
+            } catch (e: RepositoryNotFoundException) {
+                logger.debug("$LOG_PREFIX Local repository not found")
+                false
+            }
 
-        // try to create and update repository
-        try {
-            git = Git.open(File("tmp/setting/git"))
-            git.pull().call()
-            // TODO: update here
-            // test changes
-        } catch (e: RepositoryNotFoundException) {
-            logger.debug("Local repository not found")
-        }
-
-        if(git == null) {
-            git = Git.cloneRepository()
-                .setURI("https://github.com/MarkKlimenko/go-feature.git")
-                .setDirectory(File("tmp/setting/git"))
-                .setBranch("feature/implement_git_settings_loader")
+        if (!isRepositoryExists) {
+            Git.cloneRepository()
+                .setURI(uri)
+                .setDirectory(File(localDirectory))
+                .setBranch(branch)
                 .setDepth(1)
                 .call()
         }
-
-
-        //todo: get files
-
-
-        TODO("Not yet implemented")
     }
 
     private companion object : KLogging() {
