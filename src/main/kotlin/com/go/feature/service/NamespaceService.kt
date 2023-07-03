@@ -23,6 +23,8 @@ class NamespaceService(
     val namespaceRepository: NamespaceRepository,
     val namespaceConverter: NamespaceConverter,
     val indexVersionService: IndexVersionService,
+    val filterService: FilterService,
+    val featureService: FeatureService,
 ) {
 
     suspend fun getNamespaces(): NamespacesResponse {
@@ -70,6 +72,16 @@ class NamespaceService(
         return namespaceConverter.convert(editedNamespace)
     }
 
+    @Transactional(rollbackFor = [Exception::class])
+    suspend fun deleteNamespace(id: String) {
+        checkStorageForUpdateAction()
+
+        filterService.deleteAllForNamespace(id)
+        featureService.deleteAllForNamespace(id)
+        indexVersionService.deleteAllForNamespace(id)
+        namespaceRepository.deleteById(id)
+    }
+
     suspend fun createDefaultNamespace() {
         val namespaceName: String = applicationProperties.namespace.default
 
@@ -86,7 +98,7 @@ class NamespaceService(
         }
     }
 
-    suspend fun getNamespaceForSettings(settings: LoadedSettings): Namespace {
+    suspend fun prepareNamespaceForSettings(settings: LoadedSettings): Namespace {
         return namespaceRepository.findByName(settings.namespace.name)
             ?: namespaceRepository.save(namespaceConverter.create(settings.namespace))
     }

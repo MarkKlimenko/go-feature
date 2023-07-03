@@ -4,10 +4,12 @@ import com.go.feature.WebIntegrationTest
 import com.go.feature.controller.dto.namespace.NamespaceCreateRequest
 import com.go.feature.controller.dto.namespace.NamespaceEditRequest
 import com.go.feature.controller.dto.namespace.NamespaceResponse
+import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.dto.status.Status
 import com.go.feature.persistence.entity.IndexVersion
 import com.go.feature.service.IndexVersionService
 import kotlinx.coroutines.reactive.awaitFirst
+import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -126,6 +128,36 @@ class NamespaceControllerStorageEnabledTest : WebIntegrationTest() {
             .expectStatus().is4xxClientError
             .expectBody()
             .jsonPath("message").isEqualTo("Namespace not found")
+    }
+
+    @Test
+    fun deleteNamespaceTest() {
+        runBlocking {
+
+            val response: NamespacesResponse = webTestClient.get()
+                .uri("/api/v1/namespaces")
+                .exchange()
+                .expectStatus().isOk
+                .returnResult(NamespacesResponse::class.java)
+                .responseBody
+                .awaitSingle()
+
+            val namespace: NamespaceResponse = response.namespaces
+                .find { it.name == "for-delete" }
+                ?: fail("Namespace was not found")
+
+            webTestClient.delete()
+                .uri("/api/v1/namespaces/${namespace.id}")
+                .exchange()
+                .expectStatus().isOk
+
+            webTestClient.get()
+                .uri("/api/v1/namespaces/${namespace.id}")
+                .exchange()
+                .expectStatus().is4xxClientError
+                .expectBody()
+                .jsonPath("message").isEqualTo("Namespace not found")
+        }
     }
 
     private fun createNamespace(name: String): NamespaceResponse = runBlocking {

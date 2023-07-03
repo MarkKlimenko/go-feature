@@ -1,0 +1,69 @@
+{
+  "namespace": {
+    "name": "for-delete"
+  },
+  "filters": [
+    {
+      "name": "userNameContains",
+      "parameter": "userName",
+      "operator": "CONTAINS",
+      "description": "Фильтр по имени пользователя (можно внести список имен пользователей, на которые будет распространена фича, спецсимволы применять нельзя)"
+    },
+    {
+      "name": "deviceIdContains",
+      "parameter": "deviceId",
+      "operator": "CONTAINS",
+      "description": "Фильтр по deviceId (можно внести список deviceId, на которые будет распространена фича, спецсимволы применять нельзя)"
+    }
+  ],
+  "features": [
+    {
+      "name": "testFeature",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "userNameContains",
+          "value": "patrik crabs"
+        }
+      ]
+    },
+    {
+      "name": "testFeature2",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "userNameContains",
+          "value": "crabs sandy"
+        }
+      ]
+    },
+    {
+      "name": "testFeatureMulti",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "userNameContains",
+          "value": "patrik crabs"
+        },
+        {
+          "name": "deviceIdContains",
+          "value": "423535 65436346"
+        }
+      ]
+    },
+    {
+      "name": "testFeatureRestricted",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "userNameContains",
+          "value": "restricted"
+        },
+        {
+          "name": "deviceIdContains",
+          "value": "000000"
+        }
+      ]
+    }
+  ]
+}

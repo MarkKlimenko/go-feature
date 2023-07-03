@@ -34,7 +34,7 @@ class AtomicSettingsLoader(
         val configHash: String = DigestUtils.md5Hex(fileByteArray)
         val settings: LoadedSettings = parseSettings(fileByteArray)
 
-        val namespace: Namespace = namespaceService.getNamespaceForSettings(settings)
+        val namespace: Namespace = namespaceService.prepareNamespaceForSettings(settings)
         val indexVersion: IndexVersion? = indexVersionService.find(namespace.id)
 
         logger.info("$LOG_PREFIX Prepare settings for namespace ${namespace.name}")

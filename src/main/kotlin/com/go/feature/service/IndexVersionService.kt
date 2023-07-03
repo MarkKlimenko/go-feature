@@ -41,4 +41,7 @@ class IndexVersionService(
             )
         }
     }
+
+    suspend fun deleteAllForNamespace(namespaceId: String) =
+        indexVersionRepository.deleteAllByNamespace(namespaceId)
 }
