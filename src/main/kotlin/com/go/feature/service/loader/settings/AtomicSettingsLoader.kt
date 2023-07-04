@@ -41,7 +41,7 @@ class AtomicSettingsLoader(
 
         if (applicationProperties.loader.forceUpdate
             || indexVersion == null
-            || indexVersion.indexVersionValue != configHash
+            || !applicationProperties.storage.enabled
         ) {
             logger.info("$LOG_PREFIX Start settings loading for namespace ${namespace.name}")
 

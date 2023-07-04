@@ -10,6 +10,7 @@ import com.go.feature.dto.settings.loader.LoadedSettings
 import com.go.feature.dto.status.Status
 import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
+import com.go.feature.util.checkStorageForUpdateAction
 import com.go.feature.util.exception.ValidationException
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -45,7 +46,7 @@ class NamespaceService(
     // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun createNamespace(request: NamespaceCreateRequest): NamespaceResponse {
-        checkStorageForUpdateAction()
+        checkStorageForUpdateAction(applicationProperties)
 
         namespaceRepository.findByName(request.name)
             ?.let { throw ValidationException("Namespace already exists") }
@@ -60,7 +61,7 @@ class NamespaceService(
     // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun editNamespace(id: String, request: NamespaceEditRequest): NamespaceResponse {
-        checkStorageForUpdateAction()
+        checkStorageForUpdateAction(applicationProperties)
 
         val requiredNamespace: Namespace = namespaceRepository.findById(id)
             ?: throw ValidationException("Namespace not found")
@@ -74,7 +75,7 @@ class NamespaceService(
 
     @Transactional(rollbackFor = [Exception::class])
     suspend fun deleteNamespace(id: String) {
-        checkStorageForUpdateAction()
+        checkStorageForUpdateAction(applicationProperties)
 
         filterService.deleteAllForNamespace(id)
         featureService.deleteAllForNamespace(id)
@@ -101,12 +102,6 @@ class NamespaceService(
     suspend fun prepareNamespaceForSettings(settings: LoadedSettings): Namespace {
         return namespaceRepository.findByName(settings.namespace.name)
             ?: namespaceRepository.save(namespaceConverter.create(settings.namespace))
-    }
-
-    private fun checkStorageForUpdateAction() {
-        if (!applicationProperties.storage.enabled) {
-            throw ValidationException("Operation not supported, storage disabled")
-        }
     }
 
     private companion object : KLogging()
