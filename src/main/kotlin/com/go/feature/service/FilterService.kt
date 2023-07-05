@@ -10,6 +10,7 @@ import com.go.feature.dto.settings.loader.LoadedSettings
 import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.persistence.repository.NamespaceRepository
+import com.go.feature.service.index.IndexService
 import com.go.feature.util.checkStorageForUpdateAction
 import com.go.feature.util.exception.ValidationException
 import kotlinx.coroutines.flow.collect
@@ -24,6 +25,7 @@ class FilterService(
     val filterConverter: FilterConverter,
     val namespaceRepository: NamespaceRepository,
     val indexVersionService: IndexVersionService,
+    val indexService: IndexService,
     val applicationProperties: ApplicationProperties,
 ) {
 
@@ -79,10 +81,13 @@ class FilterService(
     suspend fun deleteFilter(id: String) {
         checkStorageForUpdateAction(applicationProperties)
 
+        val deletedFilter: Filter = filterRepository.findById(id)
+            ?: throw ValidationException("Filter not found")
 
-        // check is filter used by features
-        filterService.deleteAllForNamespace(id)
-        featureService.deleteAllForNamespace(id)
+        if (indexService.isFilterUsedByFeatures(deletedFilter)) {
+            throw ValidationException("Filter is used by features")
+        }
+        filterRepository.deleteById(id)
 
         indexVersionService.update(id)
     }

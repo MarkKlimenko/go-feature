@@ -12,6 +12,7 @@ import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.entity.IndexVersion
 import com.go.feature.persistence.entity.Namespace
+import com.go.feature.util.exception.ValidationException
 import mu.KLogging
 import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.document.Document
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service
 class IndexService(
     val objectMapper: ObjectMapper,
     val filterComponent: FilterComponent,
+    val indexLoaderService: IndexLoaderService,
 ) {
     private val namespaceIdToIndexMapper: MutableMap<String, IndexStorage> = mutableMapOf()
 
@@ -39,7 +41,7 @@ class IndexService(
             ?: return emptyList()
 
         val parameterToDataMapper: Map<String, FeatureToggleRequest.DataItem> = data.associateBy { it.parameter }
-        val mainQuery: BooleanQuery.Builder = BooleanQuery.Builder()
+        val query: BooleanQuery.Builder = BooleanQuery.Builder()
 
         storage.indexFilters.forEach {
             val value: String? = parameterToDataMapper[it.parameter]?.value
@@ -47,13 +49,12 @@ class IndexService(
             if (it.status == FilterStatus.ENABLED || it.status == FilterStatus.DISABLED_ON_NULL && value != null) {
                 val searchClause: BooleanClause = filterComponent.getFilterBuilder(it.operator)
                     .buildClause(it.column, value)
-
-                mainQuery.add(searchClause)
+                query.add(searchClause)
             }
         }
 
         return storage.indexSearcher
-            .search(mainQuery.build(), FEATURES_COUNT_FOR_SEARCH)
+            .search(query.build(), FEATURES_COUNT_FOR_SEARCH)
             .scoreDocs
             .map {
                 storage.indexSearcher.storedFields()
@@ -61,6 +62,24 @@ class IndexService(
                     .getField(FT_INDEX)
                     .stringValue()
             }
+    }
+
+    suspend fun isFilterUsedByFeatures(filter: Filter): Boolean {
+        indexLoaderService.loadIndexes()
+
+        val storage: IndexStorage = namespaceIdToIndexMapper[filter.namespace]
+            ?: throw ValidationException("Index for namespace '${filter.namespace}' not found")
+
+        val query: BooleanQuery.Builder = BooleanQuery.Builder()
+        // TODO: create clause
+        val searchClause: BooleanClause = ""
+        query.add(searchClause)
+
+        return storage.indexSearcher
+            .search(query.build(), FEATURES_COUNT_FOR_FILTER_CHECK)
+            .scoreDocs
+            .size
+            .let { it != FEATURES_COUNT_EMPTY }
     }
 
     fun createIndex(index: IndexVersion, namespace: Namespace, filters: List<Filter>, features: List<Feature>) {
@@ -145,5 +164,7 @@ class IndexService(
 
         // TODO: return more than 1000
         const val FEATURES_COUNT_FOR_SEARCH = 1000
+        const val FEATURES_COUNT_FOR_FILTER_CHECK = 1
+        const val FEATURES_COUNT_EMPTY = 0
     }
 }

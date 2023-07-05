@@ -77,6 +77,9 @@ class NamespaceService(
     suspend fun deleteNamespace(id: String) {
         checkStorageForUpdateAction(applicationProperties)
 
+        namespaceRepository.findById(id)
+            ?: throw ValidationException("Namespace not found")
+
         filterService.deleteAllForNamespace(id)
         featureService.deleteAllForNamespace(id)
         indexVersionService.deleteAllForNamespace(id)
