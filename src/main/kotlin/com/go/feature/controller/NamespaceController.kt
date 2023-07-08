@@ -6,6 +6,7 @@ import com.go.feature.controller.dto.namespace.NamespaceResponse
 import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.service.namespace.NamespaceRemovalService
 import com.go.feature.service.namespace.NamespaceService
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -30,13 +31,13 @@ class NamespaceController(
 
     @PostMapping
     suspend fun createNamespace(
-        @RequestBody request: NamespaceCreateRequest
+        @RequestBody @Validated request: NamespaceCreateRequest
     ): NamespaceResponse = namespaceService.createNamespace(request)
 
     @PostMapping("{id}")
     suspend fun editNamespace(
         @PathVariable id: String,
-        @RequestBody request: NamespaceEditRequest
+        @RequestBody @Validated request: NamespaceEditRequest
     ): NamespaceResponse = namespaceService.editNamespace(id, request)
 
     @DeleteMapping("{id}")

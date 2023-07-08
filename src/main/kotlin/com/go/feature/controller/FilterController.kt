@@ -6,6 +6,7 @@ import com.go.feature.controller.dto.filter.FilterResponse
 import com.go.feature.controller.dto.filter.FiltersResponse
 import com.go.feature.service.filter.FilterRemovalService
 import com.go.feature.service.filter.FilterService
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -33,13 +34,13 @@ class FilterController(
 
     @PostMapping
     suspend fun createFilter(
-        @RequestBody request: FilterCreateRequest
+        @RequestBody @Validated request: FilterCreateRequest
     ): FilterResponse = filterService.createFilter(request)
 
     @PostMapping("{id}")
     suspend fun editFilter(
         @PathVariable id: String,
-        @RequestBody request: FilterEditRequest
+        @RequestBody @Validated request: FilterEditRequest
     ): FilterResponse = filterService.editFilter(id, request)
 
     @DeleteMapping("{id}")
