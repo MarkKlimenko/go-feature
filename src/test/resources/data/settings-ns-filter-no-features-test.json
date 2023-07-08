@@ -1,0 +1,20 @@
+{
+  "namespace": {
+    "name": "filter-no-features-test"
+  },
+  "filters": [
+    {
+      "name": "userNameEq",
+      "parameter": "userName",
+      "operator": "EQ",
+      "description": "Фильтр по имени пользователя"
+    },
+    {
+      "name": "forDeleteEq",
+      "parameter": "forDelete",
+      "operator": "EQ",
+      "description": "Проверка удаления"
+    }
+  ],
+  "features": []
+}

@@ -9,7 +9,6 @@ import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.util.exception.ValidationException
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import org.springframework.stereotype.Service
 
 @Service
@@ -25,7 +24,7 @@ class FeatureService(
     suspend fun validateFilterNotUsedByFeatures(filter: Filter) {
         // TODO: use pagination
         featureRepository.findByNamespace(filter.namespace)
-            .onEach { feature ->
+            .collect { feature ->
                 val featureFilters: List<Feature.Filter> = objectMapper.readValue(feature.filters)
                 featureFilters.forEach {
                     if (it.id == filter.id) {
@@ -33,7 +32,6 @@ class FeatureService(
                     }
                 }
             }
-            .collect()
     }
 
     suspend fun createFeaturesForSettings(namespaceId: String, settings: LoadedSettings, filters: List<Filter>) {

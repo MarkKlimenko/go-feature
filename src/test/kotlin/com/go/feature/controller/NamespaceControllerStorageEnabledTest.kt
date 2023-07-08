@@ -159,6 +159,18 @@ class NamespaceControllerStorageEnabledTest : WebIntegrationTest() {
         }
     }
 
+    @Test
+    fun deleteNotFoundNamespaceTest() {
+        runBlocking {
+            webTestClient.delete()
+                .uri("/api/v1/namespaces/NOT_FOUND_ID")
+                .exchange()
+                .expectStatus().is4xxClientError
+                .expectBody()
+                .jsonPath("message").isEqualTo("Namespace not found")
+        }
+    }
+
     private fun createNamespace(name: String): NamespaceResponse = runBlocking {
         val request = NamespaceCreateRequest(
             name = name,
