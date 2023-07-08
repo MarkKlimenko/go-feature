@@ -4,7 +4,8 @@ import com.go.feature.controller.dto.filter.FilterCreateRequest
 import com.go.feature.controller.dto.filter.FilterEditRequest
 import com.go.feature.controller.dto.filter.FilterResponse
 import com.go.feature.controller.dto.filter.FiltersResponse
-import com.go.feature.service.FilterService
+import com.go.feature.service.filter.FilterRemovalService
+import com.go.feature.service.filter.FilterService
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -17,12 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("api/v1/filters")
 class FilterController(
-    val filterService: FilterService
+    val filterService: FilterService,
+    val filterRemovalService: FilterRemovalService,
 ) {
     @GetMapping
     suspend fun getFilters(
-        @RequestParam("ns") namespace: String
-    ): FiltersResponse = filterService.getFilters(namespace)
+        @RequestParam("ns") namespaceId: String
+    ): FiltersResponse = filterService.getFilters(namespaceId)
 
     @GetMapping("{id}")
     suspend fun getFilter(
@@ -30,7 +32,7 @@ class FilterController(
     ): FilterResponse = filterService.getFilter(id)
 
     @PostMapping
-    fun createFilter(
+    suspend fun createFilter(
         @RequestBody request: FilterCreateRequest
     ): FilterResponse = filterService.createFilter(request)
 
@@ -43,5 +45,5 @@ class FilterController(
     @DeleteMapping("{id}")
     suspend fun deleteFilter(
         @PathVariable id: String
-    ) = filterService.deleteFilter(id)
+    ) = filterRemovalService.deleteFilter(id)
 }

@@ -3,8 +3,7 @@ package com.go.feature.service.namespace
 import com.go.feature.WebIntegrationTest
 import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
-import com.go.feature.service.IndexVersionService
-import com.go.feature.service.NamespaceService
+import com.go.feature.service.index.IndexVersionService
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

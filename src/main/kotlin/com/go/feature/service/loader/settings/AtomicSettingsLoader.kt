@@ -9,10 +9,10 @@ import com.go.feature.dto.status.Status
 import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.entity.IndexVersion
 import com.go.feature.persistence.entity.Namespace
-import com.go.feature.service.FeatureService
-import com.go.feature.service.FilterService
-import com.go.feature.service.IndexVersionService
-import com.go.feature.service.NamespaceService
+import com.go.feature.service.feature.FeatureService
+import com.go.feature.service.filter.FilterService
+import com.go.feature.service.index.IndexVersionService
+import com.go.feature.service.namespace.NamespaceService
 import com.go.feature.util.exception.ValidationException
 import mu.KLogging
 import org.apache.commons.codec.digest.DigestUtils

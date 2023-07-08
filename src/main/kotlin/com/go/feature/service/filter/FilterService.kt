@@ -1,4 +1,4 @@
-package com.go.feature.service
+package com.go.feature.service.filter
 
 import com.go.feature.configuration.properties.ApplicationProperties
 import com.go.feature.controller.dto.filter.FilterCreateRequest
@@ -9,10 +9,10 @@ import com.go.feature.converter.FilterConverter
 import com.go.feature.dto.settings.loader.LoadedSettings
 import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.repository.FilterRepository
-import com.go.feature.persistence.repository.NamespaceRepository
-import com.go.feature.service.index.IndexService
+import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
 import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.message.FILTER_NOT_FOUND_ERROR
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -23,14 +23,12 @@ import org.springframework.transaction.annotation.Transactional
 class FilterService(
     val filterRepository: FilterRepository,
     val filterConverter: FilterConverter,
-    val namespaceRepository: NamespaceRepository,
     val indexVersionService: IndexVersionService,
-    val indexService: IndexService,
     val applicationProperties: ApplicationProperties,
 ) {
 
-    suspend fun getFilters(namespace: String): FiltersResponse {
-        val filters: List<FilterResponse> = filterRepository.findByNamespace(namespace)
+    suspend fun getFilters(namespaceId: String): FiltersResponse {
+        val filters: List<FilterResponse> = filterRepository.findByNamespace(namespaceId)
             .map { filterConverter.convert(it) }
             .toList()
 
@@ -42,15 +40,12 @@ class FilterService(
     suspend fun getFilter(id: String): FilterResponse =
         filterRepository.findById(id)
             ?.let { filterConverter.convert(it) }
-            ?: throw ValidationException("Filter not found")
+            ?: throw ValidationException(FILTER_NOT_FOUND_ERROR)
 
     // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun createFilter(request: FilterCreateRequest): FilterResponse {
         checkStorageForUpdateAction(applicationProperties)
-
-        namespaceRepository.findById(request.namespace)
-            ?: throw ValidationException("Unsupported namespace")
 
         filterRepository.findByNameAndNamespace(request.name, request.namespace)
             ?.let { throw ValidationException("Filter already exists") }
@@ -68,28 +63,13 @@ class FilterService(
         checkStorageForUpdateAction(applicationProperties)
 
         val requiredFilter: Filter = filterRepository.findById(id)
-            ?: throw ValidationException("Filter not found")
+            ?: throw ValidationException(FILTER_NOT_FOUND_ERROR)
 
         return filterRepository.save(filterConverter.edit(requiredFilter, request))
             .let {
                 indexVersionService.update(it.namespace)
                 filterConverter.convert(it)
             }
-    }
-
-    @Transactional(rollbackFor = [Exception::class])
-    suspend fun deleteFilter(id: String) {
-        checkStorageForUpdateAction(applicationProperties)
-
-        val deletedFilter: Filter = filterRepository.findById(id)
-            ?: throw ValidationException("Filter not found")
-
-        if (indexService.isFilterUsedByFeatures(deletedFilter)) {
-            throw ValidationException("Filter is used by features")
-        }
-        filterRepository.deleteById(id)
-
-        indexVersionService.update(id)
     }
 
     suspend fun deleteAllForNamespace(namespaceId: String) {

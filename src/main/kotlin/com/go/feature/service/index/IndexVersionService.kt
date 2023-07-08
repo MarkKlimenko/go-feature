@@ -1,4 +1,4 @@
-package com.go.feature.service
+package com.go.feature.service.index
 
 import com.go.feature.persistence.entity.IndexVersion
 import com.go.feature.persistence.repository.IndexVersionRepository

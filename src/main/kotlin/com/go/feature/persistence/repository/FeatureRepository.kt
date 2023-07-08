@@ -7,5 +7,6 @@ import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 
 interface FeatureRepository : CoroutineCrudRepository<Feature, String> {
     suspend fun deleteAllByNamespace(namespaceId: String)
+    suspend fun findByNamespace(namespaceId: String): Flow<Feature>
     suspend fun findByNamespaceAndStatus(namespaceId: String, status: Status): Flow<Feature>
 }

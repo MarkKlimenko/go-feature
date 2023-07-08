@@ -7,7 +7,7 @@ import com.go.feature.controller.dto.namespace.NamespaceResponse
 import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.dto.status.Status
 import com.go.feature.persistence.entity.IndexVersion
-import com.go.feature.service.IndexVersionService
+import com.go.feature.service.index.IndexVersionService
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.runBlocking
@@ -133,7 +133,6 @@ class NamespaceControllerStorageEnabledTest : WebIntegrationTest() {
     @Test
     fun deleteNamespaceTest() {
         runBlocking {
-
             val response: NamespacesResponse = webTestClient.get()
                 .uri("/api/v1/namespaces")
                 .exchange()

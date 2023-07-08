@@ -1,4 +1,4 @@
-package com.go.feature.service
+package com.go.feature.service.feature
 
 import com.go.feature.configuration.properties.ApplicationProperties
 import com.go.feature.controller.dto.featuretoggle.FeatureToggleRequest
@@ -18,6 +18,7 @@ class FeatureSearchService(
 
     suspend fun findFeatureToggles(request: FeatureToggleRequest): FeatureToggleResponse {
         val namespaceName: String = request.namespace ?: applicationProperties.namespace.default
+        // TODO: create load test with this line and without
         val namespace: Namespace = namespaceRepository.findByName(namespaceName)
             ?: throw ValidationException("Namespace '$namespaceName' not found")
 

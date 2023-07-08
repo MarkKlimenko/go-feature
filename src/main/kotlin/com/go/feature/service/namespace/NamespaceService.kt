@@ -1,4 +1,4 @@
-package com.go.feature.service
+package com.go.feature.service.namespace
 
 import com.go.feature.configuration.properties.ApplicationProperties
 import com.go.feature.controller.dto.namespace.NamespaceCreateRequest
@@ -10,8 +10,10 @@ import com.go.feature.dto.settings.loader.LoadedSettings
 import com.go.feature.dto.status.Status
 import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
+import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
 import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.message.NAMESPACE_NOT_FOUND_ERROR
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import mu.KLogging
@@ -24,8 +26,6 @@ class NamespaceService(
     val namespaceRepository: NamespaceRepository,
     val namespaceConverter: NamespaceConverter,
     val indexVersionService: IndexVersionService,
-    val filterService: FilterService,
-    val featureService: FeatureService,
 ) {
 
     suspend fun getNamespaces(): NamespacesResponse {
@@ -41,7 +41,7 @@ class NamespaceService(
     suspend fun getNamespace(id: String): NamespaceResponse =
         namespaceRepository.findById(id)
             ?.let { namespaceConverter.convert(it) }
-            ?: throw ValidationException("Namespace not found")
+            ?: throw ValidationException(NAMESPACE_NOT_FOUND_ERROR)
 
     // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
@@ -64,26 +64,13 @@ class NamespaceService(
         checkStorageForUpdateAction(applicationProperties)
 
         val requiredNamespace: Namespace = namespaceRepository.findById(id)
-            ?: throw ValidationException("Namespace not found")
+            ?: throw ValidationException(NAMESPACE_NOT_FOUND_ERROR)
 
         val editedNamespace: Namespace = namespaceRepository.save(namespaceConverter.edit(requiredNamespace, request))
 
         indexVersionService.update(id)
 
         return namespaceConverter.convert(editedNamespace)
-    }
-
-    @Transactional(rollbackFor = [Exception::class])
-    suspend fun deleteNamespace(id: String) {
-        checkStorageForUpdateAction(applicationProperties)
-
-        namespaceRepository.findById(id)
-            ?: throw ValidationException("Namespace not found")
-
-        filterService.deleteAllForNamespace(id)
-        featureService.deleteAllForNamespace(id)
-        indexVersionService.deleteAllForNamespace(id)
-        namespaceRepository.deleteById(id)
     }
 
     suspend fun createDefaultNamespace() {
