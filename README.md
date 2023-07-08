@@ -22,7 +22,7 @@ java \
 
 ## Test request
 ```
-curl --location --request POST 'localhost:8080/api/v1/feature-toggle/find' \
+curl --location --request POST 'localhost:8080/api/v1/features/search' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "namespace": "default",
