@@ -1,6 +1,6 @@
-package com.go.feature.controller.dto.featuretoggle
+package com.go.feature.controller.dto.feature
 
-data class FeatureToggleRequest(
+data class FeaturesFindRequest(
     val namespace: String?,
     val data: List<DataItem>
 ) {

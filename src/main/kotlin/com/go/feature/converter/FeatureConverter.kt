@@ -1,6 +1,10 @@
 package com.go.feature.converter
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.go.feature.controller.dto.feature.FeatureCreateRequest
+import com.go.feature.controller.dto.feature.FeatureEditRequest
+import com.go.feature.controller.dto.feature.FeatureResponse
 import com.go.feature.converter.util.getFilterIdByName
 import com.go.feature.dto.settings.loader.LoadedSettings
 import com.go.feature.persistence.entity.Feature
@@ -35,4 +39,36 @@ class FeatureConverter(
                 description = it.description
             )
         }
+
+    fun create(request: FeatureCreateRequest): Feature =
+        Feature(
+            id = randomId(),
+            name = request.name,
+            namespace = request.namespace,
+            filters = objectMapper.writeValueAsString(request.filters),
+            status = request.status,
+            description = request.description
+        )
+
+    fun convert(feature: Feature): FeatureResponse =
+        FeatureResponse(
+            id = feature.id,
+            name = feature.name,
+            namespace = feature.namespace,
+            filters = objectMapper.readValue(feature.filters),
+            status = feature.status,
+            description = feature.description,
+            version = feature.version!!
+        )
+
+    fun edit(editedFeature: Feature, request: FeatureEditRequest): Feature =
+        editedFeature.copy(
+            name = request.name,
+            filters = objectMapper.writeValueAsString(request.filters),
+            status = request.status,
+            description = request.description,
+            version = request.version,
+        )
+
+    fun getFeatureFilter(feature: Feature): List<Feature.Filter> = objectMapper.readValue(feature.filters)
 }

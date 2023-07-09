@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.http.MediaType
 
-class FeatureToggleControllerTest : WebIntegrationTest() {
+class FeatureControllerSearchTest : WebIntegrationTest() {
 
     @ParameterizedTest
     @CsvSource(
@@ -43,6 +43,6 @@ class FeatureToggleControllerTest : WebIntegrationTest() {
             .expectStatus()
             .is4xxClientError
             .expectBody()
-            .jsonPath("$.message").isEqualTo("Namespace 'not_found' not found")
+            .jsonPath("$.message").isEqualTo("Namespace not found")
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.go.feature.component.filter.FilterComponent
 import com.go.feature.component.filter.util.FT_INDEX
-import com.go.feature.controller.dto.featuretoggle.FeatureToggleRequest
+import com.go.feature.controller.dto.feature.FeaturesFindRequest
 import com.go.feature.dto.operator.FilterOperator
 import com.go.feature.dto.status.FilterStatus
 import com.go.feature.dto.status.Status
@@ -34,11 +34,11 @@ class IndexService(
 ) {
     private val namespaceIdToIndexMapper: MutableMap<String, IndexStorage> = mutableMapOf()
 
-    fun getFeaturesFromIndex(namespaceId: String, data: List<FeatureToggleRequest.DataItem>): List<String> {
+    fun getFeaturesFromIndex(namespaceId: String, data: List<FeaturesFindRequest.DataItem>): List<String> {
         val storage: IndexStorage = namespaceIdToIndexMapper[namespaceId]
             ?: return emptyList()
 
-        val parameterToDataMapper: Map<String, FeatureToggleRequest.DataItem> = data.associateBy { it.parameter }
+        val parameterToDataMapper: Map<String, FeaturesFindRequest.DataItem> = data.associateBy { it.parameter }
         val query: BooleanQuery.Builder = BooleanQuery.Builder()
 
         storage.indexFilters.forEach {
@@ -79,28 +79,32 @@ class IndexService(
     private fun processIndexData(filters: List<Filter>, features: List<Feature>, writer: IndexWriter) {
         features.forEach { feature: Feature ->
             if (feature.status == Status.ENABLED) {
-                val document = Document()
-                document.add(StringField(FT_INDEX, feature.name, Field.Store.YES))
-
-                val featureFilterIdToFilterMap: Map<String, Feature.Filter> =
-                    objectMapper.readValue<List<Feature.Filter>>(feature.filters)
-                        .associateBy { it.id }
-
-                filters.forEach { filter: Filter ->
-                    if (filter.status != FilterStatus.DISABLED) {
-                        val fieldName = "${filter.parameter}_${filter.operator}"
-                        val value: String? = featureFilterIdToFilterMap[filter.id]?.value
-
-                        val documentField: Field = filterComponent.getFilterBuilder(filter.operator)
-                            .buildField(fieldName, value)
-
-                        document.add(documentField)
-                    }
-                }
-
-                writer.addDocument(document)
+                processIndexForFeature(filters, feature, writer)
             }
         }
+    }
+
+    private fun processIndexForFeature(filters: List<Filter>, feature: Feature, writer: IndexWriter) {
+        val document = Document()
+        document.add(StringField(FT_INDEX, feature.name, Field.Store.YES))
+
+        val featureFilterIdToFilterMap: Map<String, Feature.Filter> =
+            objectMapper.readValue<List<Feature.Filter>>(feature.filters)
+                .associateBy { it.id }
+
+        filters.forEach { filter: Filter ->
+            if (filter.status != FilterStatus.DISABLED) {
+                val fieldName = "${filter.parameter}_${filter.operator}"
+                val value: String? = featureFilterIdToFilterMap[filter.id]?.value
+
+                val documentField: Field = filterComponent.getFilterBuilder(filter.operator)
+                    .buildField(fieldName, value)
+
+                document.add(documentField)
+            }
+        }
+
+        writer.addDocument(document)
     }
 
     private fun saveIndexStorage(

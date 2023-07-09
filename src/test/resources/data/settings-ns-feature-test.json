@@ -1,0 +1,45 @@
+{
+  "namespace": {
+    "name": "feature-test"
+  },
+  "filters": [
+    {
+      "name": "userNameEq",
+      "parameter": "userName",
+      "operator": "EQ",
+      "description": "Фильтр по имени пользователя"
+    }
+  ],
+  "features": [
+    {
+      "name": "testFeature",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "userNameEq",
+          "value": "patrik"
+        }
+      ]
+    },
+    {
+      "name": "testFeature2",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "userNameEq",
+          "value": "crabs"
+        }
+      ]
+    },
+    {
+      "name": "forDeleteFeature",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "userNameEq",
+          "value": "crabs"
+        }
+      ]
+    }
+  ]
+}

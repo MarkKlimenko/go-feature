@@ -1,11 +1,13 @@
 package com.go.feature.controller
 
 import com.go.feature.WebIntegrationTest
+import com.go.feature.controller.dto.feature.FeatureCreateRequest
 import com.go.feature.controller.dto.filter.FilterCreateRequest
 import com.go.feature.controller.dto.namespace.NamespaceResponse
 import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.dto.operator.FilterOperator
 import com.go.feature.dto.status.FilterStatus
+import com.go.feature.dto.status.Status
 import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers
@@ -13,22 +15,21 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 
-class FilterControllerStorageDisabledTest : WebIntegrationTest() {
+class FeatureControllerStorageDisabledTest : WebIntegrationTest() {
 
     @Test
-    fun createFilterNotAllowedTest(): Unit = runBlocking {
+    fun createFeatureNotAllowedTest(): Unit = runBlocking {
         // TODO: use common method
-        val request = FilterCreateRequest(
-            name = "filterName",
-            status = FilterStatus.ENABLED,
-            namespace = getNamespace("filter-test").id,
-            parameter = "testParameter",
-            operator = FilterOperator.EQ,
-            description = "filter description",
+        val request = FeatureCreateRequest(
+            name = "featureName",
+            status = Status.ENABLED,
+            namespace = getNamespace("feature-test").id,
+            filters = emptyList(),
+            description = "feature description",
         )
 
         webTestClient.post()
-            .uri("/api/v1/filters")
+            .uri("/api/v1/features")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(request)
             .exchange()
@@ -39,18 +40,17 @@ class FilterControllerStorageDisabledTest : WebIntegrationTest() {
     }
 
     @Test
-    fun editFilterNotAllowedTest(): Unit = runBlocking {
-        val request = FilterCreateRequest(
-            name = "filterName",
-            status = FilterStatus.ENABLED,
-            namespace = getNamespace("filter-test").id,
-            parameter = "testParameter",
-            operator = FilterOperator.EQ,
-            description = "filter description",
+    fun editFeatureNotAllowedTest(): Unit = runBlocking {
+        val request = FeatureCreateRequest(
+            name = "featureName",
+            status = Status.ENABLED,
+            namespace = getNamespace("feature-test").id,
+            filters = emptyList(),
+            description = "feature description",
         )
 
         webTestClient.post()
-            .uri("/api/v1/filters/NOT_FOUND")
+            .uri("/api/v1/features/ANY")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(request)
             .exchange()

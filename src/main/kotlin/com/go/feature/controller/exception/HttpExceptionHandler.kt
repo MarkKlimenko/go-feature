@@ -47,6 +47,8 @@ class HttpExceptionHandler(
         return ResponseEntity(createResponse(e.message), HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
+    // TODO: add exception handler for kotlin validation - such as not null
+
     private fun createResponse(message: String?, validations: Map<String, String?>? = null): ErrorResponse =
         ErrorResponse(
             message = message,

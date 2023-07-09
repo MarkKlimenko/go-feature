@@ -12,6 +12,7 @@ import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
 import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.message.FILTER_ALREADY_EXISTS_ERROR
 import com.go.feature.util.message.FILTER_NOT_FOUND_ERROR
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -48,7 +49,7 @@ class FilterService(
         checkStorageForUpdateAction(applicationProperties)
 
         filterRepository.findByNameAndNamespace(request.name, request.namespace)
-            ?.let { throw ValidationException("Filter already exists") }
+            ?.let { throw ValidationException(FILTER_ALREADY_EXISTS_ERROR) }
 
         return filterRepository.save(filterConverter.create(request))
             .let {
@@ -57,7 +58,6 @@ class FilterService(
             }
     }
 
-    // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun editFilter(id: String, request: FilterEditRequest): FilterResponse {
         checkStorageForUpdateAction(applicationProperties)
