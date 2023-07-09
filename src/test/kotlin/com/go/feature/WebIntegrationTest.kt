@@ -10,10 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.test.web.reactive.server.WebTestClient
 
-// TODO: check trace id
-// .header("X-B3-TraceId", "d61436368bae3c12")
-// .header("X-B3-SpanId", "ce5f844337f3ee88")
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureWebTestClient

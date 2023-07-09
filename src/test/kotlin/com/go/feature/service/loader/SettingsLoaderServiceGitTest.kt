@@ -3,9 +3,9 @@ package com.go.feature.service.loader
 import com.go.feature.WebIntegrationTest
 import com.go.feature.persistence.repository.NamespaceRepository
 import com.go.feature.service.loader.settings.SettingsLoaderService
+import com.go.feature.test.utils.assertNotContains
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,8 +41,6 @@ class SettingsLoaderServiceGitTest : WebIntegrationTest() {
                 ?: Assertions.fail("Namespace was not found")
         }
 
-        assertFalse(
-            output.out.contains("Error", true)
-        )
+        output.assertNotContains("Error")
     }
 }
