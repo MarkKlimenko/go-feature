@@ -8,6 +8,12 @@
       "parameter": "userName",
       "operator": "EQ",
       "description": "Фильтр по имени пользователя"
+    },
+    {
+      "name": "userNameContains",
+      "parameter": "userName",
+      "operator": "CONTAINS",
+      "description": "Фильтр по имени пользователя"
     }
   ],
   "features": [
