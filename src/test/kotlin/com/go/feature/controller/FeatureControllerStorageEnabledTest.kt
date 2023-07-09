@@ -4,16 +4,12 @@ import com.go.feature.WebIntegrationTest
 import com.go.feature.controller.dto.feature.FeatureCreateRequest
 import com.go.feature.controller.dto.feature.FeatureEditRequest
 import com.go.feature.controller.dto.feature.FeatureResponse
-import com.go.feature.controller.dto.filter.FilterCreateRequest
-import com.go.feature.controller.dto.filter.FilterEditRequest
+import com.go.feature.controller.dto.feature.FeaturesResponse
 import com.go.feature.controller.dto.filter.FilterResponse
 import com.go.feature.controller.dto.filter.FiltersResponse
 import com.go.feature.controller.dto.namespace.NamespaceResponse
 import com.go.feature.controller.dto.namespace.NamespacesResponse
-import com.go.feature.dto.operator.FilterOperator
-import com.go.feature.dto.status.FilterStatus
 import com.go.feature.dto.status.Status
-import com.go.feature.persistence.entity.Feature
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.runBlocking
@@ -41,7 +37,7 @@ class FeatureControllerStorageEnabledTest : WebIntegrationTest() {
         createFeature(namespace.id, "createdForExistCheckFeature")
 
         val request = FeatureCreateRequest(
-            name = "createdForExistCheckFilter",
+            name = "createdForExistCheckFeature",
             status = Status.ENABLED,
             namespace = namespace.id,
             filters = emptyList(),
@@ -65,42 +61,42 @@ class FeatureControllerStorageEnabledTest : WebIntegrationTest() {
             val feature: FeatureResponse = createFeature(namespace.id, "editedFilter")
 
             val editRequest = FeatureEditRequest(
-                name = "editedFilter",
+                name = "editedFeature",
                 status = Status.DISABLED,
                 filters = emptyList(),
-                description = "filter description edited",
+                description = "feature description edited",
                 version = feature.version
             )
 
-            val editedFilter: FilterResponse = webTestClient.post()
+            val editedFeature: FeatureResponse = webTestClient.post()
                 .uri("/api/v1/features/${feature.id}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(editRequest)
                 .exchange()
                 .expectStatus().isOk
-                .returnResult(FilterResponse::class.java)
+                .returnResult(FeatureResponse::class.java)
                 .responseBody
                 .awaitFirst()
-                ?: fail("Filter was not returned")
+                ?: fail("Feature was not returned")
 
-            Assertions.assertNotNull(editedFilter)
-            Assertions.assertEquals(editRequest.name, editedFilter.name)
-            Assertions.assertEquals(editRequest.status, editedFilter.status)
+            Assertions.assertNotNull(editedFeature)
+            Assertions.assertEquals(editRequest.name, editedFeature.name)
+            Assertions.assertEquals(editRequest.status, editedFeature.status)
             // TODO: assert filters equals
-            Assertions.assertEquals(editRequest.description, editedFilter.description)
-            Assertions.assertEquals(editRequest.version + 1, editedFilter.version)
+            Assertions.assertEquals(editRequest.description, editedFeature.description)
+            Assertions.assertEquals(editRequest.version + 1, editedFeature.version)
 
             webTestClient.get()
-                .uri("/api/v1/features/${editedFilter.id}")
+                .uri("/api/v1/features/${editedFeature.id}")
                 .exchange()
                 .expectStatus().isOk
                 .expectBody()
-                .jsonPath("$.id").isEqualTo(filter.id)
+                .jsonPath("$.id").isEqualTo(feature.id)
                 .jsonPath("$.name").isEqualTo(editRequest.name)
                 .jsonPath("$.status").isEqualTo(editRequest.status.name)
                 // TODO: assert filters equals
                 .jsonPath("$.description").isEqualTo(editRequest.description!!)
-                .jsonPath("$.version").isEqualTo(editedFilter.version)
+                .jsonPath("$.version").isEqualTo(editedFeature.version)
 
 
             // update with outdated version
@@ -109,11 +105,11 @@ class FeatureControllerStorageEnabledTest : WebIntegrationTest() {
                 status = Status.DISABLED,
                 filters = emptyList(),
                 description = "filter description edited",
-                version = filter.version
+                version = feature.version
             )
 
             webTestClient.post()
-                .uri("/api/v1/features/${filter.id}")
+                .uri("/api/v1/features/${feature.id}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(editRequestOutdated)
                 .exchange()
@@ -126,12 +122,11 @@ class FeatureControllerStorageEnabledTest : WebIntegrationTest() {
 
     @Test
     fun editedFeatureNotFoundTest() {
-        val editRequest = FilterEditRequest(
-            name = "editedFilter",
-            status = FilterStatus.DISABLED,
-            parameter = "testParameterEdited",
-            operator = FilterOperator.CONTAINS,
-            description = "filter description edited",
+        val editRequest = FeatureEditRequest(
+            name = "editedFeature",
+            status = Status.DISABLED,
+            filters = emptyList(),
+            description = "feature description edited",
             version = 0
         )
 
@@ -158,7 +153,7 @@ class FeatureControllerStorageEnabledTest : WebIntegrationTest() {
             .expectStatus().is4xxClientError
             .expectBody()
             .jsonPath("message")
-            .isEqualTo("Filter not found")
+            .isEqualTo("Feature not found")
     }
 
     private suspend fun getNamespace(namespaceName: String): NamespaceResponse {
@@ -173,6 +168,24 @@ class FeatureControllerStorageEnabledTest : WebIntegrationTest() {
         return nsResponse.namespaces
             .find { it.name == namespaceName }
             ?: fail("Namespace was not found")
+    }
+
+    private suspend fun getFeature(namespaceId: String, featureName: String): FeatureResponse {
+        val response: FeaturesResponse = webTestClient.get()
+            .uri { uriBuilder: UriBuilder ->
+                uriBuilder.path("/api/v1/features")
+                    .queryParam("ns", namespaceId)
+                    .build()
+            }
+            .exchange()
+            .expectStatus().isOk
+            .returnResult(FeaturesResponse::class.java)
+            .responseBody
+            .awaitSingle()
+
+        return response.features
+            .find { it.name == featureName }
+            ?: fail("Feature was not found")
     }
 
     private suspend fun getFilter(namespaceId: String, filterName: String): FilterResponse {
@@ -193,36 +206,35 @@ class FeatureControllerStorageEnabledTest : WebIntegrationTest() {
             ?: fail("Filter was not found")
     }
 
-    private fun createFeature(namespaceId: String, featureName: String): FilterResponse = runBlocking {
-        val request = FilterCreateRequest(
-            name = filterName,
-            status = FilterStatus.ENABLED,
+    private fun createFeature(namespaceId: String, featureName: String): FeatureResponse = runBlocking {
+        val request = FeatureCreateRequest(
+            name = featureName,
+            status = Status.ENABLED,
             namespace = namespaceId,
-            parameter = "${filterName}testParameter",
-            operator = FilterOperator.EQ,
-            description = "filter description",
+            filters = emptyList(),
+            // TODO: create filters
+            description = "feature description",
         )
 
-        val response: FilterResponse = webTestClient.post()
-            .uri("/api/v1/filters")
+        val response: FeatureResponse = webTestClient.post()
+            .uri("/api/v1/features")
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(request)
             .exchange()
             .expectStatus().isOk
-            .returnResult(FilterResponse::class.java)
+            .returnResult(FeatureResponse::class.java)
             .responseBody
             .awaitFirst()
-            ?: fail("Filter was not returned")
+            ?: fail("Feature was not returned")
 
         Assertions.assertEquals(request.name, response.name)
         Assertions.assertEquals(request.status, response.status)
         Assertions.assertEquals(request.namespace, response.namespace)
-        Assertions.assertEquals(request.parameter, response.parameter)
-        Assertions.assertEquals(request.operator, response.operator)
+        // TODO: create filters
         Assertions.assertEquals(request.description, response.description)
 
         webTestClient.get()
-            .uri("/api/v1/filters/${response.id}")
+            .uri("/api/v1/features/${response.id}")
             .exchange()
             .expectStatus().isOk
             .expectBody()
@@ -230,8 +242,7 @@ class FeatureControllerStorageEnabledTest : WebIntegrationTest() {
             .jsonPath("$.name").isEqualTo(request.name)
             .jsonPath("$.status").isEqualTo(request.status.name)
             .jsonPath("$.namespace").isEqualTo(request.namespace)
-            .jsonPath("$.parameter").isEqualTo(request.parameter)
-            .jsonPath("$.operator").isEqualTo(request.operator.name)
+            // TODO: create filters
             .jsonPath("$.description").isEqualTo(request.description!!)
 
         response
@@ -239,23 +250,22 @@ class FeatureControllerStorageEnabledTest : WebIntegrationTest() {
 
     private suspend fun deleteFeatureSuccess(namespaceName: String) {
         val namespace: NamespaceResponse = getNamespace(namespaceName)
-        val feature: FilterResponse = getFilter(namespace.id, "forDeleteEq")
+        val feature: FeatureResponse = getFeature(namespace.id, "forDeleteFeature")
 
         webTestClient.delete()
-            .uri("/api/v1/filters/${filter.id}")
+            .uri("/api/v1/features/${feature.id}")
             .exchange()
             .expectStatus().isOk
 
         webTestClient.get()
-            .uri("/api/v1/filters/${filter.id}")
+            .uri("/api/v1/features/${feature.id}")
             .exchange()
             .expectStatus().is4xxClientError
             .expectBody()
-            .jsonPath("message").isEqualTo("Filter not found")
+            .jsonPath("message").isEqualTo("Feature not found")
     }
 
     private companion object {
         private const val NAMESPACE_NAME = "feature-test"
-        private const val NAMESPACE_NO_FEATURES_NAME = "filter-no-features-test"
     }
 }

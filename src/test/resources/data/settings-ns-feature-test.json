@@ -19,7 +19,8 @@
           "name": "userNameEq",
           "value": "patrik"
         }
-      ]
+      ],
+      "description": "description value"
     },
     {
       "name": "testFeature2",
@@ -29,7 +30,8 @@
           "name": "userNameEq",
           "value": "crabs"
         }
-      ]
+      ],
+      "description": "description value"
     },
     {
       "name": "forDeleteFeature",
@@ -39,7 +41,8 @@
           "name": "userNameEq",
           "value": "crabs"
         }
-      ]
+      ],
+      "description": "description value"
     }
   ]
 }

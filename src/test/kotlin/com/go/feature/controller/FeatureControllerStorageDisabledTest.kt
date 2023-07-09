@@ -2,11 +2,8 @@ package com.go.feature.controller
 
 import com.go.feature.WebIntegrationTest
 import com.go.feature.controller.dto.feature.FeatureCreateRequest
-import com.go.feature.controller.dto.filter.FilterCreateRequest
 import com.go.feature.controller.dto.namespace.NamespaceResponse
 import com.go.feature.controller.dto.namespace.NamespacesResponse
-import com.go.feature.dto.operator.FilterOperator
-import com.go.feature.dto.status.FilterStatus
 import com.go.feature.dto.status.Status
 import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.runBlocking
