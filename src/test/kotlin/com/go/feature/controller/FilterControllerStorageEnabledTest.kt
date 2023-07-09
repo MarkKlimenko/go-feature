@@ -18,7 +18,7 @@ import org.springframework.test.context.TestPropertySource
 @TestPropertySource(properties = [
     "spring.config.location = classpath:application-storage-enabled.yml"
 ])
-class FilterControllerStorageEnabledTest : StorageEnabledTest() {
+class FilterControllerStorageEnabledTest : EntityManipulationTest() {
     @Test
     fun createFilterTest(): Unit = runBlocking {
         val namespace: NamespaceResponse = getNamespace(NAMESPACE_NAME)

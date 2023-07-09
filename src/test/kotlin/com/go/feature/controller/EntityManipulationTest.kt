@@ -11,7 +11,7 @@ import kotlinx.coroutines.reactive.awaitSingle
 import org.junit.jupiter.api.Assertions
 import org.springframework.web.util.UriBuilder
 
-class StorageEnabledTest : WebIntegrationTest() {
+class EntityManipulationTest : WebIntegrationTest() {
     suspend fun getNamespace(namespaceName: String): NamespaceResponse {
         val nsResponse: NamespacesResponse = webTestClient.get()
             .uri("/api/v1/namespaces")

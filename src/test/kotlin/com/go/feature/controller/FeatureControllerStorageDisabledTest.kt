@@ -1,22 +1,16 @@
 package com.go.feature.controller
 
-import com.go.feature.WebIntegrationTest
 import com.go.feature.controller.dto.feature.FeatureCreateRequest
-import com.go.feature.controller.dto.namespace.NamespaceResponse
-import com.go.feature.controller.dto.namespace.NamespacesResponse
 import com.go.feature.dto.status.Status
-import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 
-class FeatureControllerStorageDisabledTest : WebIntegrationTest() {
+class FeatureControllerStorageDisabledTest : EntityManipulationTest() {
 
     @Test
     fun createFeatureNotAllowedTest(): Unit = runBlocking {
-        // TODO: use common method
         val request = FeatureCreateRequest(
             name = "featureName",
             status = Status.ENABLED,
@@ -55,20 +49,5 @@ class FeatureControllerStorageDisabledTest : WebIntegrationTest() {
             .expectBody()
             .jsonPath("$.message")
             .value(Matchers.containsString("Operation not supported, storage disabled"))
-    }
-
-    // TODO: use common method
-    private suspend fun getNamespace(namespaceName: String): NamespaceResponse {
-        val nsResponse: NamespacesResponse = webTestClient.get()
-            .uri("/api/v1/namespaces")
-            .exchange()
-            .expectStatus().isOk
-            .returnResult(NamespacesResponse::class.java)
-            .responseBody
-            .awaitSingle()
-
-        return nsResponse.namespaces
-            .find { it.name == namespaceName }
-            ?: Assertions.fail("Namespace was not found")
     }
 }
