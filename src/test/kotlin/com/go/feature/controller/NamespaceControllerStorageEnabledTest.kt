@@ -51,7 +51,7 @@ class NamespaceControllerStorageEnabledTest : WebIntegrationTest() {
     }
 
     @Test
-    fun createNamespaceValidationBlankTest() {
+    fun createNamespaceBlankValidationTest() {
         val request = NamespaceCreateRequest(
             name = " ",
             status = Status.ENABLED
@@ -66,6 +66,23 @@ class NamespaceControllerStorageEnabledTest : WebIntegrationTest() {
             .expectBody()
             .jsonPath("message").isEqualTo("Validation exception")
             .jsonPath("validations.name").isEqualTo("must not be blank")
+    }
+
+    @Test
+    fun createNamespaceNullValidationTest() {
+        val request: Map<String, String> = mapOf(
+            "status" to Status.ENABLED.name
+        )
+
+        webTestClient.post()
+            .uri("/api/v1/namespaces")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().is4xxClientError
+            .expectBody()
+            .jsonPath("message").isEqualTo("Validation exception")
+            .jsonPath("validations.name").isEqualTo("must not be null")
     }
 
     @Test
