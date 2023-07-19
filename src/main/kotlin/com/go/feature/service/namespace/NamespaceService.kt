@@ -12,7 +12,7 @@ import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import com.go.feature.util.message.NAMESPACE_NOT_FOUND_ERROR
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -41,7 +41,7 @@ class NamespaceService(
     suspend fun getNamespace(id: String): NamespaceResponse =
         namespaceRepository.findById(id)
             ?.let { namespaceConverter.convert(it) }
-            ?: throw ValidationException(NAMESPACE_NOT_FOUND_ERROR)
+            ?: throw ClientException(NAMESPACE_NOT_FOUND_ERROR)
 
     // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
@@ -49,7 +49,7 @@ class NamespaceService(
         checkStorageForUpdateAction(applicationProperties)
 
         namespaceRepository.findByName(request.name)
-            ?.let { throw ValidationException("Namespace already exists") }
+            ?.let { throw ClientException("Namespace already exists") }
 
         val createdNamespace: Namespace = namespaceRepository.save(namespaceConverter.create(request))
 
@@ -64,7 +64,7 @@ class NamespaceService(
         checkStorageForUpdateAction(applicationProperties)
 
         val requiredNamespace: Namespace = namespaceRepository.findById(id)
-            ?: throw ValidationException(NAMESPACE_NOT_FOUND_ERROR)
+            ?: throw ClientException(NAMESPACE_NOT_FOUND_ERROR)
 
         val editedNamespace: Namespace = namespaceRepository.save(namespaceConverter.edit(requiredNamespace, request))
 

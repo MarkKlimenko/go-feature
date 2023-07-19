@@ -9,7 +9,7 @@ import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.persistence.repository.IndexVersionRepository
 import com.go.feature.persistence.repository.NamespaceRepository
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import mu.KLogging
@@ -58,7 +58,7 @@ class IndexLoaderService(
 
     private suspend fun loadIndexForNamespace(indexVersion: IndexVersion) {
         val namespace: Namespace = namespaceRepository.findById(indexVersion.namespace)
-            ?: throw ValidationException("Namespace not found for index=$indexVersion")
+            ?: throw ClientException("Namespace not found for index=$indexVersion")
 
         if (namespace.status == Status.ENABLED) {
             logger.info("$LOG_PREFIX Start index update for namespace=${namespace.name}")

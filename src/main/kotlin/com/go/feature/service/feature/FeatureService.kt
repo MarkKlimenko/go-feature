@@ -12,10 +12,10 @@ import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import com.go.feature.util.message.FEATURE_ALREADY_EXISTS_ERROR
 import com.go.feature.util.message.FEATURE_NOT_FOUND_ERROR
-import com.go.feature.util.message.filterIsUsedError
+import com.go.feature.util.message.FILTER_IS_USED_ERROR
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -43,14 +43,14 @@ class FeatureService(
     suspend fun getFeature(id: String): FeatureResponse =
         featureRepository.findById(id)
             ?.let { featureConverter.convert(it) }
-            ?: throw ValidationException(FEATURE_NOT_FOUND_ERROR)
+            ?: throw ClientException(FEATURE_NOT_FOUND_ERROR)
 
     @Transactional(rollbackFor = [Exception::class])
     suspend fun createFeature(request: FeatureCreateRequest): FeatureResponse {
         checkStorageForUpdateAction(applicationProperties)
 
         featureRepository.findByNameAndNamespace(request.name, request.namespace)
-            ?.let { throw ValidationException(FEATURE_ALREADY_EXISTS_ERROR) }
+            ?.let { throw ClientException(FEATURE_ALREADY_EXISTS_ERROR) }
 
         return featureRepository.save(featureConverter.create(request))
             .let {
@@ -64,7 +64,7 @@ class FeatureService(
         checkStorageForUpdateAction(applicationProperties)
 
         val requiredFeature: Feature = featureRepository.findById(id)
-            ?: throw ValidationException(FEATURE_NOT_FOUND_ERROR)
+            ?: throw ClientException(FEATURE_NOT_FOUND_ERROR)
 
         return featureRepository.save(featureConverter.edit(requiredFeature, request))
             .let {
@@ -83,7 +83,13 @@ class FeatureService(
             .collect { feature ->
                 featureConverter.getFeatureFilter(feature).forEach {
                     if (it.id == filter.id) {
-                        throw ValidationException(filterIsUsedError(filter, feature))
+
+                        val valuesMap: Map<String, String> = mapOf(
+                            "filterName" to filter.name,
+                            "featureName" to feature.name,
+                        )
+
+                        throw ClientException(FILTER_IS_USED_ERROR, valuesMap)
                     }
                 }
             }

@@ -6,7 +6,7 @@ import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.service.feature.FeatureService
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import com.go.feature.util.message.FILTER_NOT_FOUND_ERROR
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,7 +25,7 @@ class FilterRemovalService(
         checkStorageForUpdateAction(applicationProperties)
 
         val deletedFilter: Filter = filterRepository.findById(id)
-            ?: throw ValidationException(FILTER_NOT_FOUND_ERROR)
+            ?: throw ClientException(FILTER_NOT_FOUND_ERROR)
 
         featureService.validateFilterNotUsedByFeatures(deletedFilter)
         filterRepository.deleteById(id)

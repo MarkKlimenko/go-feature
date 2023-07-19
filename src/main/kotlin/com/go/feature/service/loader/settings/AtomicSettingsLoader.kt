@@ -13,7 +13,7 @@ import com.go.feature.service.feature.FeatureService
 import com.go.feature.service.filter.FilterService
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.service.namespace.NamespaceService
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import mu.KLogging
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
@@ -64,11 +64,11 @@ class AtomicSettingsLoader(
 
     private fun checkSettings(settings: LoadedSettings) {
         if (settings.filters.filter { it.status != FilterStatus.DISABLED }.size > FILTERS_MAX_SIZE) {
-            throw ValidationException("Enabled filters size exceeds $FILTERS_MAX_SIZE")
+            throw ClientException("Enabled filters size exceeds $FILTERS_MAX_SIZE")
         }
 
         if (settings.features.filter { it.status != Status.DISABLED }.size > FEATURES_MAX_SIZE) {
-            throw ValidationException("Enabled features size exceeds $FEATURES_MAX_SIZE")
+            throw ClientException("Enabled features size exceeds $FEATURES_MAX_SIZE")
         }
     }
 

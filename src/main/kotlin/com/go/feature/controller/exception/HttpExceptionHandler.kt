@@ -1,8 +1,11 @@
 package com.go.feature.controller.exception
 
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.configuration.properties.LocalizationProperties
+import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.localized.LocalizedException
 import mu.KLogging
+import org.apache.commons.text.StringSubstitutor
 import org.springframework.cloud.sleuth.Tracer
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.http.HttpStatus
@@ -14,13 +17,14 @@ import org.springframework.web.server.ServerWebInputException
 
 @ControllerAdvice
 class HttpExceptionHandler(
-    val tracer: Tracer
+    val tracer: Tracer,
+    val localizationProperties: LocalizationProperties,
 ) {
-    @ExceptionHandler(ValidationException::class)
-    fun validationExceptionHandler(e: ValidationException): ResponseEntity<ErrorResponse> {
-        val message: String = e.message ?: "Empty message"
+    @ExceptionHandler(ClientException::class)
+    fun clientExceptionHandler(e: ClientException): ResponseEntity<ErrorResponse> {
+        val message: String = getLocalizedMessage(e)
 
-        logger.error("Validation exception: $message")
+        logger.error("Client exception: $message")
         return ResponseEntity(createResponse(message), HttpStatus.BAD_REQUEST)
     }
 
@@ -31,7 +35,7 @@ class HttpExceptionHandler(
     }
 
     @ExceptionHandler(WebExchangeBindException::class)
-    fun validationExceptionHandler(e: WebExchangeBindException): ResponseEntity<ErrorResponse> {
+    fun webExchangeBindExceptionHandler(e: WebExchangeBindException): ResponseEntity<ErrorResponse> {
         val validations: Map<String, String?> = e.bindingResult.fieldErrors
             .associate { Pair(it.field, it.defaultMessage) }
 
@@ -78,11 +82,51 @@ class HttpExceptionHandler(
             validations = validations
         )
 
+    private fun getLocalizedMessage(e: LocalizedException): String {
+        val messageSettings: Map<String, String> = localizationProperties.messages
+            ?: return e.message ?: localizationProperties.settings.defaultMessage
+
+        // TODO: get from headers
+        val acceptsLanguageHeader: String = "de"
+            ?: localizationProperties.settings.defaultLocalization
+
+        val localizedMessage: String? =
+            messageSettings["${e.message}.${acceptsLanguageHeader}"]
+                ?: messageSettings["${e.message}.${localizationProperties.settings.defaultLocalization}"]
+
+        return if (localizedMessage != null) {
+            substitute(e, localizedMessage)
+        } else {
+            e.message ?: localizationProperties.settings.defaultMessage
+        }
+    }
+
+    private fun substitute(e: LocalizedException, message: String): String {
+        if (e.valuesMap.isNullOrEmpty()) {
+            return message
+        }
+
+        return try {
+            val substitutor = StringSubstitutor(
+                e.valuesMap,
+                localizationProperties.settings.substitutor.prefix,
+                localizationProperties.settings.substitutor.postfix,
+            )
+
+            substitutor.replace(message)
+        } catch (e: Exception) {
+            logger.error("$SUBSTITUTION_ERROR_MESSAGE: ", e)
+            return message
+        }
+    }
+
     private companion object : KLogging() {
         private const val EXCEPTION_MESSAGE = "Exception"
         private const val VALIDATION_EXCEPTION_MESSAGE = "Validation exception"
 
         private const val VALIDATION_NOT_NULL_MESSAGE = "must not be null"
         private const val VALIDATION_PARAMETER_NOT_FOUND = "???"
+
+        private const val SUBSTITUTION_ERROR_MESSAGE = "Substitution error"
     }
 }

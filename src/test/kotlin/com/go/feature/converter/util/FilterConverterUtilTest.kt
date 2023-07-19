@@ -3,7 +3,7 @@ package com.go.feature.converter.util
 import com.go.feature.dto.operator.FilterOperator
 import com.go.feature.dto.status.FilterStatus
 import com.go.feature.persistence.entity.Filter
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -31,7 +31,7 @@ class FilterConverterUtilTest {
 
     @Test
     fun getFilterIdByNotSupportedNameTest() {
-        assertThrows<ValidationException> {
+        assertThrows<ClientException> {
             getFilterIdByName(mapOf(), "name")
         }
     }

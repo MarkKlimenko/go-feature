@@ -1,10 +1,10 @@
 package com.go.feature.util
 
 import com.go.feature.configuration.properties.ApplicationProperties
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 
 fun checkStorageForUpdateAction(applicationProperties: ApplicationProperties) {
     if (!applicationProperties.storage.enabled) {
-        throw ValidationException("Operation not supported, storage disabled")
+        throw ClientException("Operation not supported, storage disabled")
     }
 }

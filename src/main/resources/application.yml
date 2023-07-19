@@ -54,3 +54,26 @@ logging:
         - "/service.*"
     body:
       enabled: true
+
+localization.messages:
+  namespace.error:
+    not.found:
+      en: "Namespace not found"
+      ru: "Неймспейс не найден"
+  filter.error:
+    not.found:
+      en: "Filter not found"
+      ru: "Фильтр не найден"
+    already.exists:
+      en: "Filter already exists"
+      ru: "Фильтр уже существует"
+    is.used:
+      en: "Filter '{filterName}' is used at most by one feature '{featureName}'"
+      ru: "Фильтр '{filterName}' используется как минимум одной фичей '{featureName}'"
+  feature.error:
+    not.found:
+      en: "Feature not found"
+      ru: "Фича не найдена"
+    already.exists:
+      en: "Feature already exists"
+      ru: "Фича уже существует"

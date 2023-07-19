@@ -4,7 +4,7 @@ import com.go.feature.WebIntegrationTest
 import com.go.feature.service.loader.settings.AtomicSettingsLoader
 import com.go.feature.test.utils.assertContains
 import com.go.feature.test.utils.setting.SettingsProviderUtil
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -42,7 +42,7 @@ class AtomicSettingLoaderTest : WebIntegrationTest() {
             99
         )
 
-        val e: ValidationException = assertThrows {
+        val e: ClientException = assertThrows {
             settingsLoaderAtomicService.loadSettingFile(settings)
         }
 
@@ -58,7 +58,7 @@ class AtomicSettingLoaderTest : WebIntegrationTest() {
         )
 
 
-        val e: ValidationException = assertThrows {
+        val e: ClientException = assertThrows {
             settingsLoaderAtomicService.loadSettingFile(settings)
         }
 

@@ -3,7 +3,7 @@ package com.go.feature.component.filter
 import com.go.feature.component.filter.builder.EqFilterBuilder
 import com.go.feature.component.filter.builder.FilterBuilder
 import com.go.feature.dto.operator.FilterOperator
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -16,7 +16,7 @@ class FilterComponentTest {
 
         val filterComponent = FilterComponent(filterBuilders)
 
-        assertThrows<ValidationException>(
+        assertThrows<ClientException>(
             "Expected message: Filter operator 'CONTAINS' is not supported for current app version"
         ) { filterComponent.getFilterBuilder(FilterOperator.CONTAINS) }
     }

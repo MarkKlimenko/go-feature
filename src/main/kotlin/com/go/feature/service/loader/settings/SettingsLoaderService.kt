@@ -1,7 +1,7 @@
 package com.go.feature.service.loader.settings
 
 import com.go.feature.component.content.provider.ContentProvider
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import mu.KLogging
 import org.springframework.stereotype.Service
 
@@ -27,7 +27,7 @@ class SettingsLoaderService(
         content.forEach {
             try {
                 atomicSettingsLoader.loadSettingFile(it)
-            } catch (e: ValidationException) {
+            } catch (e: ClientException) {
                 logger.error("Error: ${e.message}")
             } catch (e: Exception) {
                 logger.error("Error: ", e)

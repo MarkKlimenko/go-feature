@@ -1,6 +1,7 @@
 package com.go.feature.service.filter
 
 import com.go.feature.configuration.properties.ApplicationProperties
+import com.go.feature.configuration.properties.LocalizationProperties
 import com.go.feature.controller.dto.filter.FilterCreateRequest
 import com.go.feature.controller.dto.filter.FilterEditRequest
 import com.go.feature.controller.dto.filter.FilterResponse
@@ -11,7 +12,7 @@ import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import com.go.feature.util.message.FILTER_ALREADY_EXISTS_ERROR
 import com.go.feature.util.message.FILTER_NOT_FOUND_ERROR
 import kotlinx.coroutines.flow.collect
@@ -26,6 +27,7 @@ class FilterService(
     val filterConverter: FilterConverter,
     val indexVersionService: IndexVersionService,
     val applicationProperties: ApplicationProperties,
+    val localizationProperties: LocalizationProperties,
 ) {
 
     suspend fun getFilters(namespaceId: String): FiltersResponse {
@@ -41,7 +43,7 @@ class FilterService(
     suspend fun getFilter(id: String): FilterResponse =
         filterRepository.findById(id)
             ?.let { filterConverter.convert(it) }
-            ?: throw ValidationException(FILTER_NOT_FOUND_ERROR)
+            ?: throw ClientException(FILTER_NOT_FOUND_ERROR)
 
     // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
@@ -49,7 +51,7 @@ class FilterService(
         checkStorageForUpdateAction(applicationProperties)
 
         filterRepository.findByNameAndNamespace(request.name, request.namespace)
-            ?.let { throw ValidationException(FILTER_ALREADY_EXISTS_ERROR) }
+            ?.let { throw ClientException(FILTER_ALREADY_EXISTS_ERROR) }
 
         return filterRepository.save(filterConverter.create(request))
             .let {
@@ -63,7 +65,7 @@ class FilterService(
         checkStorageForUpdateAction(applicationProperties)
 
         val requiredFilter: Filter = filterRepository.findById(id)
-            ?: throw ValidationException(FILTER_NOT_FOUND_ERROR)
+            ?: throw ClientException(FILTER_NOT_FOUND_ERROR)
 
         return filterRepository.save(filterConverter.edit(requiredFilter, request))
             .let {

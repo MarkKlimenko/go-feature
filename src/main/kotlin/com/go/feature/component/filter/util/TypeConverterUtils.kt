@@ -1,12 +1,12 @@
 package com.go.feature.component.filter.util
 
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 
 fun parseDouble(field: String, value: String): Double {
     return try {
         value.toDouble()
     } catch (e: NumberFormatException) {
-        throw ValidationException("Value is not compatible with filter; field=$field, value=$value")
+        throw ClientException("Value is not compatible with filter; field=$field, value=$value")
     }
 }
 
@@ -17,7 +17,7 @@ private val DEFAULT_MINOR_PATCH_GROUPS = listOf(DEFAULT_VERSION_GROUP_VALUE, DEF
 
 fun parseVersion(field: String, value: String): Double {
     if (!value.matches(VERSION_REGEX)) {
-        throw ValidationException("Version value format exception; field=$field, value=$value")
+        throw ClientException("Version value format exception; field=$field, value=$value")
     }
 
     val versionList: List<String> = value.split(".")
@@ -35,6 +35,6 @@ fun parseVersion(field: String, value: String): Double {
     return try {
         versionList.joinToString("").toDouble()
     } catch (e: NumberFormatException) {
-        throw ValidationException("Value is not compatible with filter; field=$field, value=$value")
+        throw ClientException("Value is not compatible with filter; field=$field, value=$value")
     }
 }

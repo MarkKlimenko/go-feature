@@ -6,7 +6,7 @@ import com.go.feature.service.feature.FeatureService
 import com.go.feature.service.filter.FilterService
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
-import com.go.feature.util.exception.ValidationException
+import com.go.feature.util.exception.localized.ClientException
 import com.go.feature.util.message.NAMESPACE_NOT_FOUND_ERROR
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,7 +25,7 @@ class NamespaceRemovalService(
         checkStorageForUpdateAction(applicationProperties)
 
         namespaceRepository.findById(id)
-            ?: throw ValidationException(NAMESPACE_NOT_FOUND_ERROR)
+            ?: throw ClientException(NAMESPACE_NOT_FOUND_ERROR)
 
         filterService.deleteAllForNamespace(id)
         featureService.deleteAllForNamespace(id)

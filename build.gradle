@@ -33,6 +33,7 @@ buildscript {
         commonsIoVersion = "2.11.0"
 
         loggerVersion = "1.2.1"
+        apacheTextVersion = "1.10.0"
 
         junitVersion = "5.8.1"
         codeQualityVersion = "1.2.1"
@@ -111,6 +112,9 @@ dependencies {
     // commons
     implementation "commons-codec:commons-codec:$commonsCodecVersion"
     implementation "commons-io:commons-io:$commonsIoVersion"
+
+    // text
+    implementation "org.apache.commons:commons-text:$apacheTextVersion"
 
     // log
     implementation "com.markklim.libs:ginger-log:$loggerVersion"
