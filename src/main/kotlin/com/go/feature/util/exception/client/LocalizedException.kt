@@ -1,4 +1,4 @@
-package com.go.feature.util.exception.localized
+package com.go.feature.util.exception.client
 
 open class LocalizedException(
     message: String,

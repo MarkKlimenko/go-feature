@@ -12,7 +12,7 @@ import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.client.ClientException
 import com.go.feature.util.message.FEATURE_ALREADY_EXISTS_ERROR
 import com.go.feature.util.message.FEATURE_NOT_FOUND_ERROR
 import com.go.feature.util.message.FILTER_IS_USED_ERROR

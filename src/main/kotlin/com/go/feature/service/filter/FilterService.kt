@@ -12,7 +12,7 @@ import com.go.feature.persistence.entity.Filter
 import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.client.ClientException
 import com.go.feature.util.message.FILTER_ALREADY_EXISTS_ERROR
 import com.go.feature.util.message.FILTER_NOT_FOUND_ERROR
 import kotlinx.coroutines.flow.collect
@@ -45,7 +45,7 @@ class FilterService(
             ?.let { filterConverter.convert(it) }
             ?: throw ClientException(FILTER_NOT_FOUND_ERROR)
 
-    // TODO: check Transactional
+    // TODO: check filters/features size before loading
     @Transactional(rollbackFor = [Exception::class])
     suspend fun createFilter(request: FilterCreateRequest): FilterResponse {
         checkStorageForUpdateAction(applicationProperties)

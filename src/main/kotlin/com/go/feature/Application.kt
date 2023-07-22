@@ -9,6 +9,7 @@ class Application
 // TODO: implement authentication (use resource library and sso test library)
 // TODO: add cache
 // TODO: add swagger with authorization
+// TODO: check Transactional
 fun main(args: Array<String>) {
     runApplication<Application>(*args)
 }

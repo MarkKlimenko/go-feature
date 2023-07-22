@@ -9,22 +9,27 @@ import javax.validation.constraints.NotBlank
 @ConstructorBinding
 @Validated
 data class LocalizationProperties(
-    val settings: Settings = Settings(),
+    val settings: Settings,
     val messages: Map<String, String>?,
 ) {
     data class Settings(
-        @NotBlank
-        val localizationHeader: String = "Accept-Language",
-        val defaultLocalization: String = "en",
-        val defaultMessage: String = "No message",
-        val substitutor: SubstitutorSettings = SubstitutorSettings()
+        @field:NotBlank
+        val localizationHeader: String,
+
+        @field:NotBlank
+        val defaultLocalization: String,
+
+        @field:NotBlank
+        val defaultMessage: String,
+
+        val substitutor: SubstitutorSettings,
     )
 
     data class SubstitutorSettings(
-        @NotBlank
-        val prefix: String = "{",
+        @field:NotBlank
+        val prefix: String,
 
-        @NotBlank
-        val postfix: String = "}"
+        @field:NotBlank
+        val postfix: String,
     )
 }

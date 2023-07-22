@@ -2,7 +2,7 @@ package com.go.feature.component.filter
 
 import com.go.feature.component.filter.builder.FilterBuilder
 import com.go.feature.dto.operator.FilterOperator
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.client.ClientException
 import org.springframework.stereotype.Component
 
 @Component

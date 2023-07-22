@@ -9,7 +9,7 @@ import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.persistence.repository.FilterRepository
 import com.go.feature.persistence.repository.IndexVersionRepository
 import com.go.feature.persistence.repository.NamespaceRepository
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.client.ClientException
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import mu.KLogging

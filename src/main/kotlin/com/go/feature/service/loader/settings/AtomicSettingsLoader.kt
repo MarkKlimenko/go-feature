@@ -13,7 +13,7 @@ import com.go.feature.service.feature.FeatureService
 import com.go.feature.service.filter.FilterService
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.service.namespace.NamespaceService
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.internal.InternalValidationException
 import mu.KLogging
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AtomicSettingsLoader(
-    val applicationProperties: ApplicationProperties,
+    val properties: ApplicationProperties,
     val objectMapper: ObjectMapper,
     val indexVersionService: IndexVersionService,
     val namespaceService: NamespaceService,
@@ -39,9 +39,9 @@ class AtomicSettingsLoader(
 
         logger.info("$LOG_PREFIX Prepare settings for namespace ${namespace.name}")
 
-        if (applicationProperties.loader.forceUpdate
+        if (properties.loader.forceUpdate
             || indexVersion == null
-            || !applicationProperties.storage.enabled
+            || !properties.storage.enabled
         ) {
             logger.info("$LOG_PREFIX Start settings loading for namespace ${namespace.name}")
 
@@ -63,19 +63,19 @@ class AtomicSettingsLoader(
             .also { checkSettings(it) }
 
     private fun checkSettings(settings: LoadedSettings) {
-        if (settings.filters.filter { it.status != FilterStatus.DISABLED }.size > FILTERS_MAX_SIZE) {
-            throw ClientException("Enabled filters size exceeds $FILTERS_MAX_SIZE")
+        val filterMaxSize: Int = properties.filter.maxSize
+        val featureMaxSize: Int = properties.feature.maxSize
+
+        if (settings.filters.filter { it.status != FilterStatus.DISABLED }.size > filterMaxSize) {
+            throw InternalValidationException("Enabled filters size exceeds $filterMaxSize")
         }
 
-        if (settings.features.filter { it.status != Status.DISABLED }.size > FEATURES_MAX_SIZE) {
-            throw ClientException("Enabled features size exceeds $FEATURES_MAX_SIZE")
+        if (settings.features.filter { it.status != Status.DISABLED }.size > featureMaxSize) {
+            throw InternalValidationException("Enabled features size exceeds $featureMaxSize")
         }
     }
 
     private companion object : KLogging() {
         const val LOG_PREFIX = "SETTINGS_LOADER:"
-
-        const val FILTERS_MAX_SIZE = 20
-        const val FEATURES_MAX_SIZE = 100
     }
 }

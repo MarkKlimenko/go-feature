@@ -56,3 +56,4 @@ curl --location --request POST 'localhost:8080/api/v1/features/search' \
 - storage
 - feature-toggle/find functionality
 - headers X-B3-TraceId/X-B3-SpanId
+- localization

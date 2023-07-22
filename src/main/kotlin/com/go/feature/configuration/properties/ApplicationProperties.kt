@@ -3,6 +3,8 @@ package com.go.feature.configuration.properties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.validation.annotation.Validated
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 
 @ConfigurationProperties(prefix = "application")
@@ -10,12 +12,26 @@ import javax.validation.constraints.NotBlank
 @Validated
 data class ApplicationProperties(
     val namespace: Namespace,
+    val filter: Filter,
+    val feature: Feature,
     val storage: Storage,
     val loader: Loader
 ) {
     data class Namespace(
         @field:NotBlank
         val default: String
+    )
+
+    data class Filter(
+        @field:Min(1)
+        @field:Max(100)
+        val maxSize: Int
+    )
+
+    data class Feature(
+        @field:Min(1)
+        @field:Max(1000)
+        val maxSize: Int
     )
 
     data class Storage(

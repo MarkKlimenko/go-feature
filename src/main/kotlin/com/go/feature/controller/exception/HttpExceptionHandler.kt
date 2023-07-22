@@ -2,8 +2,8 @@ package com.go.feature.controller.exception
 
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.go.feature.configuration.properties.LocalizationProperties
-import com.go.feature.util.exception.localized.ClientException
-import com.go.feature.util.exception.localized.LocalizedException
+import com.go.feature.util.exception.client.ClientException
+import com.go.feature.util.exception.client.LocalizedException
 import mu.KLogging
 import org.apache.commons.text.StringSubstitutor
 import org.springframework.cloud.sleuth.Tracer

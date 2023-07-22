@@ -1,7 +1,7 @@
 package com.go.feature.service.loader.settings
 
 import com.go.feature.component.content.provider.ContentProvider
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.client.ClientException
 import mu.KLogging
 import org.springframework.stereotype.Service
 

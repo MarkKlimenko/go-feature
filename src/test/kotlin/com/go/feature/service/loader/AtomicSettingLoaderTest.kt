@@ -4,7 +4,8 @@ import com.go.feature.WebIntegrationTest
 import com.go.feature.service.loader.settings.AtomicSettingsLoader
 import com.go.feature.test.utils.assertContains
 import com.go.feature.test.utils.setting.SettingsProviderUtil
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.client.ClientException
+import com.go.feature.util.exception.internal.InternalValidationException
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -42,7 +43,7 @@ class AtomicSettingLoaderTest : WebIntegrationTest() {
             99
         )
 
-        val e: ClientException = assertThrows {
+        val e: InternalValidationException = assertThrows {
             settingsLoaderAtomicService.loadSettingFile(settings)
         }
 
@@ -54,14 +55,13 @@ class AtomicSettingLoaderTest : WebIntegrationTest() {
         val settings: ByteArray = settingsProviderUtil.generateSettings(
             "loadSettingsWrongFeaturesSize",
             19,
-            150
+            1001
         )
 
-
-        val e: ClientException = assertThrows {
+        val e: InternalValidationException = assertThrows {
             settingsLoaderAtomicService.loadSettingFile(settings)
         }
 
-        assertEquals("Enabled features size exceeds 100", e.message)
+        assertEquals("Enabled features size exceeds 1000", e.message)
     }
 }

@@ -2,6 +2,10 @@
 application:
   namespace:
     default: default
+  filter:
+    max-size: 20
+  feature:
+    max-size: 1000
   storage:
     enabled: false
     database:
@@ -53,3 +57,12 @@ logging:
         - "/service.*"
     body:
       enabled: true
+
+localization:
+  settings:
+    localizationHeader: "Accept-Language"
+    defaultLocalization: "en"
+    defaultMessage: "No message"
+    substitutor:
+      prefix: "{"
+      postfix: "}"

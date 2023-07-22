@@ -1,6 +1,6 @@
 package com.go.feature.component.filter.util
 
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.client.ClientException
 
 fun parseDouble(field: String, value: String): Double {
     return try {

@@ -5,7 +5,7 @@ import com.go.feature.persistence.entity.Feature
 import com.go.feature.persistence.repository.FeatureRepository
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.client.ClientException
 import com.go.feature.util.message.FEATURE_NOT_FOUND_ERROR
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

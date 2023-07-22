@@ -1,7 +1,7 @@
 package com.go.feature.converter.util
 
 import com.go.feature.persistence.entity.Filter
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.client.ClientException
 
 fun getFilterIdByName(nameToFilterMap: Map<String, Filter>, filterName: String): String {
     val filter: Filter = nameToFilterMap[filterName]

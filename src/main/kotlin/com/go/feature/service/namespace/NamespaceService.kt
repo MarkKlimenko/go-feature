@@ -12,7 +12,7 @@ import com.go.feature.persistence.entity.Namespace
 import com.go.feature.persistence.repository.NamespaceRepository
 import com.go.feature.service.index.IndexVersionService
 import com.go.feature.util.checkStorageForUpdateAction
-import com.go.feature.util.exception.localized.ClientException
+import com.go.feature.util.exception.client.ClientException
 import com.go.feature.util.message.NAMESPACE_NOT_FOUND_ERROR
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -43,7 +43,6 @@ class NamespaceService(
             ?.let { namespaceConverter.convert(it) }
             ?: throw ClientException(NAMESPACE_NOT_FOUND_ERROR)
 
-    // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun createNamespace(request: NamespaceCreateRequest): NamespaceResponse {
         checkStorageForUpdateAction(applicationProperties)
@@ -58,7 +57,6 @@ class NamespaceService(
         return namespaceConverter.convert(createdNamespace)
     }
 
-    // TODO: check Transactional
     @Transactional(rollbackFor = [Exception::class])
     suspend fun editNamespace(id: String, request: NamespaceEditRequest): NamespaceResponse {
         checkStorageForUpdateAction(applicationProperties)
