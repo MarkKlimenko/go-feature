@@ -52,6 +52,7 @@ class FeatureControllerUniversalTest : WebIntegrationTest() {
             .uri("/api/v1/features/NOT_FOUND")
             .header("X-B3-TraceId", "d61436368bae3c12")
             .header("X-B3-SpanId", "ce5f844337f3ee88")
+            .header("Accept-Language", "en")
             .exchange()
             .expectStatus().is4xxClientError
             .expectBody()
@@ -59,5 +60,27 @@ class FeatureControllerUniversalTest : WebIntegrationTest() {
 
         output.assertContains("d61436368bae3c12")
         output.assertContains("ce5f844337f3ee88")
+    }
+
+    @Test
+    fun getNotFoundFeatureRuLocalizationTest(output: CapturedOutput) {
+        webTestClient.get()
+            .uri("/api/v1/features/NOT_FOUND")
+            .header("Accept-Language", "ru")
+            .exchange()
+            .expectStatus().is4xxClientError
+            .expectBody()
+            .jsonPath("message").isEqualTo("Фича не найдена")
+    }
+
+    @Test
+    fun getNotFoundFeatureUnknownLocalizationTest(output: CapturedOutput) {
+        webTestClient.get()
+            .uri("/api/v1/features/NOT_FOUND")
+            .header("Accept-Language", "unknown")
+            .exchange()
+            .expectStatus().is4xxClientError
+            .expectBody()
+            .jsonPath("message").isEqualTo("Feature not found")
     }
 }

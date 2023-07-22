@@ -1,8 +1,8 @@
-package com.go.feature.configuration.properties;
+package com.go.feature.configuration.properties
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.ConstructorBinding
+import org.springframework.validation.annotation.Validated
 import javax.validation.constraints.NotBlank
 
 @ConfigurationProperties(prefix = "localization")

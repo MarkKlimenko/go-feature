@@ -10,6 +10,7 @@ import org.springframework.cloud.sleuth.Tracer
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.support.WebExchangeBindException
@@ -21,8 +22,8 @@ class HttpExceptionHandler(
     val localizationProperties: LocalizationProperties,
 ) {
     @ExceptionHandler(ClientException::class)
-    fun clientExceptionHandler(e: ClientException): ResponseEntity<ErrorResponse> {
-        val message: String = getLocalizedMessage(e)
+    fun clientExceptionHandler(e: ClientException, request: ServerHttpRequest): ResponseEntity<ErrorResponse> {
+        val message: String = getLocalizedMessage(e, request)
 
         logger.error("Client exception: $message")
         return ResponseEntity(createResponse(message), HttpStatus.BAD_REQUEST)
@@ -82,16 +83,15 @@ class HttpExceptionHandler(
             validations = validations
         )
 
-    private fun getLocalizedMessage(e: LocalizedException): String {
+    private fun getLocalizedMessage(e: LocalizedException, request: ServerHttpRequest): String {
         val messageSettings: Map<String, String> = localizationProperties.messages
             ?: return e.message ?: localizationProperties.settings.defaultMessage
 
-        // TODO: get from headers
-        val acceptsLanguageHeader: String = "de"
+        val acceptsLanguageHeader: String = request.headers.getFirst(localizationProperties.settings.localizationHeader)
             ?: localizationProperties.settings.defaultLocalization
 
         val localizedMessage: String? =
-            messageSettings["${e.message}.${acceptsLanguageHeader}"]
+            messageSettings["${e.message}.$acceptsLanguageHeader"]
                 ?: messageSettings["${e.message}.${localizationProperties.settings.defaultLocalization}"]
 
         return if (localizedMessage != null) {
