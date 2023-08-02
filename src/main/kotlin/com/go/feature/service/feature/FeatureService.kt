@@ -15,6 +15,7 @@ import com.go.feature.util.checkStorageForUpdateAction
 import com.go.feature.util.exception.client.ClientException
 import com.go.feature.util.message.FEATURE_ALREADY_EXISTS_ERROR
 import com.go.feature.util.message.FEATURE_NOT_FOUND_ERROR
+import com.go.feature.util.message.FEATURE_SIZE_EXCEEDS_ERROR
 import com.go.feature.util.message.FILTER_IS_USED_ERROR
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -27,7 +28,7 @@ class FeatureService(
     val featureRepository: FeatureRepository,
     val featureConverter: FeatureConverter,
     val indexVersionService: IndexVersionService,
-    val applicationProperties: ApplicationProperties,
+    val properties: ApplicationProperties,
 ) {
 
     suspend fun getFeatures(namespaceId: String): FeaturesResponse {
@@ -47,7 +48,8 @@ class FeatureService(
 
     @Transactional(rollbackFor = [Exception::class])
     suspend fun createFeature(request: FeatureCreateRequest): FeatureResponse {
-        checkStorageForUpdateAction(applicationProperties)
+        checkStorageForUpdateAction(properties)
+        checkFeatureCount(request.namespace)
 
         featureRepository.findByNameAndNamespace(request.name, request.namespace)
             ?.let { throw ClientException(FEATURE_ALREADY_EXISTS_ERROR) }
@@ -61,7 +63,7 @@ class FeatureService(
 
     @Transactional(rollbackFor = [Exception::class])
     suspend fun editFeature(id: String, request: FeatureEditRequest): FeatureResponse {
-        checkStorageForUpdateAction(applicationProperties)
+        checkStorageForUpdateAction(properties)
 
         val requiredFeature: Feature = featureRepository.findById(id)
             ?: throw ClientException(FEATURE_NOT_FOUND_ERROR)
@@ -99,5 +101,16 @@ class FeatureService(
         val nameToFilterMap: Map<String, Filter> = filters.associateBy { it.name }
         val features: List<Feature> = featureConverter.create(namespaceId, settings.features, nameToFilterMap)
         featureRepository.saveAll(features).collect()
+    }
+
+    private suspend fun checkFeatureCount(namespaceId: String) {
+        val currentCount: Long = featureRepository.countByNamespace(namespaceId)
+
+        if (currentCount >= properties.feature.maxSize) {
+            throw ClientException(
+                FEATURE_SIZE_EXCEEDS_ERROR,
+                mapOf("featureSize" to properties.feature.maxSize.toString())
+            )
+        }
     }
 }

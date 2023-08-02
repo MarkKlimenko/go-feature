@@ -88,3 +88,6 @@ localization:
       already.exists:
         en: "Feature already exists"
         ru: "Фича уже существует"
+    storage.error:
+      disabled:
+        en: "Operation not supported, storage disabled"

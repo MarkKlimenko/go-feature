@@ -82,6 +82,8 @@ localization:
       is.used:
         en: "Filter '{filterName}' is used at most by one feature '{featureName}'"
         ru: "Фильтр '{filterName}' используется как минимум одной фичей '{featureName}'"
+      size.exceeds:
+        en: "Filter size exceeds '{filterSize}'"
     feature.error:
       not.found:
         en: "Feature not found"
@@ -89,3 +91,8 @@ localization:
       already.exists:
         en: "Feature already exists"
         ru: "Фича уже существует"
+      size.exceeds:
+        en: "Feature size exceeds '{featureSize}'"
+    storage.error:
+      disabled:
+        en: "Operation not supported, storage disabled"

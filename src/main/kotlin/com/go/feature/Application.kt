@@ -10,6 +10,7 @@ class Application
 // TODO: add cache
 // TODO: add swagger with authorization
 // TODO: check Transactional
+// TODO: spring boot 3
 fun main(args: Array<String>) {
     runApplication<Application>(*args)
 }

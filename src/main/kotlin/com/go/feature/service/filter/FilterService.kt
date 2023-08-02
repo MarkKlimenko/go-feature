@@ -1,7 +1,6 @@
 package com.go.feature.service.filter
 
 import com.go.feature.configuration.properties.ApplicationProperties
-import com.go.feature.configuration.properties.LocalizationProperties
 import com.go.feature.controller.dto.filter.FilterCreateRequest
 import com.go.feature.controller.dto.filter.FilterEditRequest
 import com.go.feature.controller.dto.filter.FilterResponse
@@ -15,7 +14,7 @@ import com.go.feature.util.checkStorageForUpdateAction
 import com.go.feature.util.exception.client.ClientException
 import com.go.feature.util.message.FILTER_ALREADY_EXISTS_ERROR
 import com.go.feature.util.message.FILTER_NOT_FOUND_ERROR
-import kotlinx.coroutines.flow.collect
+import com.go.feature.util.message.FILTER_SIZE_EXCEEDS_ERROR
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.springframework.stereotype.Service
@@ -26,8 +25,7 @@ class FilterService(
     val filterRepository: FilterRepository,
     val filterConverter: FilterConverter,
     val indexVersionService: IndexVersionService,
-    val applicationProperties: ApplicationProperties,
-    val localizationProperties: LocalizationProperties,
+    val properties: ApplicationProperties,
 ) {
 
     suspend fun getFilters(namespaceId: String): FiltersResponse {
@@ -45,10 +43,10 @@ class FilterService(
             ?.let { filterConverter.convert(it) }
             ?: throw ClientException(FILTER_NOT_FOUND_ERROR)
 
-    // TODO: check filters/features size before loading
     @Transactional(rollbackFor = [Exception::class])
     suspend fun createFilter(request: FilterCreateRequest): FilterResponse {
-        checkStorageForUpdateAction(applicationProperties)
+        checkStorageForUpdateAction(properties)
+        checkFilterCount(request.namespace)
 
         filterRepository.findByNameAndNamespace(request.name, request.namespace)
             ?.let { throw ClientException(FILTER_ALREADY_EXISTS_ERROR) }
@@ -62,7 +60,7 @@ class FilterService(
 
     @Transactional(rollbackFor = [Exception::class])
     suspend fun editFilter(id: String, request: FilterEditRequest): FilterResponse {
-        checkStorageForUpdateAction(applicationProperties)
+        checkStorageForUpdateAction(properties)
 
         val requiredFilter: Filter = filterRepository.findById(id)
             ?: throw ClientException(FILTER_NOT_FOUND_ERROR)
@@ -80,7 +78,17 @@ class FilterService(
 
     suspend fun createFiltersForSettings(namespaceId: String, settings: LoadedSettings): List<Filter> {
         val filters: List<Filter> = filterConverter.create(namespaceId, settings.filters)
-        filterRepository.saveAll(filters).collect()
-        return filters
+        return filterRepository.saveAll(filters).toList()
+    }
+
+    private suspend fun checkFilterCount(namespaceId: String) {
+        val currentCount: Long = filterRepository.countByNamespace(namespaceId)
+
+        if (currentCount >= properties.filter.maxSize) {
+            throw ClientException(
+                FILTER_SIZE_EXCEEDS_ERROR,
+                mapOf("filterSize" to properties.filter.maxSize.toString())
+            )
+        }
     }
 }

@@ -34,9 +34,11 @@ buildscript {
 
         loggerVersion = "1.2.1"
         apacheTextVersion = "1.10.0"
+        jgitVersion = "6.6.0.202305301015-r"
 
         junitVersion = "5.8.1"
         codeQualityVersion = "1.2.1"
+        testcontainersPostgresVersion = "2.3.2"
     }
 }
 
@@ -54,8 +56,8 @@ plugins {
     id "com.markklim.popcorn.quality" version "$codeQualityVersion"
 }
 
-group "com.go.feature"
-version "1.0"
+group "com.markklim.feature"
+version "1.0.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -120,7 +122,7 @@ dependencies {
     implementation "com.markklim.libs:ginger-log:$loggerVersion"
 
     // git
-    implementation 'org.eclipse.jgit:org.eclipse.jgit:6.6.0.202305301015-r'
+    implementation "org.eclipse.jgit:org.eclipse.jgit:$jgitVersion"
 
     // test
     testImplementation "org.springframework.boot:spring-boot-starter-test"
@@ -132,7 +134,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 
-    testImplementation "com.playtika.testcontainers:embedded-postgresql:2.3.2"
+    testImplementation "com.playtika.testcontainers:embedded-postgresql:$testcontainersPostgresVersion"
 }
 
 test {
