@@ -84,6 +84,8 @@ localization:
         ru: "Фильтр '{filterName}' используется как минимум одной фичей '{featureName}'"
       size.exceeds:
         en: "Filter size exceeds '{filterSize}'"
+      operator.not.supported:
+        en: "Filter operator '{operator}' is not supported for current app version"
     feature.error:
       not.found:
         en: "Feature not found"
