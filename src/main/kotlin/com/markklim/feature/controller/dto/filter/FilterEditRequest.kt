@@ -3,8 +3,8 @@ package com.markklim.feature.controller.dto.filter
 import com.markklim.feature.dto.operator.FilterOperator
 import com.markklim.feature.dto.status.FilterStatus
 import org.hibernate.validator.constraints.Length
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotBlank
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotBlank
 
 data class FilterEditRequest(
     @field:Length(min = 1, max = 100)

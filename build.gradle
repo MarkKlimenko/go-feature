@@ -19,14 +19,14 @@ buildscript {
         ]
 
         // versions
-        kotlinVersion = "1.7.22"
+        kotlinVersion = "1.8.22"
         kotlinLoggingVersion = "2.0.11"
         kotlinJacksonVersion = "2.14.1"
         kotlinMockitoVersion = "3.2.0"
 
-        springBootVersion = "2.7.9"
-        springCloudVersion = "2021.0.6"
-        springManagementVersion = "1.0.15.RELEASE"
+        springBootVersion = "3.1.2"
+        springCloudVersion = "2022.0.4"
+        springManagementVersion = "1.1.2"
 
         luceneVersion = "9.5.0"
         commonsCodecVersion = "1.15"
@@ -59,9 +59,10 @@ plugins {
 group "com.markklim.feature"
 version "1.0.1"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+
+
+kotlin {
+    jvmToolchain(17)
 }
 
 repositories {
@@ -81,7 +82,10 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-validation"
 
     implementation "org.springframework.cloud:spring-cloud-starter-bootstrap"
-    implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
+    // TODO
+    //implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
+    //implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 
     // database
     implementation "org.springframework.boot:spring-boot-starter-data-r2dbc"

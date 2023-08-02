@@ -115,7 +115,7 @@ class FilterControllerStorageEnabledTest : EntityManipulationTest() {
                 .expectStatus().is4xxClientError
                 .expectBody()
                 .jsonPath("$.message")
-                .value(Matchers.containsString("Failed to update table [filters]. Version does not match for row with Id"))
+                .value(Matchers.containsString("Failed to update table [filters]; Version does not match for row with Id"))
         }
     }
 

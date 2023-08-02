@@ -6,7 +6,7 @@ import com.markklim.feature.util.exception.client.ClientException
 import com.markklim.feature.util.exception.client.LocalizedException
 import mu.KLogging
 import org.apache.commons.text.StringSubstitutor
-import org.springframework.cloud.sleuth.Tracer
+import io.micrometer.tracing.Tracer
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

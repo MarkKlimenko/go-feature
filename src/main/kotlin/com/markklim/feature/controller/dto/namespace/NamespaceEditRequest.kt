@@ -1,9 +1,9 @@
 package com.markklim.feature.controller.dto.namespace
 
 import com.markklim.feature.dto.status.Status
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotBlank
 import org.hibernate.validator.constraints.Length
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotBlank
 
 data class NamespaceEditRequest(
     @field:Length(min = 1, max = 100)

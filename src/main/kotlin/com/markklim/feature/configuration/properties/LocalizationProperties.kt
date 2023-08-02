@@ -1,12 +1,10 @@
 package com.markklim.feature.configuration.properties
 
+import jakarta.validation.constraints.NotBlank
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.validation.annotation.Validated
-import javax.validation.constraints.NotBlank
 
 @ConfigurationProperties(prefix = "localization")
-@ConstructorBinding
 @Validated
 data class LocalizationProperties(
     val settings: Settings,
