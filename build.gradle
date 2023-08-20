@@ -32,7 +32,8 @@ buildscript {
         commonsCodecVersion = "1.15"
         commonsIoVersion = "2.11.0"
 
-        loggerVersion = "1.2.1"
+        // TODO: prepare logger for spring 3
+        loggerVersion = "1.2.2"
         apacheTextVersion = "1.10.0"
         jgitVersion = "6.6.0.202305301015-r"
 
