@@ -4,7 +4,6 @@ import com.markklim.feature.WebIntegrationTest
 import com.markklim.feature.service.loader.settings.AtomicSettingsLoader
 import com.markklim.feature.test.utils.assertContains
 import com.markklim.feature.test.utils.setting.SettingsProviderUtil
-import com.markklim.feature.util.exception.client.ClientException
 import com.markklim.feature.util.exception.internal.InternalValidationException
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals

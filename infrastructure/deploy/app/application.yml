@@ -1,0 +1,6 @@
+application:
+  loader:
+    enabled: true
+    type: directory
+    force-update: false
+    location: /data

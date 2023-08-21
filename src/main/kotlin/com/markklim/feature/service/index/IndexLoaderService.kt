@@ -9,7 +9,7 @@ import com.markklim.feature.persistence.repository.FeatureRepository
 import com.markklim.feature.persistence.repository.FilterRepository
 import com.markklim.feature.persistence.repository.IndexVersionRepository
 import com.markklim.feature.persistence.repository.NamespaceRepository
-import com.markklim.feature.util.exception.client.ClientException
+import com.markklim.feature.util.exception.internal.InternalValidationException
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import mu.KLogging
@@ -58,10 +58,10 @@ class IndexLoaderService(
 
     private suspend fun loadIndexForNamespace(indexVersion: IndexVersion) {
         val namespace: Namespace = namespaceRepository.findById(indexVersion.namespace)
-            ?: throw ClientException("Namespace not found for index=$indexVersion")
+            ?: throw InternalValidationException("Namespace not found for index=$indexVersion")
 
         if (namespace.status == Status.ENABLED) {
-            logger.info("$LOG_PREFIX Start index update for namespace=${namespace.name}")
+            logger.debug("$LOG_PREFIX Start index update for namespace=${namespace.name}")
 
             val filters: List<Filter> =
                 filterRepository.findByNamespace(indexVersion.namespace).toList()
@@ -70,7 +70,7 @@ class IndexLoaderService(
 
             indexService.createIndex(indexVersion, namespace, filters, features)
 
-            logger.info("$LOG_PREFIX Finish index update for namespace=${namespace.name}")
+            logger.debug("$LOG_PREFIX Finish index update for namespace=${namespace.name}")
         }
     }
 

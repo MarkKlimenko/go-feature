@@ -11,6 +11,8 @@ class Application
 // TODO: add swagger with authorization
 // TODO: check Transactional
 // TODO: spring boot 3
+
+// TODO: request body is missing - ginger library influence
 fun main(args: Array<String>) {
     runApplication<Application>(*args)
 }
