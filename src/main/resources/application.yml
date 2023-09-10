@@ -56,8 +56,24 @@ logging:
     uris:
       exclude:
         - "/service.*"
+        - "/actuator.*"
     body:
       enabled: true
+
+management:
+  security:
+    enabled: false
+  endpoints.web.exposure.include: "health, prometheus, loggers"
+  metrics.export.prometheus.enabled: true
+  endpoint:
+    prometheus.enabled: true
+    metrics.enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+      sla:
+        "[http.server.requests]": 50ms,100ms,200ms,300ms,500ms
 
 localization:
   settings:

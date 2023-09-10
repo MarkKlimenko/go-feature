@@ -8,6 +8,7 @@
 # for arm
 docker build --platform linux/arm64 -f ./extra/deploy/app/Dockerfile -t markklim/go-feature:latest-arm64 .
 docker run --platform linux/arm64 -p 8081:8080 -d --name go-feature markklim/go-feature:latest-arm64
+docker start go-feature
 
 # for amd
 docker build -f ./extra/deploy/app/Dockerfile -t markklim/go-feature:latest .
