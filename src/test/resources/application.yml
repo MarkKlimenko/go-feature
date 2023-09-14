@@ -51,7 +51,6 @@ spring:
 
 logging:
   http:
-    client-errors-level: INFO
     uris:
       exclude:
         - "/service.*"
