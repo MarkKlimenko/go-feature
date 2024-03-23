@@ -45,7 +45,7 @@
       "filters": [
         {
           "name": "loginIn",
-          "value": "bestUser"
+          "value": "bestUser k.boss"
         }
       ],
       "description": "Включает крипто транзакции для пользователей определенных ЛОГИНОВ"
