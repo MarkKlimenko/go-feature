@@ -8,6 +8,12 @@
       "parameter": "login",
       "operator": "CONTAINS",
       "description": "Фильтр по логину пользователя (любой из списка)"
+    },
+    {
+      "name": "userGroupIn",
+      "parameter": "userGroup",
+      "operator": "CONTAINS",
+      "description": "Фильтр по группе пользователя (любой из списка)"
     }
   ],
   "features": [
@@ -17,10 +23,43 @@
       "filters": [
         {
           "name": "loginIn",
-          "value": "patrik crabs sandy copibara dog cow cat horse donkey tiger lion panther leopard cheetah bear elephant polar bear turtle tortoise crocodile rabbit porcupine hare hen pigeon albatross crow fish dolphin frog whale alligator eagle flying squirrel ostrich fox goat jackal emu armadillo eel goose arctic fox wolf beagle gorilla chimpanzee monkey beaver orangutan antelope bat badger giraffe hermit crab giant panda hamster cobra hammerhead shark camel hawk deer chameleon hippopotamus jaguar chihuahua king cobra ibex lizard koala kangaroo iguana llama chinchillas dodo jellyfish rhinoceros hedgehog zebra possum wombat bison bull buffalo sheep meerkat mouse otter sloth owl vulture flamingo racoon mole duck swan lynx monitor lizard elk boar lemur mule baboon mammoth blue whale rat snake peacock patrikEnterp crabsEnterp sandyEnterp copibaraEnterp dogEnterp cowEnterp catEnterp horseEnterp donkeyEnterp tigerEnterp lionEnterp pantherEnterp leopardEnterp cheetahEnterp bearEnterp elephantEnterp polarEnterp bearEnterp turtleEnterp tortoiseEnterp crocodileEnterp rabbitEnterp porcupineEnterp hareEnterp henEnterp pigeonEnterp albatrossEnterp crowEnterp fishEnterp dolphinEnterp frogEnterp whaleEnterp alligatorEnterp eagleEnterp flyingEnterp squirrelEnterp ostrichEnterp foxEnterp goatEnterp jackalEnterp emuEnterp armadilloEnterp eelEnterp gooseEnterp arcticEnterp foxEnterp wolfEnterp beagleEnterp gorillaEnterp chimpanzeeEnterp monkeyEnterp beaverEnterp orangutanEnterp antelopeEnterp batEnterp badgerEnterp giraffeEnterp hermitEnterp crabEnterp giantEnterp pandaEnterp hamsterEnterp cobraEnterp hammerheadEnterp sharkEnterp camelEnterp hawkEnterp deerEnterp chameleonEnterp hippopotamusEnterp jaguarEnterp chihuahuaEnterp kingEnterp cobraEnterp ibexEnterp lizardEnterp koalaEnterp kangarooEnterp iguanaEnterp llamaEnterp chinchillasEnterp dodoEnterp jellyfishEnterp rhinocerosEnterp hedgehogEnterp zebraEnterp possumEnterp wombatEnterp bisonEnterp bullEnterp buffaloEnterp sheepEnterp meerkatEnterp mouseEnterp otterEnterp slothEnterp owlEnterp vultureEnterp flamingoEnterp racoonEnterp moleEnterp duckEnterp swanEnterp lynxEnterp monitorEnterp lizardEnterp elkEnterp boarEnterp lemurEnterp muleEnterp baboonEnterp mammothEnterp blueEnterp whaleEnterp ratEnterp snakeEnterp peacockEnterp patrikVip crabsVip sandyVip copibaraVip dogVip cowVip catVip horseVip donkeyVip tigerVip lionVip pantherVip leopardVip cheetahVip bearVip elephantVip polarVip bearVip turtleVip tortoiseVip crocodileVip rabbitVip porcupineVip hareVip henVip pigeonVip albatrossVip crowVip fishVip dolphinVip frogVip whaleVip alligatorVip eagleVip flyingVip squirrelVip ostrichVip foxVip goatVip jackalVip emuVip armadilloVip eelVip gooseVip arcticVip foxVip wolfVip beagleVip gorillaVip chimpanzeeVip monkeyVip beaverVip orangutanVip antelopeVip batVip badgerVip giraffeVip hermitVip crabVip giantVip pandaVip hamsterVip cobraVip hammerheadVip sharkVip camelVip hawkVip deerVip chameleonVip hippopotamusVip jaguarVip chihuahuaVip kingVip cobraVip ibexVip lizardVip koalaVip kangarooVip iguanaVip llamaVip chinchillasVip dodoVip jellyfishVip rhinocerosVip hedgehogVip zebraVip possumVip wombatVip bisonVip bullVip buffaloVip sheepVip meerkatVip mouseVip otterVip slothVip owlVip vultureVip flamingoVip racoonVip moleVip duckVip swanVip lynxVip monitorVip lizardVip elkVip boarVip lemurVip muleVip baboonVip mammothVip blueVip whaleVip ratVip snakeVip peacockVip"
+          "value": "k.boss d.admin patrik crabs sandy copibara dog cow cat horse donkey tiger lion panther leopard cheetah bear elephant polar bear turtle tortoise crocodile rabbit porcupine hare hen pigeon albatross crow fish dolphin frog whale alligator eagle flying squirrel ostrich fox goat jackal emu armadillo eel goose arctic fox wolf beagle gorilla chimpanzee monkey beaver orangutan antelope bat badger giraffe hermit crab giant panda hamster cobra hammerhead shark camel hawk deer chameleon hippopotamus jaguar chihuahua king cobra ibex lizard koala kangaroo iguana llama chinchillas dodo jellyfish rhinoceros hedgehog zebra possum wombat bison bull buffalo sheep meerkat mouse otter sloth owl vulture flamingo racoon mole duck swan lynx monitor lizard elk boar lemur mule baboon mammoth blue whale rat snake peacock patrikEnterp crabsEnterp sandyEnterp copibaraEnterp dogEnterp cowEnterp catEnterp horseEnterp donkeyEnterp tigerEnterp lionEnterp pantherEnterp leopardEnterp cheetahEnterp bearEnterp elephantEnterp polarEnterp bearEnterp turtleEnterp tortoiseEnterp crocodileEnterp rabbitEnterp porcupineEnterp hareEnterp henEnterp pigeonEnterp albatrossEnterp crowEnterp fishEnterp dolphinEnterp frogEnterp whaleEnterp alligatorEnterp eagleEnterp flyingEnterp squirrelEnterp ostrichEnterp foxEnterp goatEnterp jackalEnterp emuEnterp armadilloEnterp eelEnterp gooseEnterp arcticEnterp foxEnterp wolfEnterp beagleEnterp gorillaEnterp chimpanzeeEnterp monkeyEnterp beaverEnterp orangutanEnterp antelopeEnterp batEnterp badgerEnterp giraffeEnterp hermitEnterp crabEnterp giantEnterp pandaEnterp hamsterEnterp cobraEnterp hammerheadEnterp sharkEnterp camelEnterp hawkEnterp deerEnterp chameleonEnterp hippopotamusEnterp jaguarEnterp chihuahuaEnterp kingEnterp cobraEnterp ibexEnterp lizardEnterp koalaEnterp kangarooEnterp iguanaEnterp llamaEnterp chinchillasEnterp dodoEnterp jellyfishEnterp rhinocerosEnterp hedgehogEnterp zebraEnterp possumEnterp wombatEnterp bisonEnterp bullEnterp buffaloEnterp sheepEnterp meerkatEnterp mouseEnterp otterEnterp slothEnterp owlEnterp vultureEnterp flamingoEnterp racoonEnterp moleEnterp duckEnterp swanEnterp lynxEnterp monitorEnterp lizardEnterp elkEnterp boarEnterp lemurEnterp muleEnterp baboonEnterp mammothEnterp blueEnterp whaleEnterp ratEnterp snakeEnterp peacockEnterp patrikVip crabsVip sandyVip copibaraVip dogVip cowVip catVip horseVip donkeyVip tigerVip lionVip pantherVip leopardVip cheetahVip bearVip elephantVip polarVip bearVip turtleVip tortoiseVip crocodileVip rabbitVip porcupineVip hareVip henVip pigeonVip albatrossVip crowVip fishVip dolphinVip frogVip whaleVip alligatorVip eagleVip flyingVip squirrelVip ostrichVip foxVip goatVip jackalVip emuVip armadilloVip eelVip gooseVip arcticVip foxVip wolfVip beagleVip gorillaVip chimpanzeeVip monkeyVip beaverVip orangutanVip antelopeVip batVip badgerVip giraffeVip hermitVip crabVip giantVip pandaVip hamsterVip cobraVip hammerheadVip sharkVip camelVip hawkVip deerVip chameleonVip hippopotamusVip jaguarVip chihuahuaVip kingVip cobraVip ibexVip lizardVip koalaVip kangarooVip iguanaVip llamaVip chinchillasVip dodoVip jellyfishVip rhinocerosVip hedgehogVip zebraVip possumVip wombatVip bisonVip bullVip buffaloVip sheepVip meerkatVip mouseVip otterVip slothVip owlVip vultureVip flamingoVip racoonVip moleVip duckVip swanVip lynxVip monitorVip lizardVip elkVip boarVip lemurVip muleVip baboonVip mammothVip blueVip whaleVip ratVip snakeVip peacockVip"
         }
       ],
       "description": "Включает новый дизайн для внутренних пользователей"
+    },
+    {
+      "name": "statistics",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "loginIn",
+          "value": "k.boss d.admin"
+        }
+      ],
+      "description": "Включает просмотр статистики для пользователей типа management"
+    },
+    {
+      "name": "cryptoTransactionForLogin",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "loginIn",
+          "value": "bestUser"
+        }
+      ],
+      "description": "Включает крипто транзакции для пользователей определенных ЛОГИНОВ"
+    },
+    {
+      "name": "cryptoTransactionForGroup",
+      "status": "ENABLED",
+      "filters": [
+        {
+          "name": "userGroup",
+          "value": "internalUsers bettaGroupUsers"
+        }
+      ],
+      "description": "Включает крипто транзакции для пользователей определенных ГРУПП"
     }
   ]
 }
