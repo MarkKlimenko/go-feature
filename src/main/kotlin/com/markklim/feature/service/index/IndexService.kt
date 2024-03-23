@@ -42,7 +42,7 @@ class IndexService(
         val query: BooleanQuery.Builder = BooleanQuery.Builder()
 
         storage.indexFilters.forEach {
-            val value: String? = parameterToDataMapper[it.parameter]?.value
+            val value: String? = parameterToDataMapper[it.parameter]?.value?.lowercase()
 
             if (it.status == FilterStatus.ENABLED || it.status == FilterStatus.DISABLED_ON_NULL && value != null) {
                 val searchClause: BooleanClause = filterComponent.getFilterBuilder(it.operator)

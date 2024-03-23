@@ -23,21 +23,25 @@ java \
 ## Documentation
 
 
-## Functionality (TBD)
+## Functionality Docs (TBD)
 - config loader
 - storage
 - feature-toggle/find functionality
 - headers X-B3-TraceId/X-B3-SpanId
 - localization
 
-## Feature TODO
-+ обновить логгер
+## Infra TODO
+- обновить логгер
 - запустить приложение в доккере при помощи ансибл или подобного
   + docker file
   + memory usage
   + properties
   + addition files
-  - create extended dataset
-- запустить инфру для тестирования
+  +create extended dataset
++ запустить инфру для тестирования
 - снять метрики с приложения
 - написать скрипт для нагрузочного тестирования и запустить
+
+## Features TODO
+- add auth by login password and by oauth2
+- add auth role model for endpoints
