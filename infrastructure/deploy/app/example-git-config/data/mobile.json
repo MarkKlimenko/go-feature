@@ -4,30 +4,20 @@
   },
   "filters": [
     {
-      "name": "userNameEq",
-      "parameter": "userName",
-      "operator": "EQ",
-      "description": "Фильтр по имени пользователя"
+      "name": "loginIn",
+      "parameter": "login",
+      "operator": "CONTAINS",
+      "description": "Фильтр по логину пользователя (любой из списка)"
     }
   ],
   "features": [
     {
-      "name": "testFeature",
+      "name": "newDesign",
       "status": "ENABLED",
       "filters": [
         {
-          "name": "userNameEq",
-          "value": "patrik"
-        }
-      ]
-    },
-    {
-      "name": "testFeature2",
-      "status": "ENABLED",
-      "filters": [
-        {
-          "name": "userNameEq",
-          "value": "crabs"
+          "name": "loginIn",
+          "value": "patrik crabs sandy copibara dog cow cat horse donkey tiger lion panther leopard cheetah bear elephant polar bear turtle tortoise crocodile rabbit porcupine hare hen pigeon albatross crow fish dolphin frog whale alligator eagle flying squirrel ostrich fox goat jackal emu armadillo eel goose arctic fox wolf beagle gorilla chimpanzee monkey beaver orangutan antelope bat badger giraffe hermit crab giant panda hamster cobra hammerhead shark camel hawk deer chameleon hippopotamus jaguar chihuahua king cobra ibex lizard koala kangaroo iguana llama chinchillas dodo jellyfish rhinoceros hedgehog zebra possum wombat bison bull buffalo sheep meerkat mouse otter sloth owl vulture flamingo racoon mole duck swan lynx monitor lizard elk boar lemur mule baboon mammoth blue whale rat snake peacock"
         }
       ]
     }

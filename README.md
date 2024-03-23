@@ -20,36 +20,8 @@ java \
 -jar build/libs/go-feature-1.0.1.jar
 ```
 
-## Test request
-```shell
-curl --location --request POST 'localhost:8080/api/v1/features/search' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "namespace": "default",
-    "data": [
-        {
-            "parameter": "os",
-            "value": "ios"
-        },
-        {
-            "parameter": "userName",
-            "value": "patrik"
-        },
-        {
-            "parameter": "osVersion",
-            "value": "13"
-        }
-    ]
-}'
+## Documentation
 
-#>>
-#{
-#    "features": [
-#        "enablePayments",
-#        "enableAdvancedScroll"
-#    ]
-#}
-```
 
 ## Functionality (TBD)
 - config loader
