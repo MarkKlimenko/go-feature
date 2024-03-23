@@ -55,7 +55,7 @@
       "status": "ENABLED",
       "filters": [
         {
-          "name": "userGroup",
+          "name": "userGroupIn",
           "value": "internalUsers bettaGroupUsers"
         }
       ],
