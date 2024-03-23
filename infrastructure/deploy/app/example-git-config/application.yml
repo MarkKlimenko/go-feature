@@ -1,0 +1,9 @@
+application:
+  loader:
+    enabled: true
+    type: git
+    force-update: false
+    location: infrastructure/deploy/app/example-git-config/data
+    git:
+      uri: https://github.com/MarkKlimenko/go-feature.git
+      branch: feature/load_test
